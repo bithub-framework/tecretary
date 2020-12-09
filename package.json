@@ -12,6 +12,10 @@
     "author": "Zim",
     "license": "SEE LICENSE IN ./LICENSE",
     "dependencies": {
-        "@types/node": "^14.14.10"
+        "@types/node": "^14.14.10",
+        "interfaces": "https://gitee.com/zimtsui/interfaces.git",
+        "promisified-sqlite": "https://gitee.com/zimtsui/promisified-sqlite.git",
+        "sorted-queue": "^0.3.2",
+        "startable": "https://gitee.com/zimtsui/startable.git"
     }
 }
