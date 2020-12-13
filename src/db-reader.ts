@@ -43,7 +43,7 @@ class DbReader extends Startable {
         return new AsyncForwardIterator(this.getTradesIterator());
     }
 
-    public async * getOrderbookIterator(): AsyncIterator<Orderbook> {
+    private async * getOrderbookIterator(): AsyncIterator<Orderbook> {
         for (let i = 1; ; i += LIMIT) {
             const orderbooks = await this.db.sql<Orderbook>(`
                 SELECT * FROM orderbook

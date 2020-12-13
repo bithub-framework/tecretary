@@ -462,18 +462,18 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "0290a493e574121559bfe431903318e4fd971f58ccba94a00f00d83ac1767c73",
-        "signature": "0290a493e574121559bfe431903318e4fd971f58ccba94a00f00d83ac1767c73",
+        "version": "6c7b8dbb1a2ca8cb8ee83f04f7839807d927fbd424317c1dee32844c8bffb3c7",
+        "signature": "6c7b8dbb1a2ca8cb8ee83f04f7839807d927fbd424317c1dee32844c8bffb3c7",
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "c8395a58d60bd7b75380022844b13afca2f1ee722ca39bd23acb9816a3ba5eb9",
-        "signature": "c8395a58d60bd7b75380022844b13afca2f1ee722ca39bd23acb9816a3ba5eb9",
+        "version": "8f6c6ec3758b22bb11f8f186eb50e709b9270d379f1bda4cfff6872b248cf131",
+        "signature": "cd9fa24a88f87eebc120ad482e36cabfe030ffa5e86b55013dbbc2a36ecf3ccb",
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "a2874564048e534273276e495e6ee9df9625f437b370c4a25c183bb9f7771208",
-        "signature": "ba0e3d2c3e877b70be1a7001bd71d53fbf03a99a41f4c21789e326b3e43445d3",
+        "version": "8a5c156f1dcd1cd7af5cf4754939154b614d1eef5486215eff8104123edfa969",
+        "signature": "a689c8b265f7a51496e1d8f66ba328dd0d9bdfa5f0adc1ce295347e6e322027b",
         "affectsGlobalScope": false
       },
       "./node_modules/sorted-queue/dist/index.d.ts": {
@@ -489,6 +489,11 @@
       "./src/tecretary.ts": {
         "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "affectsGlobalScope": false
+      },
+      "./src/texchange.ts": {
+        "version": "fecb7c3ea69167d2c691990b3bcae14289316d0daf5a443541421404e5857110",
+        "signature": "f1702e190d5427fb9fa132ae32ce6231c28ef3041e06fbeef6d685dd5355c52b",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -859,6 +864,10 @@
       ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts"
+      ],
+      "./src/texchange.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./src/interfaces.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1115,6 +1124,10 @@
       ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts"
+      ],
+      "./src/texchange.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./src/interfaces.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -1195,6 +1208,7 @@
       "./src/forward.ts",
       "./src/interfaces.ts",
       "./src/tecretary.ts",
+      "./src/texchange.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",

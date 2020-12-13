@@ -11,7 +11,7 @@ declare class DbReader extends Startable {
     constructor(filePath: string);
     private getTradesIterator;
     getTrades(): AsyncForwardIterator<Trade>;
-    getOrderbookIterator(): AsyncIterator<Orderbook>;
+    private getOrderbookIterator;
     getOrderbook(): AsyncForwardIterator<Orderbook>;
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
