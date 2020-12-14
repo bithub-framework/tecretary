@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import {
     Assets,
-    Cost,
     OpenOrder,
     LimitOrder,
     Orderbook,
@@ -28,6 +27,7 @@ class Texchange extends EventEmitter {
     private orderCount = 0;
     private openOrders = new Map<OrderId, OpenOrder>();
     private incBook = new IncrementalBook();
+    private settlementPrice = 0;
 
     constructor(
         private assets: Assets,
@@ -95,6 +95,9 @@ class Texchange extends EventEmitter {
     public updateTrades(trades: RawTrade[]): void {
         for (let _trade of trades) {
             const trade: RawTrade = { ..._trade };
+            this.settlementPrice
+                = this.settlementPrice * .9
+                + trade.price + .1;
             for (const [oid, order] of this.openOrders)
                 if (
                     order.side !== trade.side &&
@@ -119,8 +122,7 @@ class Texchange extends EventEmitter {
     }
 
     private settle(): void {
-        // TODO
-        const price: number = 0;
+        const price = this.settlementPrice;
         const {
             position,
             cost,
@@ -281,4 +283,5 @@ class IncrementalBook {
 export {
     Texchange as default,
     Texchange,
+    IncrementalBook,
 }

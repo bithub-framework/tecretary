@@ -467,8 +467,8 @@
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "c20396e6e25eee6c80dfaf872bf3c5474da9e4be2ec48c2ef2a342e65f7385ee",
-        "signature": "df8866bb680e5dba8ea428503a5adce69ca0a05f98f68e26dac579c35c0e7520",
+        "version": "8f6c6ec3758b22bb11f8f186eb50e709b9270d379f1bda4cfff6872b248cf131",
+        "signature": "cd9fa24a88f87eebc120ad482e36cabfe030ffa5e86b55013dbbc2a36ecf3ccb",
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
@@ -492,8 +492,8 @@
         "affectsGlobalScope": false
       },
       "./src/texchange.ts": {
-        "version": "fc375b01ef586dc7840aff6ccb246bb5a629d37abb523cb0dc84b794dff3717e",
-        "signature": "45237e76433c87bb4e439162e30dae61a052ed213a495e3f94f5d294b832c7cd",
+        "version": "fa024f4686133197910f4073259696414087f4315e672da1902e52fe7cb5e738",
+        "signature": "58e397d9973d48bc7de63de1ffca0e64b4eeec81665620f1e448f491f2d43638",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/bluebird/index.d.ts": {

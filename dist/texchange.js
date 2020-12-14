@@ -19,6 +19,7 @@ class Texchange extends EventEmitter {
         this.orderCount = 0;
         this.openOrders = new Map();
         this.incBook = new IncrementalBook();
+        this.settlementPrice = 0;
     }
     async makeLimitOrder(order, open = order.side === BID) {
         await this.sleep(PING);
@@ -64,6 +65,9 @@ class Texchange extends EventEmitter {
     updateTrades(trades) {
         for (let _trade of trades) {
             const trade = { ..._trade };
+            this.settlementPrice
+                = this.settlementPrice * .9
+                    + trade.price + .1;
             for (const [oid, order] of this.openOrders)
                 if (order.side !== trade.side &&
                     (order.side - trade.side) * (order.price - trade.price)
@@ -85,8 +89,7 @@ class Texchange extends EventEmitter {
         this.pushOrderbook();
     }
     settle() {
-        // TODO
-        const price = 0;
+        const price = this.settlementPrice;
         const { position, cost, } = this.assets;
         const unrealizedProfit = (price * position[LONG] - cost[LONG]) +
             (cost[SHORT] - price * position[SHORT]);
@@ -216,5 +219,5 @@ class IncrementalBook {
         }
     }
 }
-export { Texchange as default, Texchange, };
+export { Texchange as default, Texchange, IncrementalBook, };
 //# sourceMappingURL=texchange.js.map

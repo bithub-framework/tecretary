@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
-import { Assets, LimitOrder, Orderbook, OrderId, RawTrade } from './interfaces';
+import { Assets, LimitOrder, Orderbook, Side, OrderId, RawTrade } from './interfaces';
 declare class Texchange extends EventEmitter {
     private assets;
     private sleep;
@@ -9,6 +9,7 @@ declare class Texchange extends EventEmitter {
     private orderCount;
     private openOrders;
     private incBook;
+    private settlementPrice;
     constructor(assets: Assets, sleep: (ms: number) => Promise<void>, now: () => number);
     makeLimitOrder(order: LimitOrder, open?: boolean): Promise<OrderId>;
     cancelOrder(oid: OrderId): Promise<void>;
@@ -21,4 +22,13 @@ declare class Texchange extends EventEmitter {
     private pushTrades;
     private calcAssets;
 }
-export { Texchange as default, Texchange, };
+declare class IncrementalBook {
+    private baseBook;
+    private total;
+    private increment;
+    setBase(origin: Orderbook): void;
+    incQuantity(side: Side, price: number, increment: number): void;
+    getQuantity(side: Side): Map<number, number>;
+    apply(): void;
+}
+export { Texchange as default, Texchange, IncrementalBook, };

@@ -6,6 +6,3 @@ export interface RawTrade {
     side: Side;
     time: number;
 }
-export interface Cost {
-    [long: number]: number;
-}
