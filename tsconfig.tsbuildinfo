@@ -462,13 +462,13 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "1f36cdd4ad04f5c7d07c939a89238229dadebe680a8e32c99071fb78ca579e2d",
-        "signature": "1f36cdd4ad04f5c7d07c939a89238229dadebe680a8e32c99071fb78ca579e2d",
+        "version": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
+        "signature": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "00fc7c035b77767e74d35c5b9892d902f3a8cdda4457f6c529501d956b8e2d5d",
-        "signature": "1c212f5b27a28869276492a29b56060d8d3b91d8215bd8e53fb38a8e0b9944a9",
+        "version": "c20396e6e25eee6c80dfaf872bf3c5474da9e4be2ec48c2ef2a342e65f7385ee",
+        "signature": "df8866bb680e5dba8ea428503a5adce69ca0a05f98f68e26dac579c35c0e7520",
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
@@ -492,8 +492,8 @@
         "affectsGlobalScope": false
       },
       "./src/texchange.ts": {
-        "version": "4a3c2bf9b255752451ca1f530d8a0dae2650827d3d0a52ec33949d6407b027ab",
-        "signature": "bb57f519688185b8a8ec62dae0b73d46bb9eb30cdbb7ba58970fef6c88e19557",
+        "version": "fc375b01ef586dc7840aff6ccb246bb5a629d37abb523cb0dc84b794dff3717e",
+        "signature": "45237e76433c87bb4e439162e30dae61a052ed213a495e3f94f5d294b832c7cd",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/bluebird/index.d.ts": {

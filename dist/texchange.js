@@ -1,7 +1,14 @@
 import { EventEmitter } from 'events';
-import { BID, ASK, OPEN, CLOSE, LONG, SHORT, } from './interfaces';
+import { BID, ASK, LONG, SHORT, } from './interfaces';
 const PING = 10;
 const PROCESSING = 10;
+const PRICE_PRECISION = 1e-2;
+const QUANTITY_PRECISION = 1e-2;
+const LEVERAGE_PRECISION = 1e-3;
+const EPSILON = .1
+    * PRICE_PRECISION
+    * QUANTITY_PRECISION
+    * LEVERAGE_PRECISION;
 class Texchange extends EventEmitter {
     constructor(assets, sleep, now) {
         super();
@@ -12,30 +19,37 @@ class Texchange extends EventEmitter {
         this.orderCount = 0;
         this.openOrders = new Map();
         this.incBook = new IncrementalBook();
-        this.cost = {};
-        // TODO
-        this.cost[LONG] = this.cost[SHORT] = 0;
     }
-    async makeLimitOrder(order, open = order.side === BID ? OPEN : CLOSE) {
+    async makeLimitOrder(order, open = order.side === BID) {
         await this.sleep(PING);
         await this.sleep(PROCESSING);
         if (!open &&
-            order.quantity > this.assets[~order.side] + Number.EPSILON)
+            order.quantity > this.assets.position[~order.side] + EPSILON)
             throw new Error('No enough position to close.');
         this.settle();
         if (open &&
-            this.initialMargin(order) > this.assets.balance + Number.EPSILON)
-            throw new Error('No enough available balance for margin.');
-        const [maker, trades, volume, cost,] = this.orderTakes(order);
-        const openOrder = this.orderMakes(maker);
-        // CHECK
-        if (~open) {
-            const realizedProfit = cost
-                - volume * this.cost[order.side ^ ~open] / this.assets[order.side ^ ~open];
-            this.assets.balance += realizedProfit;
+            order.price * order.quantity
+                < this.assets.reserve * this.assets.leverage - EPSILON)
+            throw new Error('No enough available balance as margin.');
+        const [makerOrder, trades, volume, dollarVolume,] = this.orderTakes(order);
+        const openOrder = this.orderMakes(makerOrder);
+        if (open) {
+            this.assets.position[order.side] += volume;
+            this.assets.cost[order.side] += dollarVolume;
         }
-        this.assets[order.side ^ ~open] += (open - ~open) * volume;
-        this.cost[order.side ^ ~open] += (open - ~open) * cost;
+        else {
+            const costPrice = Math.round(100 *
+                this.assets.cost[~order.side] / this.assets.position[~order.side]) / 100;
+            const cost = volume > this.assets.position[~order.side] - EPSILON
+                ? this.assets.cost[~order.side]
+                : volume * costPrice;
+            const realizedProfit = (~order.side - order.side)
+                * (dollarVolume - cost);
+            this.assets.balance += realizedProfit;
+            this.assets.position[~order.side] -= volume;
+            this.assets.cost[~order.side] -= cost;
+            this.calcAssets();
+        }
         this.pushTrades(trades);
         this.pushOrderbook();
         await this.sleep(PING);
@@ -51,12 +65,10 @@ class Texchange extends EventEmitter {
         for (let _trade of trades) {
             const trade = { ..._trade };
             for (const [oid, order] of this.openOrders)
-                if ((order.side === BID &&
-                    trade.side === ASK &&
-                    trade.price < order.price - Number.EPSILON) || (order.side === ASK &&
-                    trade.side === BID &&
-                    trade.price > order.price + Number.EPSILON))
-                    if (trade.quantity > order.quantity - Number.EPSILON) {
+                if (order.side !== trade.side &&
+                    (order.side - trade.side) * (order.price - trade.price)
+                        > EPSILON)
+                    if (trade.quantity > order.quantity - EPSILON) {
                         trade.quantity -= order.quantity;
                         this.openOrders.delete(oid);
                     }
@@ -74,21 +86,20 @@ class Texchange extends EventEmitter {
     }
     settle() {
         // TODO
-        const settlementPrice = 0;
-        const unrealizedProfit = settlementPrice * this.assets[LONG] - this.cost[LONG] +
-            this.cost[SHORT] - settlementPrice * this.assets[SHORT];
+        const price = 0;
+        const { position, cost, } = this.assets;
+        const unrealizedProfit = (price * position[LONG] - cost[LONG]) +
+            (cost[SHORT] - price * position[SHORT]);
         this.assets.balance += unrealizedProfit;
-        this.cost[LONG] = settlementPrice * this.assets[LONG];
-        this.cost[SHORT] = settlementPrice * this.assets[SHORT];
-    }
-    initialMargin(order) {
-        return order.price * (order.quantity + this.assets[order.side]);
+        this.assets.cost[LONG] = price * position[LONG];
+        this.assets.cost[SHORT] = price * position[SHORT];
+        this.calcAssets();
     }
     orderTakes(order) {
         const taker = { ...order };
         const trades = [];
         let volume = 0;
-        let cost = 0;
+        let dollarVolume = 0;
         for (const [price, quantity] of this.incBook.getQuantity(~taker.side)) {
             const maker = {
                 side: ~taker.side,
@@ -96,8 +107,8 @@ class Texchange extends EventEmitter {
                 quantity,
             };
             if ((taker.side === BID &&
-                taker.price > maker.price - Number.EPSILON) || (taker.side === ASK &&
-                taker.price < maker.price + Number.EPSILON)) {
+                taker.price > maker.price - EPSILON) || (taker.side === ASK &&
+                taker.price < maker.price + EPSILON)) {
                 const quantity = Math.min(taker.quantity, maker.quantity);
                 trades.push({
                     side: taker.side,
@@ -109,7 +120,7 @@ class Texchange extends EventEmitter {
                 this.incBook.incQuantity(maker.side, maker.price, -quantity);
                 taker.quantity -= quantity;
                 volume += quantity;
-                cost += quantity * maker.price;
+                dollarVolume += quantity * maker.price;
             }
         }
         this.incBook.apply();
@@ -117,7 +128,7 @@ class Texchange extends EventEmitter {
             taker,
             trades,
             volume,
-            cost
+            dollarVolume
         ];
     }
     orderMakes(order) {
@@ -127,7 +138,7 @@ class Texchange extends EventEmitter {
             quantity: order.quantity,
             id: ++this.orderCount,
         };
-        if (openOrder.quantity > Number.EPSILON)
+        if (openOrder.quantity > EPSILON)
             this.openOrders.set(openOrder.id, openOrder);
         return openOrder;
     }
@@ -153,6 +164,12 @@ class Texchange extends EventEmitter {
             id: ++this.tradeCount,
         }));
         this.emit('trades', trades);
+    }
+    calcAssets() {
+        const { cost, leverage, balance, margin, } = this.assets;
+        this.assets.margin[LONG] = cost[LONG] / leverage;
+        this.assets.margin[SHORT] = cost[SHORT] / leverage;
+        this.assets.reserve = balance - (margin[LONG] + margin[SHORT]);
     }
 }
 class IncrementalBook {
@@ -184,11 +201,11 @@ class IncrementalBook {
             this.total[side].clear();
             this.baseBook[side].forEach(order => void this.total[side].set(order.price, order.quantity));
             this.increment[side].forEach((increment, price) => {
-                if (Math.abs(increment) < Number.EPSILON)
+                if (Math.abs(increment) < EPSILON)
                     return void this.increment[side].delete(price);
                 let quantity;
                 if (quantity = this.total[side].get(price)) {
-                    if ((quantity += increment) < Number.EPSILON)
+                    if ((quantity += increment) < EPSILON)
                         this.total[side].delete(price);
                     else
                         this.total[side].set(price, quantity);

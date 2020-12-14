@@ -10,19 +10,24 @@ import {
     OrderId,
     MakerOrder,
     RawTrade,
-    Open, OPEN, CLOSE,
-    Long, LONG, SHORT,
+    Length, LONG, SHORT,
 } from './interfaces';
 
 const PING = 10;
 const PROCESSING = 10;
+const PRICE_PRECISION = 1e-2;
+const QUANTITY_PRECISION = 1e-2;
+const LEVERAGE_PRECISION = 1e-3;
+const EPSILON = .1
+    * PRICE_PRECISION
+    * QUANTITY_PRECISION
+    * LEVERAGE_PRECISION;
 
 class Texchange extends EventEmitter {
     private tradeCount = 0;
     private orderCount = 0;
     private openOrders = new Map<OrderId, OpenOrder>();
     private incBook = new IncrementalBook();
-    private cost: Cost = {};
 
     constructor(
         private assets: Assets,
@@ -30,41 +35,50 @@ class Texchange extends EventEmitter {
         private now: () => number,
     ) {
         super();
-        // TODO
-        this.cost[LONG] = this.cost[SHORT] = 0;
     }
 
     public async makeLimitOrder(
         order: LimitOrder,
-        open: Open = order.side === BID ? OPEN : CLOSE,
+        open = order.side === BID,
     ): Promise<OrderId> {
         await this.sleep(PING);
         await this.sleep(PROCESSING);
         if (
             !open &&
-            order.quantity > this.assets[~order.side] + Number.EPSILON
+            order.quantity > this.assets.position[~order.side] + EPSILON
         ) throw new Error('No enough position to close.');
         this.settle();
         if (
             open &&
-            this.initialMargin(order) > this.assets.balance + Number.EPSILON
-        ) throw new Error('No enough available balance for margin.');
+            order.price * order.quantity
+            < this.assets.reserve * this.assets.leverage - EPSILON
+        ) throw new Error('No enough available balance as margin.');
 
         const [
-            maker,
+            makerOrder,
             trades,
             volume,
-            cost,
+            dollarVolume,
         ] = this.orderTakes(order);
-        const openOrder = this.orderMakes(maker);
-        // CHECK
-        if (~open) {
-            const realizedProfit = cost
-                - volume * this.cost[order.side ^ ~open] / this.assets[order.side ^ ~open];
+        const openOrder = this.orderMakes(makerOrder);
+        if (open) {
+            this.assets.position[order.side] += volume;
+            this.assets.cost[order.side] += dollarVolume;
+        } else {
+            const costPrice = Math.round(100 *
+                this.assets.cost[~order.side] / this.assets.position[~order.side]
+            ) / 100;
+            const cost = volume > this.assets.position[~order.side] - EPSILON
+                ? this.assets.cost[~order.side]
+                : volume * costPrice;
+            const realizedProfit
+                = (~order.side - order.side)
+                * (dollarVolume - cost);
             this.assets.balance += realizedProfit;
+            this.assets.position[~order.side] -= volume;
+            this.assets.cost[~order.side] -= cost;
+            this.calcAssets();
         }
-        this.assets[order.side ^ ~open] += (open - ~open) * volume;
-        this.cost[order.side ^ ~open] += (open - ~open) * cost;
         this.pushTrades(trades);
         this.pushOrderbook();
         await this.sleep(PING);
@@ -83,17 +97,11 @@ class Texchange extends EventEmitter {
             const trade: RawTrade = { ..._trade };
             for (const [oid, order] of this.openOrders)
                 if (
-                    (
-                        order.side === BID &&
-                        trade.side === ASK &&
-                        trade.price < order.price - Number.EPSILON
-                    ) || (
-                        order.side === ASK &&
-                        trade.side === BID &&
-                        trade.price > order.price + Number.EPSILON
-                    )
+                    order.side !== trade.side &&
+                    (order.side - trade.side) * (order.price - trade.price)
+                    > EPSILON
                 )
-                    if (trade.quantity > order.quantity - Number.EPSILON) {
+                    if (trade.quantity > order.quantity - EPSILON) {
                         trade.quantity -= order.quantity;
                         this.openOrders.delete(oid);
                     } else {
@@ -112,17 +120,18 @@ class Texchange extends EventEmitter {
 
     private settle(): void {
         // TODO
-        const settlementPrice: number = 0;
+        const price: number = 0;
+        const {
+            position,
+            cost,
+        } = this.assets;
         const unrealizedProfit =
-            settlementPrice * this.assets[LONG] - this.cost[LONG] +
-            this.cost[SHORT] - settlementPrice * this.assets[SHORT];
+            (price * position[LONG] - cost[LONG]) +
+            (cost[SHORT] - price * position[SHORT]);
         this.assets.balance += unrealizedProfit;
-        this.cost[LONG] = settlementPrice * this.assets[LONG];
-        this.cost[SHORT] = settlementPrice * this.assets[SHORT];
-    }
-
-    private initialMargin(order: LimitOrder): number {
-        return order.price * (order.quantity + this.assets[order.side]);
+        this.assets.cost[LONG] = price * position[LONG];
+        this.assets.cost[SHORT] = price * position[SHORT];
+        this.calcAssets();
     }
 
     private orderTakes(order: LimitOrder): [
@@ -134,7 +143,7 @@ class Texchange extends EventEmitter {
         const taker: LimitOrder = { ...order };
         const trades: Trade[] = [];
         let volume = 0;
-        let cost = 0;
+        let dollarVolume = 0;
         for (const [price, quantity] of this.incBook.getQuantity(~taker.side)) {
             const maker: MakerOrder = {
                 side: ~taker.side,
@@ -144,10 +153,10 @@ class Texchange extends EventEmitter {
             if (
                 (
                     taker.side === BID &&
-                    taker.price > maker.price - Number.EPSILON
+                    taker.price > maker.price - EPSILON
                 ) || (
                     taker.side === ASK &&
-                    taker.price < maker.price + Number.EPSILON
+                    taker.price < maker.price + EPSILON
                 )
             ) {
                 const quantity = Math.min(taker.quantity, maker.quantity);
@@ -161,7 +170,7 @@ class Texchange extends EventEmitter {
                 this.incBook.incQuantity(maker.side, maker.price, -quantity);
                 taker.quantity -= quantity;
                 volume += quantity;
-                cost += quantity * maker.price;
+                dollarVolume += quantity * maker.price;
             }
         }
         this.incBook.apply();
@@ -169,7 +178,7 @@ class Texchange extends EventEmitter {
             taker,
             trades,
             volume,
-            cost
+            dollarVolume
         ];
     }
 
@@ -180,7 +189,7 @@ class Texchange extends EventEmitter {
             quantity: order.quantity,
             id: ++this.orderCount,
         };
-        if (openOrder.quantity > Number.EPSILON)
+        if (openOrder.quantity > EPSILON)
             this.openOrders.set(openOrder.id, openOrder);
         return openOrder;
     }
@@ -208,6 +217,18 @@ class Texchange extends EventEmitter {
             id: ++this.tradeCount,
         }));
         this.emit('trades', trades);
+    }
+
+    private calcAssets() {
+        const {
+            cost,
+            leverage,
+            balance,
+            margin,
+        } = this.assets;
+        this.assets.margin[LONG] = cost[LONG] / leverage;
+        this.assets.margin[SHORT] = cost[SHORT] / leverage;
+        this.assets.reserve = balance - (margin[LONG] + margin[SHORT]);
     }
 }
 
@@ -244,11 +265,11 @@ class IncrementalBook {
                 void this.total[side].set(order.price, order.quantity)
             );
             this.increment[side].forEach((increment, price) => {
-                if (Math.abs(increment) < Number.EPSILON)
+                if (Math.abs(increment) < EPSILON)
                     return void this.increment[side].delete(price);
                 let quantity: number | undefined;
                 if (quantity = this.total[side].get(price)) {
-                    if ((quantity += increment) < Number.EPSILON)
+                    if ((quantity += increment) < EPSILON)
                         this.total[side].delete(price);
                     else this.total[side].set(price, quantity);
                 } else this.increment[side].delete(price);

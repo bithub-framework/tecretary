@@ -11,12 +11,12 @@ export interface RawTrade {
     time: number;
 }
 
-export const enum Open {
-    CLOSE = Side.ASK,
-    OPEN = Side.BID,
-}
-export const OPEN = Open.OPEN;
-export const CLOSE = Open.CLOSE;
+// export const enum Operation {
+//     CLOSE = 0,
+//     OPEN = 1,
+// }
+// export const OPEN = Operation.OPEN;
+// export const CLOSE = Operation.CLOSE;
 
 export interface Cost {
     [long: number]: number;
