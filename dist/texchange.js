@@ -1,9 +1,7 @@
 import { EventEmitter } from 'events';
+import { BID, ASK, OPEN, CLOSE, LONG, SHORT, } from './interfaces';
 const PING = 10;
 const PROCESSING = 10;
-function opposite(side) {
-    return 1 /* ASK */ + 0 /* BID */ - side;
-}
 class Texchange extends EventEmitter {
     constructor(assets, sleep, now) {
         super();
@@ -14,12 +12,30 @@ class Texchange extends EventEmitter {
         this.orderCount = 0;
         this.openOrders = new Map();
         this.incBook = new IncrementalBook();
+        this.cost = {};
+        // TODO
+        this.cost[LONG] = this.cost[SHORT] = 0;
     }
-    async makeLimitOrder(order) {
+    async makeLimitOrder(order, open = order.side === BID ? OPEN : CLOSE) {
         await this.sleep(PING);
         await this.sleep(PROCESSING);
-        const [maker, trades] = this.orderTakes(order);
+        if (!open &&
+            order.quantity > this.assets[~order.side] + Number.EPSILON)
+            throw new Error('No enough position to close.');
+        this.settle();
+        if (open &&
+            this.initialMargin(order) > this.assets.balance + Number.EPSILON)
+            throw new Error('No enough available balance for margin.');
+        const [maker, trades, volume, cost,] = this.orderTakes(order);
         const openOrder = this.orderMakes(maker);
+        // CHECK
+        if (~open) {
+            const realizedProfit = cost
+                - volume * this.cost[order.side ^ ~open] / this.assets[order.side ^ ~open];
+            this.assets.balance += realizedProfit;
+        }
+        this.assets[order.side ^ ~open] += (open - ~open) * volume;
+        this.cost[order.side ^ ~open] += (open - ~open) * cost;
         this.pushTrades(trades);
         this.pushOrderbook();
         await this.sleep(PING);
@@ -35,10 +51,10 @@ class Texchange extends EventEmitter {
         for (let _trade of trades) {
             const trade = { ..._trade };
             for (const [oid, order] of this.openOrders)
-                if ((order.side === 0 /* BID */ &&
-                    trade.side === 1 /* ASK */ &&
-                    trade.price < order.price - Number.EPSILON) || (order.side === 1 /* ASK */ &&
-                    trade.side === 0 /* BID */ &&
+                if ((order.side === BID &&
+                    trade.side === ASK &&
+                    trade.price < order.price - Number.EPSILON) || (order.side === ASK &&
+                    trade.side === BID &&
                     trade.price > order.price + Number.EPSILON))
                     if (trade.quantity > order.quantity - Number.EPSILON) {
                         trade.quantity -= order.quantity;
@@ -56,44 +72,53 @@ class Texchange extends EventEmitter {
         this.incBook.apply();
         this.pushOrderbook();
     }
+    settle() {
+        // TODO
+        const settlementPrice = 0;
+        const unrealizedProfit = settlementPrice * this.assets[LONG] - this.cost[LONG] +
+            this.cost[SHORT] - settlementPrice * this.assets[SHORT];
+        this.assets.balance += unrealizedProfit;
+        this.cost[LONG] = settlementPrice * this.assets[LONG];
+        this.cost[SHORT] = settlementPrice * this.assets[SHORT];
+    }
+    initialMargin(order) {
+        return order.price * (order.quantity + this.assets[order.side]);
+    }
     orderTakes(order) {
         const taker = { ...order };
-        const makerSide = opposite(taker.side);
         const trades = [];
-        for (const [price, quantity] of this.incBook.getQuantity(makerSide)) {
+        let volume = 0;
+        let cost = 0;
+        for (const [price, quantity] of this.incBook.getQuantity(~taker.side)) {
             const maker = {
-                side: makerSide,
+                side: ~taker.side,
                 price,
                 quantity,
             };
-            if ((taker.side === 0 /* BID */ &&
-                taker.price > maker.price - Number.EPSILON) || (taker.side === 1 /* ASK */ &&
-                taker.price < maker.price + Number.EPSILON))
-                if (taker.quantity > maker.quantity - Number.EPSILON) {
-                    trades.push({
-                        side: taker.side,
-                        price: maker.price,
-                        quantity: maker.quantity,
-                        time: this.now(),
-                        id: ++this.tradeCount,
-                    });
-                    this.incBook.incQuantity(maker.side, maker.price, -maker.quantity);
-                    taker.quantity -= maker.quantity;
-                }
-                else {
-                    trades.push({
-                        side: taker.side,
-                        price: maker.price,
-                        quantity: taker.quantity,
-                        time: this.now(),
-                        id: ++this.tradeCount,
-                    });
-                    this.incBook.incQuantity(maker.side, maker.price, -taker.quantity);
-                    taker.quantity = 0;
-                }
+            if ((taker.side === BID &&
+                taker.price > maker.price - Number.EPSILON) || (taker.side === ASK &&
+                taker.price < maker.price + Number.EPSILON)) {
+                const quantity = Math.min(taker.quantity, maker.quantity);
+                trades.push({
+                    side: taker.side,
+                    price: maker.price,
+                    quantity,
+                    time: this.now(),
+                    id: ++this.tradeCount,
+                });
+                this.incBook.incQuantity(maker.side, maker.price, -quantity);
+                taker.quantity -= quantity;
+                volume += quantity;
+                cost += quantity * maker.price;
+            }
         }
         this.incBook.apply();
-        return [taker, trades];
+        return [
+            taker,
+            trades,
+            volume,
+            cost
+        ];
     }
     orderMakes(order) {
         const openOrder = {
@@ -108,13 +133,13 @@ class Texchange extends EventEmitter {
     }
     async pushOrderbook() {
         const orderbook = {
-            [1 /* ASK */]: [...this.incBook.getQuantity(1 /* ASK */)]
+            [ASK]: [...this.incBook.getQuantity(ASK)]
                 .map(([price, quantity]) => ({
-                price, quantity, side: 1 /* ASK */,
+                price, quantity, side: ASK,
             })),
-            [0 /* BID */]: [...this.incBook.getQuantity(0 /* BID */)]
+            [BID]: [...this.incBook.getQuantity(BID)]
                 .map(([price, quantity]) => ({
-                price, quantity, side: 0 /* BID */,
+                price, quantity, side: BID,
             })),
             time: this.now(),
         };
@@ -133,15 +158,15 @@ class Texchange extends EventEmitter {
 class IncrementalBook {
     constructor() {
         this.baseBook = {
-            [1 /* ASK */]: [], [0 /* BID */]: [], time: Number.NEGATIVE_INFINITY,
+            [ASK]: [], [BID]: [], time: Number.NEGATIVE_INFINITY,
         };
         this.total = {
-            [1 /* ASK */]: new Map(),
-            [0 /* BID */]: new Map(),
+            [ASK]: new Map(),
+            [BID]: new Map(),
         };
         this.increment = {
-            [1 /* ASK */]: new Map(),
-            [0 /* BID */]: new Map(),
+            [ASK]: new Map(),
+            [BID]: new Map(),
         };
     }
     setBase(origin) {
@@ -155,7 +180,7 @@ class IncrementalBook {
         return this.total[side];
     }
     apply() {
-        for (const side of [0 /* BID */, 1 /* ASK */]) {
+        for (const side of [BID, ASK]) {
             this.total[side].clear();
             this.baseBook[side].forEach(order => void this.total[side].set(order.price, order.quantity));
             this.increment[side].forEach((increment, price) => {
