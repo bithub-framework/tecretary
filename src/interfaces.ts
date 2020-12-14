@@ -1,4 +1,5 @@
 export * from 'interfaces';
+export * from 'secretary/dist/interfaces';
 import {
     Side,
 } from 'interfaces';

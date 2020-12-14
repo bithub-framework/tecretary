@@ -15,7 +15,9 @@
         "@types/node": "^14.14.10",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "promisified-sqlite": "https://gitee.com/zimtsui/promisified-sqlite.git",
+        "secretary": "https://gitee.com/zimtsui/secretary-js.git",
         "sorted-queue": "^0.3.2",
-        "startable": "https://gitee.com/zimtsui/startable.git"
+        "startable": "https://gitee.com/zimtsui/startable.git",
+        "texchange": "https://gitee.com/zimtsui/texchange.git"
     }
 }
