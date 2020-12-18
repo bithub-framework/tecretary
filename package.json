@@ -12,7 +12,7 @@
     "author": "Zim",
     "license": "SEE LICENSE IN ./LICENSE",
     "dependencies": {
-        "@types/node": "^14.14.10",
+        "@types/node": "^14.14.14",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "promisified-sqlite": "https://gitee.com/zimtsui/promisified-sqlite.git",
         "secretary": "https://gitee.com/zimtsui/secretary-js.git",

@@ -2,10 +2,9 @@ import { ContextAccountPrivateApi } from './private-api';
 import { ContextMarketPublicApi } from './public-api';
 import { EventEmitter } from 'events';
 class Context extends EventEmitter {
-    constructor(texchange, sleep, next) {
+    constructor(texchange, sleep) {
         super();
         this.sleep = sleep;
-        this.next = next;
         this[0] = new ContextMarket(texchange);
     }
 }

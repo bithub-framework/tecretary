@@ -1,5 +1,5 @@
 import Startable from 'startable';
-import { Trade, Orderbook } from './interfaces';
+import { Orderbook, RawTrade } from './interfaces';
 declare class AsyncForwardIterator<T> implements AsyncIterator<T> {
     private i;
     current?: T;
@@ -10,7 +10,7 @@ declare class DbReader extends Startable {
     private db;
     constructor(filePath: string);
     private getTradesIterator;
-    getTrades(): AsyncForwardIterator<Trade>;
+    getTrades(): AsyncForwardIterator<RawTrade>;
     private getOrderbooksIterator;
     getOrderbooks(): AsyncForwardIterator<Orderbook>;
     protected _start(): Promise<void>;

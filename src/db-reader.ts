@@ -4,6 +4,7 @@ import {
     Trade,
     Orderbook,
     BID, ASK,
+    RawTrade,
 } from './interfaces';
 
 const LIMIT = 10000;
@@ -42,9 +43,9 @@ class DbReader extends Startable {
         this.db = new Database(filePath);
     }
 
-    private async * getTradesIterator(): AsyncIterator<Trade> {
+    private async * getTradesIterator(): AsyncIterator<RawTrade> {
         for (let i = 1; ; i += LIMIT) {
-            const trades = await this.db.sql<Trade>(`
+            const trades = await this.db.sql<RawTrade>(`
                 SELECT * FROM trades
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
