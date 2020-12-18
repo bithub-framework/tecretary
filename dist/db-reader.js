@@ -1,6 +1,14 @@
 import Database from 'promisified-sqlite';
 import Startable from 'startable';
+import { BID, ASK, } from './interfaces';
 const LIMIT = 10000;
+function parse(stringified) {
+    return {
+        [BID]: JSON.parse(stringified.bids),
+        [ASK]: JSON.parse(stringified.asks),
+        time: stringified.time,
+    };
+}
 class AsyncForwardIterator {
     constructor(i) {
         this.i = i;
@@ -32,7 +40,7 @@ class DbReader extends Startable {
     getTrades() {
         return new AsyncForwardIterator(this.getTradesIterator());
     }
-    async *getOrderbookIterator() {
+    async *getOrderbooksIterator() {
         for (let i = 1;; i += LIMIT) {
             const orderbooks = await this.db.sql(`
                 SELECT * FROM orderbook
@@ -42,11 +50,11 @@ class DbReader extends Startable {
             if (!orderbooks.length)
                 break;
             for (const orderbook of orderbooks)
-                yield orderbook;
+                yield parse(orderbook);
         }
     }
-    getOrderbook() {
-        return new AsyncForwardIterator(this.getOrderbookIterator());
+    getOrderbooks() {
+        return new AsyncForwardIterator(this.getOrderbooksIterator());
     }
     async _start() {
         await this.db.start(err => void this.stop(err).catch(() => { }));
@@ -54,6 +62,15 @@ class DbReader extends Startable {
     async _stop() {
         await this.db.stop();
     }
+    async getMinTime() {
+        const orderbooksMinTime = (await this.db.sql(`
+            SELECT MIN(time) AS "0" FROM orderbook
+        ;`))[0][0];
+        const tradesMinTime = (await this.db.sql(`
+            SELECT MIN(time) AS "0" FROM trades
+        ;`))[0][0];
+        return Math.min(orderbooksMinTime, tradesMinTime);
+    }
 }
-export { DbReader as default, DbReader, };
+export { DbReader as default, DbReader, AsyncForwardIterator, };
 //# sourceMappingURL=db-reader.js.map

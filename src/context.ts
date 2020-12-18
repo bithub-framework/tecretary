@@ -1,37 +1,24 @@
-import Startable from 'startable';
 import { ContextAccountPrivateApi } from './private-api';
 import { ContextMarketPublicApi } from './public-api';
 import {
-    InstanceConfig,
     ContextAccountLike,
     ContextMarketLike,
     ContextLike,
 } from './interfaces';
+import { Texchange } from 'texchange';
+import { EventEmitter } from 'events';
 
-class Context extends Startable implements ContextLike {
+class Context extends EventEmitter implements ContextLike {
     [marketId: number]: ContextMarket;
 
     constructor(
-        private config: InstanceConfig,
+        texchange: Texchange,
         public sleep: (ms: number) => Promise<void>,
+        public next: () => Promise<void>,
     ) {
         super();
-        for (const mid of this.config.markets.keys()) {
-            this[mid] = new ContextMarket(this.config, mid);
-        }
+        this[0] = new ContextMarket(texchange);
     }
-
-    protected async _start() {
-        for (const mid of this.config.markets.keys())
-            await this[mid].start(err => this.stop(err).catch(() => { }));
-    }
-
-    protected async _stop() {
-        for (const mid of this.config.markets.keys())
-            await this[mid].stop();
-    }
-
-    public async next() { }
 }
 
 
@@ -39,16 +26,13 @@ class ContextMarket extends ContextMarketPublicApi implements ContextMarketLike 
     [accountId: number]: ContextAccount;
 
     constructor(
-        config: InstanceConfig,
-        mid: number,
+        texchange: Texchange,
     ) {
-        super(config, mid);
-        const marketConfig = config.markets[mid];
-        for (const aid of marketConfig.accounts.keys()) {
-            this[aid] = new ContextAccount(config, mid, aid);
-        }
+        super(texchange);
+        this[0] = new ContextAccount(texchange);
     }
 }
+
 
 class ContextAccount extends ContextAccountPrivateApi implements ContextAccountLike { }
 

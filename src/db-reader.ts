@@ -3,9 +3,24 @@ import Startable from 'startable';
 import {
     Trade,
     Orderbook,
+    BID, ASK,
 } from './interfaces';
 
 const LIMIT = 10000;
+
+interface StringifiedOrderbook {
+    time: number;
+    bids: string;
+    asks: string;
+}
+
+function parse(stringified: StringifiedOrderbook): Orderbook {
+    return {
+        [BID]: JSON.parse(stringified.bids),
+        [ASK]: JSON.parse(stringified.asks),
+        time: stringified.time,
+    }
+}
 
 class AsyncForwardIterator<T> implements AsyncIterator<T> {
     public current?: T;
@@ -43,20 +58,20 @@ class DbReader extends Startable {
         return new AsyncForwardIterator(this.getTradesIterator());
     }
 
-    private async * getOrderbookIterator(): AsyncIterator<Orderbook> {
+    private async * getOrderbooksIterator(): AsyncIterator<Orderbook> {
         for (let i = 1; ; i += LIMIT) {
-            const orderbooks = await this.db.sql<Orderbook>(`
+            const orderbooks = await this.db.sql<StringifiedOrderbook>(`
                 SELECT * FROM orderbook
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
             if (!orderbooks.length) break;
-            for (const orderbook of orderbooks) yield orderbook;
+            for (const orderbook of orderbooks) yield parse(orderbook);
         }
     }
 
-    public getOrderbook() {
-        return new AsyncForwardIterator(this.getOrderbookIterator());
+    public getOrderbooks() {
+        return new AsyncForwardIterator(this.getOrderbooksIterator());
     }
 
     protected async _start() {
@@ -66,9 +81,20 @@ class DbReader extends Startable {
     protected async _stop() {
         await this.db.stop();
     }
+
+    public async getMinTime(): Promise<number> {
+        const orderbooksMinTime = (await this.db.sql<[number]>(`
+            SELECT MIN(time) AS "0" FROM orderbook
+        ;`))[0][0];
+        const tradesMinTime = (await this.db.sql<[number]>(`
+            SELECT MIN(time) AS "0" FROM trades
+        ;`))[0][0];
+        return Math.min(orderbooksMinTime, tradesMinTime);
+    }
 }
 
 export {
     DbReader as default,
     DbReader,
+    AsyncForwardIterator,
 }

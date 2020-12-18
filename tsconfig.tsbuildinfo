@@ -201,6 +201,11 @@
         "signature": "cd6efb9467a8b6338ece2e2855e37765700f2cd061ca54b01b33878cf5c7677e",
         "affectsGlobalScope": true
       },
+      "./node_modules/interfaces/dist/data.d.ts": {
+        "version": "f36c72b9e3f9fa3fa6b4ee597f3693c2bf587ffc6d160c8354783844d3b30842",
+        "signature": "f36c72b9e3f9fa3fa6b4ee597f3693c2bf587ffc6d160c8354783844d3b30842",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@types/node/globals.d.ts": {
         "version": "cdbd1c3e0c329abaa9442d3dd8b62699464a26b2e8e36fbde362bd4e7d490f16",
         "signature": "cdbd1c3e0c329abaa9442d3dd8b62699464a26b2e8e36fbde362bd4e7d490f16",
@@ -441,6 +446,66 @@
         "signature": "5825520e2099309182c6e2a2b3061b060d42a098c58f67d1754880a7e2cce99a",
         "affectsGlobalScope": false
       },
+      "./node_modules/interfaces/dist/context.d.ts": {
+        "version": "a0977e17dcd37615737d5f29dc0756ac11ec1299ec0b3b8e19e4ee44211a7bfe",
+        "signature": "a0977e17dcd37615737d5f29dc0756ac11ec1299ec0b3b8e19e4ee44211a7bfe",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/interfaces/dist/index.d.ts": {
+        "version": "54b215a738551cbb94bfbe599a3101726924eb838ab5f2511962556b8ec39357",
+        "signature": "54b215a738551cbb94bfbe599a3101726924eb838ab5f2511962556b8ec39357",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/interfaces.d.ts": {
+        "version": "d58ecb186624daf55c9747b5309c178c35443b23530a4fd7c472c82cfe9aac09",
+        "signature": "d58ecb186624daf55c9747b5309c178c35443b23530a4fd7c472c82cfe9aac09",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/incremental-book.d.ts": {
+        "version": "8ac37e7d6fcda62a36ab1a2830cfdc0dc09590b640baa4151e1eca664aa210d1",
+        "signature": "8ac37e7d6fcda62a36ab1a2830cfdc0dc09590b640baa4151e1eca664aa210d1",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/pushing.d.ts": {
+        "version": "7d1cb7a02e652d28f803bd5756caa524448aacc25e56eadeee1968138b5ff1e5",
+        "signature": "7d1cb7a02e652d28f803bd5756caa524448aacc25e56eadeee1968138b5ff1e5",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/making-order.d.ts": {
+        "version": "ad045485a98e2105819d0ede4bc9daf5aeab66c376ef196f29d8fcaab313c645",
+        "signature": "ad045485a98e2105819d0ede4bc9daf5aeab66c376ef196f29d8fcaab313c645",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/managing-assets.d.ts": {
+        "version": "4ca34c4ea035ee0e7bf03dea4ee4b4331dcde67362066ade00a47d1031e142fe",
+        "signature": "4ca34c4ea035ee0e7bf03dea4ee4b4331dcde67362066ade00a47d1031e142fe",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/texchange.d.ts": {
+        "version": "cbe7eb4c4edb61cb69713220f51b96b474009c884b37c9c68574499b4dee02dc",
+        "signature": "cbe7eb4c4edb61cb69713220f51b96b474009c884b37c9c68574499b4dee02dc",
+        "affectsGlobalScope": false
+      },
+      "./src/interfaces.ts": {
+        "version": "92874ec8a552f458e160731818860dc40130ee9d5fdd44daa0dffbfc8c349186",
+        "signature": "c60b06696e0917014af2f96da6764ef8c8ad6b779ffec27ec28259e74404c2a9",
+        "affectsGlobalScope": false
+      },
+      "./src/private-api.ts": {
+        "version": "7ae251aafb092b813c245c2fab34b15ea1b9a05a5c32ef9f95ada366f254765a",
+        "signature": "3821439e07c50fa75e9c861819d994191fc6bf4c000f1bd4c1def270c7c971ff",
+        "affectsGlobalScope": false
+      },
+      "./src/public-api.ts": {
+        "version": "6a08dc26ca9170498d8ec683e01892c8f07e18f0b514fb38223f8e31cee72ab7",
+        "signature": "b8153c57eedb821fc1789b89c4e62af3c2738d9e60939d587175641a2fcd9161",
+        "affectsGlobalScope": false
+      },
+      "./src/context.ts": {
+        "version": "1685dab678ed723dfb7efaba012c02eee6b08d19557d9febe4caa103063a0384",
+        "signature": "319f2096a0f8040a84017b0a74b42e7345dd089cb8bdc66acf4343b48222e092",
+        "affectsGlobalScope": false
+      },
       "./node_modules/startable/dist/startable.d.ts": {
         "version": "05ec4662747c3bb879f42a2ac04275f46ca6dc0732f2872b612840bded928440",
         "signature": "05ec4662747c3bb879f42a2ac04275f46ca6dc0732f2872b612840bded928440",
@@ -461,19 +526,9 @@
         "signature": "0069f8c38df6c8aaf3184ced908a0984b21d4878ac21d901ce349ab6ce73dd07",
         "affectsGlobalScope": false
       },
-      "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
-        "signature": "93b99ecef7c7ebb86ce60f3a6eaec0c2f1af21a7e77e0be885793fee0e814b9d",
-        "affectsGlobalScope": false
-      },
-      "./src/interfaces.ts": {
-        "version": "8f6c6ec3758b22bb11f8f186eb50e709b9270d379f1bda4cfff6872b248cf131",
-        "signature": "cd9fa24a88f87eebc120ad482e36cabfe030ffa5e86b55013dbbc2a36ecf3ccb",
-        "affectsGlobalScope": false
-      },
       "./src/db-reader.ts": {
-        "version": "8a5c156f1dcd1cd7af5cf4754939154b614d1eef5486215eff8104123edfa969",
-        "signature": "a689c8b265f7a51496e1d8f66ba328dd0d9bdfa5f0adc1ce295347e6e322027b",
+        "version": "41d09e236952865e157c3602510371dc1169b88985f38e39c8d002ea7e84687d",
+        "signature": "77ff87736b293208ed64e413a36092bafc99b55c07c875f8b320701d775e7238",
         "affectsGlobalScope": false
       },
       "./node_modules/sorted-queue/dist/index.d.ts": {
@@ -487,13 +542,8 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "affectsGlobalScope": false
-      },
-      "./src/texchange.ts": {
-        "version": "fa024f4686133197910f4073259696414087f4315e672da1902e52fe7cb5e738",
-        "signature": "58e397d9973d48bc7de63de1ffca0e64b4eeec81665620f1e448f491f2d43638",
+        "version": "6c8163ad7b493d097d01a4428223a92aa664c0dce7eef30759b7b87cc72a3018",
+        "signature": "2e9b6abf42b8e09cb8892d9ff759753950de30a58047ca96714b87da227e878d",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -501,9 +551,44 @@
         "signature": "6247a016129906c76ba4012d2d77773c919ea33a96830b0a8d522a9790fc7efe",
         "affectsGlobalScope": false
       },
+      "./node_modules/@types/node-fetch/node_modules/form-data/index.d.ts": {
+        "version": "cbb7029e32a6a72178cda8baa9129b1ee6d1d779a35e46c780e38b4909d42a89",
+        "signature": "cbb7029e32a6a72178cda8baa9129b1ee6d1d779a35e46c780e38b4909d42a89",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/node-fetch/externals.d.ts": {
+        "version": "972f1e91dab93b182624a17eeed02f683b8cb3fefbda7b689cc84570029d5f73",
+        "signature": "972f1e91dab93b182624a17eeed02f683b8cb3fefbda7b689cc84570029d5f73",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/node-fetch/index.d.ts": {
+        "version": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
+        "signature": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/ts-toolbelt/out/index.d.ts": {
+        "version": "9df147746b0cbd11d022b564e6fdd43ac79b643dc579d2123317ee01cc4f0d70",
+        "signature": "9df147746b0cbd11d022b564e6fdd43ac79b643dc579d2123317ee01cc4f0d70",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/ramda/tools.d.ts": {
+        "version": "ffce841ff8b30e136ea9f045f8c3a6b0ebd986d6a670095826d179de13bf626a",
+        "signature": "ffce841ff8b30e136ea9f045f8c3a6b0ebd986d6a670095826d179de13bf626a",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/ramda/index.d.ts": {
+        "version": "5cc20bb11d8d85c9d6826a8bee507ac072f94c5a5de90cd34f6495808de5601c",
+        "signature": "5cc20bb11d8d85c9d6826a8bee507ac072f94c5a5de90cd34f6495808de5601c",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@types/sqlite3/index.d.ts": {
         "version": "1b39da5859d5d359d154da1c48c537563127263330cef26df0fb048629af1bb0",
         "signature": "1b39da5859d5d359d154da1c48c537563127263330cef26df0fb048629af1bb0",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/ws/index.d.ts": {
+        "version": "c6e185824cae1ddea6706f4256d4bd499e8e9a37ed10689946c22984d68798c3",
+        "signature": "c6e185824cae1ddea6706f4256d4bd499e8e9a37ed10689946c22984d68798c3",
         "affectsGlobalScope": false
       },
       "../../../node_modules/@types/accepts/index.d.ts": {
@@ -669,6 +754,18 @@
         "./node_modules/@types/node/http.d.ts",
         "./node_modules/@types/node/index.d.ts"
       ],
+      "./node_modules/@types/node-fetch/index.d.ts": [
+        "./node_modules/@types/node-fetch/externals.d.ts",
+        "./node_modules/@types/node-fetch/node_modules/form-data/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/url.d.ts"
+      ],
+      "./node_modules/@types/node-fetch/node_modules/form-data/index.d.ts": [
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts"
+      ],
       "./node_modules/@types/node/base.d.ts": [
         "./node_modules/@types/node/assert.d.ts",
         "./node_modules/@types/node/ts3.6/base.d.ts"
@@ -836,9 +933,36 @@
       "./node_modules/@types/node/zlib.d.ts": [
         "./node_modules/@types/node/stream.d.ts"
       ],
+      "./node_modules/@types/ramda/index.d.ts": [
+        "./node_modules/@types/ramda/tools.d.ts",
+        "./node_modules/ts-toolbelt/out/index.d.ts"
+      ],
+      "./node_modules/@types/ramda/tools.d.ts": [
+        "./node_modules/ts-toolbelt/out/index.d.ts"
+      ],
       "./node_modules/@types/sqlite3/index.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts"
+      ],
+      "./node_modules/@types/ws/index.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/tls.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/@types/node/zlib.d.ts"
+      ],
+      "./node_modules/interfaces/dist/context.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
+      "./node_modules/interfaces/dist/index.d.ts": [
+        "./node_modules/interfaces/dist/context.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
       ],
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": [
         "./node_modules/startable/dist/index.d.ts"
@@ -854,6 +978,41 @@
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts"
       ],
+      "./node_modules/texchange/dist/incremental-book.d.ts": [
+        "./node_modules/texchange/dist/interfaces.d.ts"
+      ],
+      "./node_modules/texchange/dist/interfaces.d.ts": [
+        "./node_modules/interfaces/dist/index.d.ts"
+      ],
+      "./node_modules/texchange/dist/making-order.d.ts": [
+        "./node_modules/interfaces/dist/data.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/pushing.d.ts"
+      ],
+      "./node_modules/texchange/dist/managing-assets.d.ts": [
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/making-order.d.ts"
+      ],
+      "./node_modules/texchange/dist/pushing.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/texchange/dist/incremental-book.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts"
+      ],
+      "./node_modules/texchange/dist/texchange.d.ts": [
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/managing-assets.d.ts"
+      ],
+      "./node_modules/ts-toolbelt/out/index.d.ts": [
+        "./node_modules/ts-toolbelt/out/index.d.ts"
+      ],
+      "./src/context.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts",
+        "./src/interfaces.ts",
+        "./src/private-api.ts",
+        "./src/public-api.ts"
+      ],
       "./src/db-reader.ts": [
         "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",
         "./node_modules/startable/dist/index.d.ts",
@@ -863,10 +1022,24 @@
         "./node_modules/sorted-queue/dist/index.d.ts"
       ],
       "./src/interfaces.ts": [
-        "./node_modules/interfaces/dist/index.d.ts"
+        "./node_modules/interfaces/dist/index.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts"
       ],
-      "./src/texchange.ts": [
+      "./src/private-api.ts": [
+        "./node_modules/texchange/dist/texchange.d.ts",
+        "./src/interfaces.ts"
+      ],
+      "./src/public-api.ts": [
         "./node_modules/@types/node/events.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts",
+        "./src/interfaces.ts"
+      ],
+      "./src/tecretary.ts": [
+        "./node_modules/startable/dist/index.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts",
+        "./src/context.ts",
+        "./src/db-reader.ts",
+        "./src/forward.ts",
         "./src/interfaces.ts"
       ]
     },
@@ -930,6 +1103,18 @@
         "./node_modules/@types/node/http.d.ts",
         "./node_modules/@types/node/index.d.ts"
       ],
+      "./node_modules/@types/node-fetch/index.d.ts": [
+        "./node_modules/@types/node-fetch/externals.d.ts",
+        "./node_modules/@types/node-fetch/node_modules/form-data/index.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/url.d.ts"
+      ],
+      "./node_modules/@types/node-fetch/node_modules/form-data/index.d.ts": [
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/stream.d.ts"
+      ],
       "./node_modules/@types/node/base.d.ts": [
         "./node_modules/@types/node/assert.d.ts",
         "./node_modules/@types/node/ts3.6/base.d.ts"
@@ -1097,9 +1282,36 @@
       "./node_modules/@types/node/zlib.d.ts": [
         "./node_modules/@types/node/stream.d.ts"
       ],
+      "./node_modules/@types/ramda/index.d.ts": [
+        "./node_modules/@types/ramda/tools.d.ts",
+        "./node_modules/ts-toolbelt/out/index.d.ts"
+      ],
+      "./node_modules/@types/ramda/tools.d.ts": [
+        "./node_modules/ts-toolbelt/out/index.d.ts"
+      ],
       "./node_modules/@types/sqlite3/index.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts"
+      ],
+      "./node_modules/@types/ws/index.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/https.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/@types/node/net.d.ts",
+        "./node_modules/@types/node/stream.d.ts",
+        "./node_modules/@types/node/tls.d.ts",
+        "./node_modules/@types/node/url.d.ts",
+        "./node_modules/@types/node/zlib.d.ts"
+      ],
+      "./node_modules/interfaces/dist/context.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
+      "./node_modules/interfaces/dist/index.d.ts": [
+        "./node_modules/interfaces/dist/context.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
       ],
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": [
         "./node_modules/startable/dist/index.d.ts"
@@ -1115,6 +1327,41 @@
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts"
       ],
+      "./node_modules/texchange/dist/incremental-book.d.ts": [
+        "./node_modules/texchange/dist/interfaces.d.ts"
+      ],
+      "./node_modules/texchange/dist/interfaces.d.ts": [
+        "./node_modules/interfaces/dist/index.d.ts"
+      ],
+      "./node_modules/texchange/dist/making-order.d.ts": [
+        "./node_modules/interfaces/dist/data.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/pushing.d.ts"
+      ],
+      "./node_modules/texchange/dist/managing-assets.d.ts": [
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/making-order.d.ts"
+      ],
+      "./node_modules/texchange/dist/pushing.d.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/texchange/dist/incremental-book.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts"
+      ],
+      "./node_modules/texchange/dist/texchange.d.ts": [
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/managing-assets.d.ts"
+      ],
+      "./node_modules/ts-toolbelt/out/index.d.ts": [
+        "./node_modules/ts-toolbelt/out/index.d.ts"
+      ],
+      "./src/context.ts": [
+        "./node_modules/@types/node/events.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts",
+        "./src/interfaces.ts",
+        "./src/private-api.ts",
+        "./src/public-api.ts"
+      ],
       "./src/db-reader.ts": [
         "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts"
@@ -1123,10 +1370,20 @@
         "./node_modules/sorted-queue/dist/index.d.ts"
       ],
       "./src/interfaces.ts": [
-        "./node_modules/interfaces/dist/index.d.ts"
+        "./node_modules/interfaces/dist/index.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts"
       ],
-      "./src/texchange.ts": [
+      "./src/private-api.ts": [
+        "./node_modules/texchange/dist/texchange.d.ts",
+        "./src/interfaces.ts"
+      ],
+      "./src/public-api.ts": [
         "./node_modules/@types/node/events.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts",
+        "./src/interfaces.ts"
+      ],
+      "./src/tecretary.ts": [
+        "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts"
       ]
     },
@@ -1150,6 +1407,9 @@
       "../../../node_modules/@types/serve-static/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/events/index.d.ts",
+      "./node_modules/@types/node-fetch/externals.d.ts",
+      "./node_modules/@types/node-fetch/index.d.ts",
+      "./node_modules/@types/node-fetch/node_modules/form-data/index.d.ts",
       "./node_modules/@types/node/assert.d.ts",
       "./node_modules/@types/node/async_hooks.d.ts",
       "./node_modules/@types/node/base.d.ts",
@@ -1197,18 +1457,32 @@
       "./node_modules/@types/node/wasi.d.ts",
       "./node_modules/@types/node/worker_threads.d.ts",
       "./node_modules/@types/node/zlib.d.ts",
+      "./node_modules/@types/ramda/index.d.ts",
+      "./node_modules/@types/ramda/tools.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
+      "./node_modules/@types/ws/index.d.ts",
+      "./node_modules/interfaces/dist/context.d.ts",
+      "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",
       "./node_modules/sorted-queue/dist/index.d.ts",
       "./node_modules/startable/dist/adaptor.d.ts",
       "./node_modules/startable/dist/index.d.ts",
       "./node_modules/startable/dist/startable.d.ts",
+      "./node_modules/texchange/dist/incremental-book.d.ts",
+      "./node_modules/texchange/dist/interfaces.d.ts",
+      "./node_modules/texchange/dist/making-order.d.ts",
+      "./node_modules/texchange/dist/managing-assets.d.ts",
+      "./node_modules/texchange/dist/pushing.d.ts",
+      "./node_modules/texchange/dist/texchange.d.ts",
+      "./node_modules/ts-toolbelt/out/index.d.ts",
+      "./src/context.ts",
       "./src/db-reader.ts",
       "./src/forward.ts",
       "./src/interfaces.ts",
+      "./src/private-api.ts",
+      "./src/public-api.ts",
       "./src/tecretary.ts",
-      "./src/texchange.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
