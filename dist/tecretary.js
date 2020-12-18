@@ -32,18 +32,18 @@ class Tecretary extends Startable {
         this.dbReader = new DbReader(config.DB_FILE_PATH);
     }
     async _start() {
-        await this.dbReader.start(err => void this.stop(err));
+        await this.dbReader.start(err => void this.stop(err).catch(() => { }));
         const minTime = await this.dbReader.getMinTime();
         this.forward = new Forward(minTime);
         this.texchange = new Texchange(this.config, this.forward.sleep, () => this.forward.now);
         this.context = new Context(this.texchange, this.forward.sleep, this.next);
         this.strategy = new this.Strategy(this.context);
-        await this.strategy.start(err => void this.stop(err));
+        await this.strategy.start(err => void this.stop(err).catch(() => { }));
         this.orderbooksIterator = this.dbReader.getOrderbooks();
         this.tradesIterator = this.dbReader.getTrades();
         await this.orderbooksIterator.next();
         await this.tradesIterator.next();
-        this.next().catch(err => void this.stop(err));
+        this.next().catch(err => void this.stop(err).catch(() => { }));
     }
     async _stop() {
         await this.strategy.stop();
