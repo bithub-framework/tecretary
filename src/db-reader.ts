@@ -1,7 +1,6 @@
 import Database from 'promisified-sqlite';
 import Startable from 'startable';
 import {
-    Trade,
     Orderbook,
     BID, ASK,
     RawTrade,
@@ -30,7 +29,10 @@ class AsyncForwardIterator<T> implements AsyncIterator<T> {
 
     public async next() {
         const nextItem = await this.i.next();
-        this.current = nextItem.value;
+        if (nextItem.done)
+            this.current = undefined;
+        else
+            this.current = nextItem.value;
         return nextItem;
     }
 }
@@ -45,13 +47,13 @@ class DbReader extends Startable {
 
     private async * getTradesIterator(): AsyncIterator<RawTrade> {
         for (let i = 1; ; i += LIMIT) {
-            const trades = await this.db.sql<RawTrade>(`
+            const rawTrades = await this.db.sql<RawTrade>(`
                 SELECT * FROM trades
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
-            if (!trades.length) break;
-            for (const trade of trades) yield trade;
+            if (!rawTrades.length) break;
+            for (const rawTrade of rawTrades) yield rawTrade;
         }
     }
 
@@ -62,7 +64,7 @@ class DbReader extends Startable {
     private async * getOrderbooksIterator(): AsyncIterator<Orderbook> {
         for (let i = 1; ; i += LIMIT) {
             const orderbooks = await this.db.sql<StringifiedOrderbook>(`
-                SELECT * FROM orderbook
+                SELECT * FROM orderbooks
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
@@ -85,7 +87,7 @@ class DbReader extends Startable {
 
     public async getMinTime(): Promise<number> {
         const orderbooksMinTime = (await this.db.sql<[number]>(`
-            SELECT MIN(time) AS "0" FROM orderbook
+            SELECT MIN(time) AS "0" FROM orderbooks
         ;`))[0][0];
         const tradesMinTime = (await this.db.sql<[number]>(`
             SELECT MIN(time) AS "0" FROM trades

@@ -15,7 +15,10 @@ class AsyncForwardIterator {
     }
     async next() {
         const nextItem = await this.i.next();
-        this.current = nextItem.value;
+        if (nextItem.done)
+            this.current = undefined;
+        else
+            this.current = nextItem.value;
         return nextItem;
     }
 }
@@ -26,15 +29,15 @@ class DbReader extends Startable {
     }
     async *getTradesIterator() {
         for (let i = 1;; i += LIMIT) {
-            const trades = await this.db.sql(`
+            const rawTrades = await this.db.sql(`
                 SELECT * FROM trades
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
-            if (!trades.length)
+            if (!rawTrades.length)
                 break;
-            for (const trade of trades)
-                yield trade;
+            for (const rawTrade of rawTrades)
+                yield rawTrade;
         }
     }
     getTrades() {
@@ -43,7 +46,7 @@ class DbReader extends Startable {
     async *getOrderbooksIterator() {
         for (let i = 1;; i += LIMIT) {
             const orderbooks = await this.db.sql(`
-                SELECT * FROM orderbook
+                SELECT * FROM orderbooks
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
@@ -64,7 +67,7 @@ class DbReader extends Startable {
     }
     async getMinTime() {
         const orderbooksMinTime = (await this.db.sql(`
-            SELECT MIN(time) AS "0" FROM orderbook
+            SELECT MIN(time) AS "0" FROM orderbooks
         ;`))[0][0];
         const tradesMinTime = (await this.db.sql(`
             SELECT MIN(time) AS "0" FROM trades

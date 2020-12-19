@@ -9,15 +9,20 @@ interface Item {
 }
 
 class Forward {
-    private heap = new Heap<Item>();
+    private heap = new Heap<Item>((a, b) => a.time - b.time);
     constructor(public now: number) { }
 
     public next() {
         if (this.heap.peek() === undefined) throw new Error('Empty');
-        const item = this.heap.pop()!;
-        this.now = item.value.time;
+        const item = this.heap.pop()!.value;
+        this.now = item.time;
         // in case cb() calls next() syncly
-        setImmediate(item.value.cb);
+        setImmediate(item.cb);
+    }
+
+    public get nextTime(): number | undefined {
+        const peek = this.heap.peek();
+        return peek?.value.time;
     }
 
     public setTimeout = (cb: () => void, ms: number): HeapItem<Item> =>

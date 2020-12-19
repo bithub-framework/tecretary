@@ -486,26 +486,6 @@
         "signature": "a7c1cf1043e89af7064684be16125e2f72aea8d05619cf5c0dc971e3af04e0f1",
         "affectsGlobalScope": false
       },
-      "./src/interfaces.ts": {
-        "version": "a8e191fb2903939e2b15a509ef8ed97425a781eaa2966b5fc8fce33073757346",
-        "signature": "01a1888aa3c4093ce91aa88e66c6f7b5fb04e8306d361261479de45a7a183db4",
-        "affectsGlobalScope": false
-      },
-      "./src/private-api.ts": {
-        "version": "7ae251aafb092b813c245c2fab34b15ea1b9a05a5c32ef9f95ada366f254765a",
-        "signature": "3821439e07c50fa75e9c861819d994191fc6bf4c000f1bd4c1def270c7c971ff",
-        "affectsGlobalScope": false
-      },
-      "./src/public-api.ts": {
-        "version": "6a08dc26ca9170498d8ec683e01892c8f07e18f0b514fb38223f8e31cee72ab7",
-        "signature": "b8153c57eedb821fc1789b89c4e62af3c2738d9e60939d587175641a2fcd9161",
-        "affectsGlobalScope": false
-      },
-      "./src/context.ts": {
-        "version": "a1d670b7adcd6ca77b37a3618d541e1d5728818d1c70567a3ac80c7d418c9184",
-        "signature": "b37dbfaa4417e19e17abd710d59c9141f6e2dfd616f27db04803eb034d54a542",
-        "affectsGlobalScope": false
-      },
       "./node_modules/startable/dist/startable.d.ts": {
         "version": "05ec4662747c3bb879f42a2ac04275f46ca6dc0732f2872b612840bded928440",
         "signature": "05ec4662747c3bb879f42a2ac04275f46ca6dc0732f2872b612840bded928440",
@@ -521,13 +501,33 @@
         "signature": "a8a17c833a6e857778c83fb00d47df12270bd703ce3974baace8dd4be5e0fc47",
         "affectsGlobalScope": false
       },
+      "./src/interfaces.ts": {
+        "version": "ece7977b8a7e3f8734f138a55b235090128a15c3ce1ea26bf2c908405b92d6e2",
+        "signature": "7f0d88d482522d9d7bd091d35bdc4e3a0b985e21edd4d1edf497ac432579e4da",
+        "affectsGlobalScope": false
+      },
+      "./src/private-api.ts": {
+        "version": "7ae251aafb092b813c245c2fab34b15ea1b9a05a5c32ef9f95ada366f254765a",
+        "signature": "3821439e07c50fa75e9c861819d994191fc6bf4c000f1bd4c1def270c7c971ff",
+        "affectsGlobalScope": false
+      },
+      "./src/public-api.ts": {
+        "version": "16c0f1615ab013eeea348d09a8d4e0eda6323b9745c54ff2e4c0cfd0270e1764",
+        "signature": "34c145d1df692a638cb9c69fe4a3d3487c9831aee156afeb0e72c1911e117f95",
+        "affectsGlobalScope": false
+      },
+      "./src/context.ts": {
+        "version": "a1d670b7adcd6ca77b37a3618d541e1d5728818d1c70567a3ac80c7d418c9184",
+        "signature": "b37dbfaa4417e19e17abd710d59c9141f6e2dfd616f27db04803eb034d54a542",
+        "affectsGlobalScope": false
+      },
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": {
         "version": "0069f8c38df6c8aaf3184ced908a0984b21d4878ac21d901ce349ab6ce73dd07",
         "signature": "0069f8c38df6c8aaf3184ced908a0984b21d4878ac21d901ce349ab6ce73dd07",
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "4a3618583a572651d9a2f1254a562303809dec8608c19b6798dd0e29fa7fd035",
+        "version": "d14d2a0638f55c47109ea933d3c5c0092afedead0a805b58ba4a7d70b6cd0c4f",
         "signature": "5b3f12cd24b975954657ca3a6b7d38faccf49de4b8c7f4f802a0cebd88ac2206",
         "affectsGlobalScope": false
       },
@@ -537,13 +537,28 @@
         "affectsGlobalScope": false
       },
       "./src/forward.ts": {
-        "version": "54b2fe72903363a94ca03aeaba7c498b1c880583441fc9aa8ab62b3b846cda86",
-        "signature": "a82fd973f1b0be14d4e5fc4d8bc2d73f88eeec929b32c4d638abc263fb53d474",
+        "version": "28f8814fcfc71b1bc2d879d857d2636ebdf4175235b5c2d26f0c4f76b9964ad7",
+        "signature": "41d515f1e6044e497c628c2c0e114eeb3a523beda02b15b3af5edfe312698667",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts": {
+        "version": "a8a17c833a6e857778c83fb00d47df12270bd703ce3974baace8dd4be5e0fc47",
+        "signature": "a8a17c833a6e857778c83fb00d47df12270bd703ce3974baace8dd4be5e0fc47",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/pollerloop/dist/pollerloop.d.ts": {
+        "version": "975cbdf418f46e14e976c8d251f31c9909971f81753cc74daa2b0685eadd0b17",
+        "signature": "975cbdf418f46e14e976c8d251f31c9909971f81753cc74daa2b0685eadd0b17",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/pollerloop/dist/index.d.ts": {
+        "version": "8b2fa3e4795c719fc67de5b588249fd0729ed88ac62f47ce9a566bc3bd991734",
+        "signature": "8b2fa3e4795c719fc67de5b588249fd0729ed88ac62f47ce9a566bc3bd991734",
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "1ebc3536256d0e2a7b4df58ec78ef89ca4da2fd60bb6ad6343736e45455caec2",
-        "signature": "2e9b6abf42b8e09cb8892d9ff759753950de30a58047ca96714b87da227e878d",
+        "version": "00d96f616b06a7f0b6d9905318adedc56836c36b543805706be06a714e9853fc",
+        "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -964,6 +979,17 @@
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
+      "./node_modules/pollerloop/dist/index.d.ts": [
+        "./node_modules/pollerloop/dist/pollerloop.d.ts"
+      ],
+      "./node_modules/pollerloop/dist/pollerloop.d.ts": [
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/startable/dist/index.d.ts"
+      ],
+      "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts": [
+        "./node_modules/startable/dist/adaptor.d.ts",
+        "./node_modules/startable/dist/startable.d.ts"
+      ],
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": [
         "./node_modules/startable/dist/index.d.ts"
       ],
@@ -1023,6 +1049,7 @@
       ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts",
+        "./node_modules/startable/dist/index.d.ts",
         "./node_modules/texchange/dist/texchange.d.ts"
       ],
       "./src/private-api.ts": [
@@ -1035,6 +1062,7 @@
         "./src/interfaces.ts"
       ],
       "./src/tecretary.ts": [
+        "./node_modules/pollerloop/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./node_modules/texchange/dist/texchange.d.ts",
         "./src/context.ts",
@@ -1313,6 +1341,17 @@
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
+      "./node_modules/pollerloop/dist/index.d.ts": [
+        "./node_modules/pollerloop/dist/pollerloop.d.ts"
+      ],
+      "./node_modules/pollerloop/dist/pollerloop.d.ts": [
+        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/startable/dist/index.d.ts"
+      ],
+      "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts": [
+        "./node_modules/startable/dist/adaptor.d.ts",
+        "./node_modules/startable/dist/startable.d.ts"
+      ],
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": [
         "./node_modules/startable/dist/index.d.ts"
       ],
@@ -1371,6 +1410,7 @@
       ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts",
+        "./node_modules/startable/dist/index.d.ts",
         "./node_modules/texchange/dist/texchange.d.ts"
       ],
       "./src/private-api.ts": [
@@ -1464,6 +1504,9 @@
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
+      "./node_modules/pollerloop/dist/index.d.ts",
+      "./node_modules/pollerloop/dist/pollerloop.d.ts",
+      "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts",
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",
       "./node_modules/sorted-queue/dist/index.d.ts",
       "./node_modules/startable/dist/adaptor.d.ts",

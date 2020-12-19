@@ -8,11 +8,11 @@ import { EventEmitter } from 'events';
 
 class ContextMarketPublicApi extends EventEmitter implements ContextMarketPublicApiLike {
     constructor(
-        private texchange: Texchange,
+        texchange: Texchange,
     ) {
         super();
-        this.texchange.on('orderbook', this.onOrderbook);
-        this.texchange.on('trades', this.onTrades);
+        texchange.on('orderbook', this.onOrderbook);
+        texchange.on('trades', this.onTrades);
     }
 
     private onOrderbook = (orderbook: Orderbook) => {

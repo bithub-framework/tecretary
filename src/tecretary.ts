@@ -3,25 +3,25 @@ import { DbReader, AsyncForwardIterator } from './db-reader';
 import { Context } from './context';
 import Texchange from 'texchange';
 import Forward from './forward';
+import { Pollerloop, Loop } from 'pollerloop';
 import {
-    ContextLike,
     Orderbook,
     Config,
     RawTrade,
+    StrategyConstructor,
 } from './interfaces';
 
-interface StrategyConstructor {
-    new(ctx: ContextLike): StartableLike;
-}
+const NEXT_INTERVAL = 10;
 
 class Tecretary extends Startable {
     private dbReader: DbReader;
-    private strategy?: StartableLike;
-    private forward?: Forward;
-    private texchange?: Texchange;
-    private context?: Context;
-    private orderbooksIterator?: AsyncForwardIterator<Orderbook>;
-    private tradesIterator?: AsyncForwardIterator<RawTrade>;
+    private strategy!: StartableLike;
+    private forward!: Forward;
+    private texchange!: Texchange;
+    private context!: Context;
+    private orderbooksIterator!: AsyncForwardIterator<Orderbook>;
+    private tradesIterator!: AsyncForwardIterator<RawTrade>;
+    private pollerloop: Pollerloop;
 
     constructor(
         private Strategy: StrategyConstructor,
@@ -29,6 +29,7 @@ class Tecretary extends Startable {
     ) {
         super();
         this.dbReader = new DbReader(config.DB_FILE_PATH);
+        this.pollerloop = new Pollerloop(this.loop);
     }
 
     protected async _start() {
@@ -38,7 +39,7 @@ class Tecretary extends Startable {
         this.texchange = new Texchange(
             this.config,
             this.forward.sleep,
-            () => this.forward!.now,
+            () => this.forward.now,
         );
         this.context = new Context(
             this.texchange,
@@ -51,41 +52,56 @@ class Tecretary extends Startable {
         await this.tradesIterator.next();
 
         await this.strategy.start(err => void this.stop(err).catch(() => { }));
-        process.on('beforeExit', this.next);
-        this.next().catch(err => void this.stop(err).catch(() => { }));
+        await this.pollerloop.start(err => void this.stop(err).catch(() => { }));
     }
 
     protected async _stop() {
-        process.off('beforeExit', this.next);
-        await this.strategy!.stop();
+        await this.pollerloop.stop();
+        await this.strategy.stop();
         await this.dbReader.stop();
     }
 
-    private next: () => Promise<void> = async () => {
-        try {
-            if (this.orderbooksIterator!.current!.time < this.forward!.now) {
-                const orderbook = this.orderbooksIterator!.current!;
-                this.forward!.setTimeout(() => {
-                    this.texchange!.updateOrderbook(orderbook);
-                }, orderbook.time - this.forward!.now);
-                await this.orderbooksIterator!.next();
+    private loop: Loop = async sleep => {
+        while (true) {
+            if (
+                this.orderbooksIterator.current && (
+                    this.forward.nextTime === undefined ||
+                    this.orderbooksIterator.current.time <= this.forward.nextTime
+                )
+            ) {
+                const orderbook = this.orderbooksIterator.current;
+                this.forward.setTimeout(() => {
+                    this.texchange.updateOrderbook(orderbook);
+                }, orderbook.time - this.forward.now);
+                await this.orderbooksIterator.next();
             }
-            if (this.tradesIterator!.current!.time < this.forward!.now) {
+            if (
+                this.tradesIterator.current && (
+                    this.forward.nextTime === undefined ||
+                    this.tradesIterator.current.time <= this.forward.nextTime
+                )
+            ) {
                 const trades: RawTrade[] = [];
-                const time = this.tradesIterator!.current!.time;
-                while (this.tradesIterator!.current!.time === time) {
-                    trades.push(this.tradesIterator!.current!);
-                    await this.tradesIterator!.next();
+                const time = this.tradesIterator.current.time;
+                while (this.tradesIterator.current.time === time) {
+                    trades.push(this.tradesIterator.current);
+                    await this.tradesIterator.next();
                 }
-                this.forward?.setTimeout(() => {
-                    this.texchange!.updateTrades(trades);
-                }, time - this.forward!.now);
+                this.forward.setTimeout(() => {
+                    this.texchange.updateTrades(trades);
+                }, time - this.forward.now);
             }
-            this.forward!.next();
-        } catch (err) {
-            this.stop().catch(() => { });
+            const nextTime = this.forward.nextTime;
+            if (nextTime === undefined) break;
+            const delay = Math.min(
+                nextTime - this.forward.now,
+                NEXT_INTERVAL,
+            );
+            await sleep(delay);
+            this.forward.next();
         }
     }
+
 }
 
 export {
