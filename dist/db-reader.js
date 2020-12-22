@@ -2,36 +2,9 @@ import Database from 'promisified-sqlite';
 import Startable from 'startable';
 import { BID, ASK, } from './interfaces';
 import Big from 'big.js';
-const LIMIT = 10000;
-function parse(stringified) {
-    return {
-        [BID]: JSON.parse(stringified.bids, (k, v) => {
-            if (k !== '') {
-                const makerOrder = {
-                    price: new Big(v[0]),
-                    quantity: new Big(v[1]),
-                    side: BID,
-                };
-                return makerOrder;
-            }
-            else
-                return v;
-        }),
-        [ASK]: JSON.parse(stringified.asks, (k, v) => {
-            if (k !== '') {
-                const makerOrder = {
-                    price: new Big(v[0]),
-                    quantity: new Big(v[1]),
-                    side: ASK,
-                };
-                return makerOrder;
-            }
-            else
-                return v;
-        }),
-        time: stringified.time,
-    };
-}
+import { PRICE_DP, QUANTITY_DP, } from 'texchange';
+// TODO
+const LIMIT = 1;
 class AsyncForwardIterator {
     constructor(i) {
         this.i = i;
@@ -79,8 +52,23 @@ class DbReader extends Startable {
             ;`);
             if (!orderbooks.length)
                 break;
-            for (const orderbook of orderbooks)
-                yield parse(orderbook);
+            for (const orderbook of orderbooks) {
+                const asks = JSON.parse(orderbook.asks);
+                const bids = JSON.parse(orderbook.bids);
+                yield {
+                    [ASK]: asks.map(([_price, _quantity]) => ({
+                        price: new Big(_price.toFixed(PRICE_DP)),
+                        quantity: new Big(_quantity.toFixed(QUANTITY_DP)),
+                        side: ASK,
+                    })),
+                    [BID]: bids.map(([_price, _quantity]) => ({
+                        price: new Big(_price.toFixed(PRICE_DP)),
+                        quantity: new Big(_quantity.toFixed(QUANTITY_DP)),
+                        side: BID,
+                    })),
+                    time: orderbook.time,
+                };
+            }
         }
     }
     getOrderbooks() {

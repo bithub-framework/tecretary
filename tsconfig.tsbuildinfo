@@ -207,8 +207,8 @@
         "affectsGlobalScope": true
       },
       "./node_modules/interfaces/dist/data.d.ts": {
-        "version": "40ba3f12e8d2675659781cc2ee775f484e53034f4127637acd9ee8ca0e925056",
-        "signature": "40ba3f12e8d2675659781cc2ee775f484e53034f4127637acd9ee8ca0e925056",
+        "version": "4c811ac13e6187d59008cbabde4789c7662257d33fda24c4e8eae3ca81f5e1ea",
+        "signature": "4c811ac13e6187d59008cbabde4789c7662257d33fda24c4e8eae3ca81f5e1ea",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -456,9 +456,14 @@
         "signature": "34496b45872ab6d8ec87074f114315460dd15a03e3c0db6ea902504ea719c6b6",
         "affectsGlobalScope": false
       },
+      "./node_modules/interfaces/dist/reviver.d.ts": {
+        "version": "dc80d857e567720142a212e22f7381d16b787731d86f50fe0fb6f6e5d8730864",
+        "signature": "dc80d857e567720142a212e22f7381d16b787731d86f50fe0fb6f6e5d8730864",
+        "affectsGlobalScope": false
+      },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "54b215a738551cbb94bfbe599a3101726924eb838ab5f2511962556b8ec39357",
-        "signature": "54b215a738551cbb94bfbe599a3101726924eb838ab5f2511962556b8ec39357",
+        "version": "67fcb51fb05a8d5581c0c999c058dc7576c45816f9e607768c02df91f82c7e8d",
+        "signature": "67fcb51fb05a8d5581c0c999c058dc7576c45816f9e607768c02df91f82c7e8d",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
@@ -482,13 +487,23 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/managing-assets.d.ts": {
-        "version": "9a05186e23b056c7859291c869f7de8cd002fff24324eee0cc2d1f016e31a322",
-        "signature": "9a05186e23b056c7859291c869f7de8cd002fff24324eee0cc2d1f016e31a322",
+        "version": "836202f128f2533c4c225ee3afd7558913cc2b1a96f981c254c820c3789b256e",
+        "signature": "836202f128f2533c4c225ee3afd7558913cc2b1a96f981c254c820c3789b256e",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/texchange.d.ts": {
-        "version": "a7c1cf1043e89af7064684be16125e2f72aea8d05619cf5c0dc971e3af04e0f1",
-        "signature": "a7c1cf1043e89af7064684be16125e2f72aea8d05619cf5c0dc971e3af04e0f1",
+        "version": "ff6366f354aba24996ab56cfa0935c7f22c1930da8d327a33cab3a56f5ba9da6",
+        "signature": "ff6366f354aba24996ab56cfa0935c7f22c1930da8d327a33cab3a56f5ba9da6",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/config.d.ts": {
+        "version": "575971b9987b41b759127dc907402ac3f23f5da4086c66e582cc0a1136060d71",
+        "signature": "575971b9987b41b759127dc907402ac3f23f5da4086c66e582cc0a1136060d71",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/index.d.ts": {
+        "version": "2ace291f75932921264746717d6e0a5273131fc195d373ff48b140a74d507c4f",
+        "signature": "2ace291f75932921264746717d6e0a5273131fc195d373ff48b140a74d507c4f",
         "affectsGlobalScope": false
       },
       "./node_modules/startable/dist/startable.d.ts": {
@@ -532,7 +547,7 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "2540348231c0ece805978c0cdef97f7dbb34a7a3a2ec4af9bf14acb9a1d20a0a",
+        "version": "8d1bdbca7d20b37475b1927f65086445ab139900e4487e3bb22b3f59d9d1d010",
         "signature": "5b3f12cd24b975954657ca3a6b7d38faccf49de4b8c7f4f802a0cebd88ac2206",
         "affectsGlobalScope": false
       },
@@ -564,6 +579,16 @@
       "./src/tecretary.ts": {
         "version": "00d96f616b06a7f0b6d9905318adedc56836c36b543805706be06a714e9853fc",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
+        "affectsGlobalScope": false
+      },
+      "./src/index.ts": {
+        "version": "17dd1c0df978262cb6fb1fc0e72abc13a195844915142dc3d385f64822e04e10",
+        "signature": "17dd1c0df978262cb6fb1fc0e72abc13a195844915142dc3d385f64822e04e10",
+        "affectsGlobalScope": false
+      },
+      "./src/test.ts": {
+        "version": "7fe2388084600ccfa9c38e7d8489b57cc76841e1adde3d94b015be54c88d07aa",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -985,7 +1010,8 @@
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/context.d.ts",
-        "./node_modules/interfaces/dist/data.d.ts"
+        "./node_modules/interfaces/dist/data.d.ts",
+        "./node_modules/interfaces/dist/reviver.d.ts"
       ],
       "./node_modules/pollerloop/dist/index.d.ts": [
         "./node_modules/pollerloop/dist/pollerloop.d.ts"
@@ -1016,6 +1042,11 @@
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
+      "./node_modules/texchange/dist/index.d.ts": [
+        "./node_modules/texchange/dist/config.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts"
+      ],
       "./node_modules/texchange/dist/interfaces.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
@@ -1045,7 +1076,7 @@
       ],
       "./src/context.ts": [
         "./node_modules/@types/node/events.d.ts",
-        "./node_modules/texchange/dist/texchange.d.ts",
+        "./node_modules/texchange/dist/index.d.ts",
         "./src/interfaces.ts",
         "./src/private-api.ts",
         "./src/public-api.ts"
@@ -1054,33 +1085,43 @@
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",
         "./node_modules/startable/dist/index.d.ts",
+        "./node_modules/texchange/dist/index.d.ts",
         "./src/interfaces.ts"
       ],
       "./src/forward.ts": [
         "./node_modules/sorted-queue/dist/index.d.ts"
       ],
+      "./src/index.ts": [
+        "./src/interfaces.ts",
+        "./src/tecretary.ts"
+      ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./node_modules/texchange/dist/texchange.d.ts"
+        "./node_modules/texchange/dist/index.d.ts"
       ],
       "./src/private-api.ts": [
-        "./node_modules/texchange/dist/texchange.d.ts",
+        "./node_modules/texchange/dist/index.d.ts",
         "./src/interfaces.ts"
       ],
       "./src/public-api.ts": [
         "./node_modules/@types/node/events.d.ts",
-        "./node_modules/texchange/dist/texchange.d.ts",
+        "./node_modules/texchange/dist/index.d.ts",
         "./src/interfaces.ts"
       ],
       "./src/tecretary.ts": [
         "./node_modules/pollerloop/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./node_modules/texchange/dist/texchange.d.ts",
+        "./node_modules/texchange/dist/index.d.ts",
         "./src/context.ts",
         "./src/db-reader.ts",
         "./src/forward.ts",
         "./src/interfaces.ts"
+      ],
+      "./src/test.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/startable/dist/index.d.ts",
+        "./src/index.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1354,7 +1395,8 @@
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/context.d.ts",
-        "./node_modules/interfaces/dist/data.d.ts"
+        "./node_modules/interfaces/dist/data.d.ts",
+        "./node_modules/interfaces/dist/reviver.d.ts"
       ],
       "./node_modules/pollerloop/dist/index.d.ts": [
         "./node_modules/pollerloop/dist/pollerloop.d.ts"
@@ -1384,6 +1426,11 @@
       "./node_modules/texchange/dist/incremental-book.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
+      ],
+      "./node_modules/texchange/dist/index.d.ts": [
+        "./node_modules/texchange/dist/config.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/texchange.d.ts"
       ],
       "./node_modules/texchange/dist/interfaces.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
@@ -1425,6 +1472,10 @@
       ],
       "./src/forward.ts": [
         "./node_modules/sorted-queue/dist/index.d.ts"
+      ],
+      "./src/index.ts": [
+        "./src/interfaces.ts",
+        "./src/tecretary.ts"
       ],
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts",
@@ -1523,6 +1574,7 @@
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
+      "./node_modules/interfaces/dist/reviver.d.ts",
       "./node_modules/pollerloop/dist/index.d.ts",
       "./node_modules/pollerloop/dist/pollerloop.d.ts",
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts",
@@ -1531,7 +1583,9 @@
       "./node_modules/startable/dist/adaptor.d.ts",
       "./node_modules/startable/dist/index.d.ts",
       "./node_modules/startable/dist/startable.d.ts",
+      "./node_modules/texchange/dist/config.d.ts",
       "./node_modules/texchange/dist/incremental-book.d.ts",
+      "./node_modules/texchange/dist/index.d.ts",
       "./node_modules/texchange/dist/interfaces.d.ts",
       "./node_modules/texchange/dist/making-order.d.ts",
       "./node_modules/texchange/dist/managing-assets.d.ts",
@@ -1541,10 +1595,12 @@
       "./src/context.ts",
       "./src/db-reader.ts",
       "./src/forward.ts",
+      "./src/index.ts",
       "./src/interfaces.ts",
       "./src/private-api.ts",
       "./src/public-api.ts",
       "./src/tecretary.ts",
+      "./src/test.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",

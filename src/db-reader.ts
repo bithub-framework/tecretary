@@ -6,37 +6,15 @@ import {
     RawTrade,
     StringifiedOrderbook,
     NumberizedRawTrade,
-    MakerOrder,
 } from './interfaces';
 import Big from 'big.js';
+import {
+    PRICE_DP,
+    QUANTITY_DP,
+} from 'texchange';
 
-const LIMIT = 10000;
-
-function parse(stringified: StringifiedOrderbook): Orderbook {
-    return {
-        [BID]: JSON.parse(stringified.bids, (k, v) => {
-            if (k !== '') {
-                const makerOrder: MakerOrder = {
-                    price: new Big((<number[]>v)[0]),
-                    quantity: new Big((<number[]>v)[1]),
-                    side: BID,
-                };
-                return makerOrder;
-            } else return v;
-        }),
-        [ASK]: JSON.parse(stringified.asks, (k, v) => {
-            if (k !== '') {
-                const makerOrder: MakerOrder = {
-                    price: new Big((<number[]>v)[0]),
-                    quantity: new Big((<number[]>v)[1]),
-                    side: ASK,
-                };
-                return makerOrder;
-            } else return v;
-        }),
-        time: stringified.time,
-    }
-}
+// TODO
+const LIMIT = 1;
 
 class AsyncForwardIterator<T> implements AsyncIterator<T> {
     public current?: T;
@@ -89,7 +67,24 @@ class DbReader extends Startable {
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
             if (!orderbooks.length) break;
-            for (const orderbook of orderbooks) yield parse(orderbook);
+            for (const orderbook of orderbooks) {
+                type A = [number, number][];
+                const asks: A = JSON.parse(orderbook.asks);
+                const bids: A = JSON.parse(orderbook.bids);
+                yield {
+                    [ASK]: asks.map(([_price, _quantity]) => ({
+                        price: new Big(_price.toFixed(PRICE_DP)),
+                        quantity: new Big(_quantity.toFixed(QUANTITY_DP)),
+                        side: ASK,
+                    })),
+                    [BID]: bids.map(([_price, _quantity]) => ({
+                        price: new Big(_price.toFixed(PRICE_DP)),
+                        quantity: new Big(_quantity.toFixed(QUANTITY_DP)),
+                        side: BID,
+                    })),
+                    time: orderbook.time,
+                };
+            }
         }
     }
 
