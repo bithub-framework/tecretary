@@ -12,7 +12,7 @@ export interface StrategyConstructor {
 export interface NumberizedRawTrade {
     price: number;
     quantity: number;
-    side: number;
+    side: string;
     time: number;
 }
 export interface StringifiedOrderbook {

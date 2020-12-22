@@ -12,6 +12,8 @@ import Big from 'big.js';
 class Strategy extends Startable {
     constructor(private ctx: ContextLike) {
         super();
+        ctx[0].on('orderbook', console.log);
+        ctx[0].on('trades', console.log);
     }
 
     protected async _start() {

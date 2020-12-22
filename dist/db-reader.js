@@ -25,18 +25,19 @@ class DbReader extends Startable {
     }
     async *getTradesIterator() {
         for (let i = 1;; i += LIMIT) {
-            const rawTrades = await this.db.sql(`
+            const numberizedRawTrades = await this.db.sql(`
                 SELECT * FROM trades
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
-            if (!rawTrades.length)
+            if (!numberizedRawTrades.length)
                 break;
-            for (const rawTrade of rawTrades)
+            for (const numberizedRawTrade of numberizedRawTrades)
                 yield {
-                    ...rawTrade,
-                    price: new Big(rawTrade.price),
-                    quantity: new Big(rawTrade.price),
+                    ...numberizedRawTrade,
+                    price: new Big(numberizedRawTrade.price.toFixed(PRICE_DP)),
+                    quantity: new Big(numberizedRawTrade.price.toFixed(QUANTITY_DP)),
+                    side: numberizedRawTrade.side === 'BUY' ? BID : ASK,
                 };
         }
     }

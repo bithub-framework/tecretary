@@ -207,8 +207,8 @@
         "affectsGlobalScope": true
       },
       "./node_modules/interfaces/dist/data.d.ts": {
-        "version": "4c811ac13e6187d59008cbabde4789c7662257d33fda24c4e8eae3ca81f5e1ea",
-        "signature": "4c811ac13e6187d59008cbabde4789c7662257d33fda24c4e8eae3ca81f5e1ea",
+        "version": "53c68b4d808ba83525bd022f12fd78ccb7cec79dc9255c720ffee04333f0eb33",
+        "signature": "53c68b4d808ba83525bd022f12fd78ccb7cec79dc9255c720ffee04333f0eb33",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -522,8 +522,8 @@
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "1662948d9ae8f52bdf56a43fd254e83919b2840d8ecdda03a2297c5614dddff3",
-        "signature": "d418c2b108a74809fcee4c10cdd74e20c10a81e7ce2345e3682e4910fce94c5c",
+        "version": "b8396ffb392a4903f452bc1f5207700464e34681451bf9adab1312faf37eb55f",
+        "signature": "03536aaf1c128099a0a3fb01dbdd840dea4400ea241808ebdc0f18099bce046c",
         "affectsGlobalScope": false
       },
       "./src/private-api.ts": {
@@ -547,7 +547,7 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "8d1bdbca7d20b37475b1927f65086445ab139900e4487e3bb22b3f59d9d1d010",
+        "version": "e630458490c5faf925876da082220675c689711781804dfa31ba8e1202f2cc57",
         "signature": "5b3f12cd24b975954657ca3a6b7d38faccf49de4b8c7f4f802a0cebd88ac2206",
         "affectsGlobalScope": false
       },
@@ -577,7 +577,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "00d96f616b06a7f0b6d9905318adedc56836c36b543805706be06a714e9853fc",
+        "version": "c4297475e387e546c7aca1f4cbe84d6768bedf78f8ecf18ddc59cf1f6f371e46",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
@@ -587,7 +587,7 @@
         "affectsGlobalScope": false
       },
       "./src/test.ts": {
-        "version": "7fe2388084600ccfa9c38e7d8489b57cc76841e1adde3d94b015be54c88d07aa",
+        "version": "c8a2afbcb4dbb3bdc040f9a3b6a10c57072a2cb27118dc0b35ccd9892138dd36",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -1480,7 +1480,7 @@
       "./src/interfaces.ts": [
         "./node_modules/interfaces/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
-        "./node_modules/texchange/dist/texchange.d.ts"
+        "./node_modules/texchange/dist/index.d.ts"
       ],
       "./src/private-api.ts": [
         "./node_modules/texchange/dist/texchange.d.ts",

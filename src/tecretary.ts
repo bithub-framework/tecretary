@@ -83,7 +83,7 @@ class Tecretary extends Startable {
             ) {
                 const trades: RawTrade[] = [];
                 const time = this.tradesIterator.current.time;
-                while (this.tradesIterator.current.time === time) {
+                while (this.tradesIterator.current?.time === time) {
                     trades.push(this.tradesIterator.current);
                     await this.tradesIterator.next();
                 }

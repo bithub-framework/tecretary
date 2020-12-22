@@ -5,6 +5,8 @@ class Strategy extends Startable {
     constructor(ctx) {
         super();
         this.ctx = ctx;
+        ctx[0].on('orderbook', console.log);
+        ctx[0].on('trades', console.log);
     }
     async _start() {
     }
