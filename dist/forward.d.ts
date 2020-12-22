@@ -4,11 +4,12 @@ interface Item {
     cb: () => void;
 }
 declare class Forward {
-    now: number;
+    private currentTime;
     private heap;
-    constructor(now: number);
+    constructor(currentTime: number);
     next(): void;
-    get nextTime(): number | undefined;
+    now: () => number;
+    getNextTime(): number;
     setTimeout: (cb: () => void, ms: number) => HeapItem<Item>;
     clearTimeout: (timeout: HeapItem<Item>) => void;
     sleep: (ms: number) => Promise<void>;

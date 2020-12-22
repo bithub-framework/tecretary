@@ -552,8 +552,8 @@
         "affectsGlobalScope": false
       },
       "./src/forward.ts": {
-        "version": "28f8814fcfc71b1bc2d879d857d2636ebdf4175235b5c2d26f0c4f76b9964ad7",
-        "signature": "41d515f1e6044e497c628c2c0e114eeb3a523beda02b15b3af5edfe312698667",
+        "version": "f30adb4d80c663b6b1f690fba13676458441b77e9adb11025b30c0524d0c8423",
+        "signature": "11fcd96373ea9a7de8a1287a9df9e11c53f78c5c995a5430fdecc9aad580ef15",
         "affectsGlobalScope": false
       },
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts": {
@@ -572,7 +572,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "99da8102dd2d7d5b8f28465e844d65996bffa065a9a98abee75e532eac9b7ce8",
+        "version": "76a74d2c9224126ee40e58bd07057b50826adf01835a898669782b69a0c39cc7",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
