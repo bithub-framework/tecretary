@@ -14,6 +14,7 @@ class Context extends EventEmitter implements ContextLike {
     constructor(
         texchange: Texchange,
         public sleep: (ms: number) => Promise<void>,
+        public now: () => number,
     ) {
         super();
         this[0] = new ContextMarket(texchange);

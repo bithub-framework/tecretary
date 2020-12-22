@@ -6,12 +6,9 @@ import {
     RawTrade,
     StringifiedOrderbook,
     NumberizedRawTrade,
+    Config,
 } from './interfaces';
 import Big from 'big.js';
-import {
-    PRICE_DP,
-    QUANTITY_DP,
-} from 'texchange';
 
 // TODO
 const LIMIT = 1;
@@ -34,9 +31,9 @@ class AsyncForwardIterator<T> implements AsyncIterator<T> {
 class DbReader extends Startable {
     private db: Database;
 
-    constructor(filePath: string) {
+    constructor(private config: Config) {
         super();
-        this.db = new Database(filePath);
+        this.db = new Database(config.DB_FILE_PATH);
     }
 
     private async * getTradesIterator(): AsyncIterator<RawTrade> {
@@ -49,8 +46,8 @@ class DbReader extends Startable {
             if (!numberizedRawTrades.length) break;
             for (const numberizedRawTrade of numberizedRawTrades) yield {
                 ...numberizedRawTrade,
-                price: new Big(numberizedRawTrade.price.toFixed(PRICE_DP)),
-                quantity: new Big(numberizedRawTrade.price.toFixed(QUANTITY_DP)),
+                price: new Big(numberizedRawTrade.price.toFixed(this.config.PRICE_DP)),
+                quantity: new Big(numberizedRawTrade.price.toFixed(this.config.QUANTITY_DP)),
                 side: numberizedRawTrade.side === 'BUY' ? BID : ASK,
             };
         }
@@ -74,13 +71,13 @@ class DbReader extends Startable {
                 const bids: A = JSON.parse(orderbook.bids);
                 yield {
                     [ASK]: asks.map(([_price, _quantity]) => ({
-                        price: new Big(_price.toFixed(PRICE_DP)),
-                        quantity: new Big(_quantity.toFixed(QUANTITY_DP)),
+                        price: new Big(_price.toFixed(this.config.PRICE_DP)),
+                        quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
                         side: ASK,
                     })),
                     [BID]: bids.map(([_price, _quantity]) => ({
-                        price: new Big(_price.toFixed(PRICE_DP)),
-                        quantity: new Big(_quantity.toFixed(QUANTITY_DP)),
+                        price: new Big(_price.toFixed(this.config.PRICE_DP)),
+                        quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
                         side: BID,
                     })),
                     time: orderbook.time,

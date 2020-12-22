@@ -28,7 +28,7 @@ class Tecretary extends Startable {
         private config: Config,
     ) {
         super();
-        this.dbReader = new DbReader(config.DB_FILE_PATH);
+        this.dbReader = new DbReader(config);
         this.pollerloop = new Pollerloop(this.loop);
     }
 
@@ -44,6 +44,7 @@ class Tecretary extends Startable {
         this.context = new Context(
             this.texchange,
             this.forward.sleep,
+            () => this.forward.now,
         );
         this.strategy = new this.Strategy(this.context);
         this.orderbooksIterator = this.dbReader.getOrderbooks();

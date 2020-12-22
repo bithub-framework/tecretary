@@ -40,7 +40,7 @@ class Tecretary extends Startable {
                 this.forward.next();
             }
         };
-        this.dbReader = new DbReader(config.DB_FILE_PATH);
+        this.dbReader = new DbReader(config);
         this.pollerloop = new Pollerloop(this.loop);
     }
     async _start() {
@@ -48,7 +48,7 @@ class Tecretary extends Startable {
         const minTime = await this.dbReader.getMinTime();
         this.forward = new Forward(minTime);
         this.texchange = new Texchange(this.config, this.forward.sleep, () => this.forward.now);
-        this.context = new Context(this.texchange, this.forward.sleep);
+        this.context = new Context(this.texchange, this.forward.sleep, () => this.forward.now);
         this.strategy = new this.Strategy(this.context);
         this.orderbooksIterator = this.dbReader.getOrderbooks();
         await this.orderbooksIterator.next();
