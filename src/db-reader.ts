@@ -4,20 +4,36 @@ import {
     Orderbook,
     BID, ASK,
     RawTrade,
+    StringifiedOrderbook,
+    NumberizedRawTrade,
+    MakerOrder,
 } from './interfaces';
+import Big from 'big.js';
 
 const LIMIT = 10000;
 
-interface StringifiedOrderbook {
-    time: number;
-    bids: string;
-    asks: string;
-}
-
 function parse(stringified: StringifiedOrderbook): Orderbook {
     return {
-        [BID]: JSON.parse(stringified.bids),
-        [ASK]: JSON.parse(stringified.asks),
+        [BID]: JSON.parse(stringified.bids, (k, v) => {
+            if (k !== '') {
+                const makerOrder: MakerOrder = {
+                    price: new Big((<number[]>v)[0]),
+                    quantity: new Big((<number[]>v)[1]),
+                    side: BID,
+                };
+                return makerOrder;
+            } else return v;
+        }),
+        [ASK]: JSON.parse(stringified.asks, (k, v) => {
+            if (k !== '') {
+                const makerOrder: MakerOrder = {
+                    price: new Big((<number[]>v)[0]),
+                    quantity: new Big((<number[]>v)[1]),
+                    side: ASK,
+                };
+                return makerOrder;
+            } else return v;
+        }),
         time: stringified.time,
     }
 }
@@ -47,13 +63,17 @@ class DbReader extends Startable {
 
     private async * getTradesIterator(): AsyncIterator<RawTrade> {
         for (let i = 1; ; i += LIMIT) {
-            const rawTrades = await this.db.sql<RawTrade>(`
+            const rawTrades = await this.db.sql<NumberizedRawTrade>(`
                 SELECT * FROM trades
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
             if (!rawTrades.length) break;
-            for (const rawTrade of rawTrades) yield rawTrade;
+            for (const rawTrade of rawTrades) yield {
+                ...rawTrade,
+                price: new Big(rawTrade.price),
+                quantity: new Big(rawTrade.price),
+            };
         }
     }
 

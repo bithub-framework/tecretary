@@ -201,9 +201,14 @@
         "signature": "cd6efb9467a8b6338ece2e2855e37765700f2cd061ca54b01b33878cf5c7677e",
         "affectsGlobalScope": true
       },
+      "./node_modules/@types/big.js/index.d.ts": {
+        "version": "90589e3f3eed0a07917117760dc77abb1c6c672eb7d1d3b4ca76b8cb48f73917",
+        "signature": "90589e3f3eed0a07917117760dc77abb1c6c672eb7d1d3b4ca76b8cb48f73917",
+        "affectsGlobalScope": true
+      },
       "./node_modules/interfaces/dist/data.d.ts": {
-        "version": "7e544980047ffc47ddd963f7478b9b34f886e8c92f7498d060206b41beb172b6",
-        "signature": "7e544980047ffc47ddd963f7478b9b34f886e8c92f7498d060206b41beb172b6",
+        "version": "40ba3f12e8d2675659781cc2ee775f484e53034f4127637acd9ee8ca0e925056",
+        "signature": "40ba3f12e8d2675659781cc2ee775f484e53034f4127637acd9ee8ca0e925056",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -457,13 +462,13 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
-        "version": "d58ecb186624daf55c9747b5309c178c35443b23530a4fd7c472c82cfe9aac09",
-        "signature": "d58ecb186624daf55c9747b5309c178c35443b23530a4fd7c472c82cfe9aac09",
+        "version": "4718de874cc190c653f0fecb1e487bed67c95a254a384c68082257a091c938af",
+        "signature": "4718de874cc190c653f0fecb1e487bed67c95a254a384c68082257a091c938af",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/incremental-book.d.ts": {
-        "version": "8ac37e7d6fcda62a36ab1a2830cfdc0dc09590b640baa4151e1eca664aa210d1",
-        "signature": "8ac37e7d6fcda62a36ab1a2830cfdc0dc09590b640baa4151e1eca664aa210d1",
+        "version": "e32f9ba8db5c4483211e8a0c335095ad2617875a173b808d8cb7e6753af20840",
+        "signature": "e32f9ba8db5c4483211e8a0c335095ad2617875a173b808d8cb7e6753af20840",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/pushing.d.ts": {
@@ -472,13 +477,13 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/making-order.d.ts": {
-        "version": "ad045485a98e2105819d0ede4bc9daf5aeab66c376ef196f29d8fcaab313c645",
-        "signature": "ad045485a98e2105819d0ede4bc9daf5aeab66c376ef196f29d8fcaab313c645",
+        "version": "864ee56f77ccdf0f95c7494ab6000e57bf1ff9a1f21bac2588fe138ec26ae9f0",
+        "signature": "864ee56f77ccdf0f95c7494ab6000e57bf1ff9a1f21bac2588fe138ec26ae9f0",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/managing-assets.d.ts": {
-        "version": "4ca34c4ea035ee0e7bf03dea4ee4b4331dcde67362066ade00a47d1031e142fe",
-        "signature": "4ca34c4ea035ee0e7bf03dea4ee4b4331dcde67362066ade00a47d1031e142fe",
+        "version": "9a05186e23b056c7859291c869f7de8cd002fff24324eee0cc2d1f016e31a322",
+        "signature": "9a05186e23b056c7859291c869f7de8cd002fff24324eee0cc2d1f016e31a322",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/texchange.d.ts": {
@@ -502,8 +507,8 @@
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "ece7977b8a7e3f8734f138a55b235090128a15c3ce1ea26bf2c908405b92d6e2",
-        "signature": "7f0d88d482522d9d7bd091d35bdc4e3a0b985e21edd4d1edf497ac432579e4da",
+        "version": "1662948d9ae8f52bdf56a43fd254e83919b2840d8ecdda03a2297c5614dddff3",
+        "signature": "d418c2b108a74809fcee4c10cdd74e20c10a81e7ce2345e3682e4910fce94c5c",
         "affectsGlobalScope": false
       },
       "./src/private-api.ts": {
@@ -527,7 +532,7 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "d14d2a0638f55c47109ea933d3c5c0092afedead0a805b58ba4a7d70b6cd0c4f",
+        "version": "2540348231c0ece805978c0cdef97f7dbb34a7a3a2ec4af9bf14acb9a1d20a0a",
         "signature": "5b3f12cd24b975954657ca3a6b7d38faccf49de4b8c7f4f802a0cebd88ac2206",
         "affectsGlobalScope": false
       },
@@ -975,6 +980,9 @@
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
+      "./node_modules/interfaces/dist/data.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts"
+      ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
@@ -1005,17 +1013,20 @@
         "./node_modules/@types/node/index.d.ts"
       ],
       "./node_modules/texchange/dist/incremental-book.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
       "./node_modules/texchange/dist/interfaces.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
       ],
       "./node_modules/texchange/dist/making-order.d.ts": [
-        "./node_modules/interfaces/dist/data.d.ts",
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
         "./node_modules/texchange/dist/pushing.d.ts"
       ],
       "./node_modules/texchange/dist/managing-assets.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
         "./node_modules/texchange/dist/making-order.d.ts"
       ],
@@ -1040,6 +1051,7 @@
         "./src/public-api.ts"
       ],
       "./src/db-reader.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts"
@@ -1337,6 +1349,9 @@
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
+      "./node_modules/interfaces/dist/data.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts"
+      ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
@@ -1367,17 +1382,20 @@
         "./node_modules/@types/node/index.d.ts"
       ],
       "./node_modules/texchange/dist/incremental-book.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
       "./node_modules/texchange/dist/interfaces.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
       ],
       "./node_modules/texchange/dist/making-order.d.ts": [
-        "./node_modules/interfaces/dist/data.d.ts",
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
         "./node_modules/texchange/dist/pushing.d.ts"
       ],
       "./node_modules/texchange/dist/managing-assets.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
         "./node_modules/texchange/dist/making-order.d.ts"
       ],
@@ -1445,6 +1463,7 @@
       "../../../node_modules/@types/qs/index.d.ts",
       "../../../node_modules/@types/range-parser/index.d.ts",
       "../../../node_modules/@types/serve-static/index.d.ts",
+      "./node_modules/@types/big.js/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/events/index.d.ts",
       "./node_modules/@types/node-fetch/externals.d.ts",
