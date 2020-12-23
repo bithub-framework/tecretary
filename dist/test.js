@@ -1,5 +1,5 @@
 import { Startable, adaptor, } from 'startable';
-import { Tecretary, LONG, SHORT, ASK, } from './index';
+import { Tecretary, ASK, } from './index';
 import Big from 'big.js';
 function f(x) {
     return JSON.parse(JSON.stringify(x));
@@ -37,19 +37,8 @@ class Strategy extends Startable {
 }
 const tecretary = new Tecretary(Strategy, {
     DB_FILE_PATH: '/home/zim/Downloads/secretary-test.db',
-    initialAssets: {
-        position: {
-            [LONG]: new Big(0), [SHORT]: new Big(0),
-        },
-        leverage: 10,
-        balance: new Big(100000),
-        cost: {
-            [LONG]: new Big(0), [SHORT]: new Big(0),
-        },
-        frozen: new Big(0),
-        margin: new Big(0),
-        reserve: new Big(100000),
-    },
+    initialBalance: new Big(100000),
+    leverage: 10,
     PING: 10,
     PROCESSING: 10,
     MAKER_FEE: .01,
