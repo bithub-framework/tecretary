@@ -9,9 +9,8 @@ import {
     Config,
 } from './interfaces';
 import Big from 'big.js';
+import { LIMIT } from './config';
 
-// TODO
-const LIMIT = 1;
 
 class AsyncForwardIterator<T> implements AsyncIterator<T> {
     public current?: T;

@@ -2,8 +2,7 @@ import Database from 'promisified-sqlite';
 import Startable from 'startable';
 import { BID, ASK, } from './interfaces';
 import Big from 'big.js';
-// TODO
-const LIMIT = 1;
+import { LIMIT } from './config';
 class AsyncForwardIterator {
     constructor(i) {
         this.i = i;

@@ -10,8 +10,8 @@ import {
     RawTrade,
     StrategyConstructor,
 } from './interfaces';
+import { NEXT_INTERVAL } from './config';
 
-const NEXT_INTERVAL = 10;
 
 class Tecretary extends Startable {
     private dbReader: DbReader;

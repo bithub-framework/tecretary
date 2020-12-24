@@ -4,7 +4,7 @@ import { Context } from './context';
 import Texchange from 'texchange';
 import Forward from './forward';
 import { Pollerloop } from 'pollerloop';
-const NEXT_INTERVAL = 10;
+import { NEXT_INTERVAL } from './config';
 class Tecretary extends Startable {
     constructor(Strategy, config) {
         super();

@@ -201,6 +201,11 @@
         "signature": "cd6efb9467a8b6338ece2e2855e37765700f2cd061ca54b01b33878cf5c7677e",
         "affectsGlobalScope": true
       },
+      "./src/config.ts": {
+        "version": "027f786376f405124f683b13c56433dfe4279cb9de5f926f163bd0282711570d",
+        "signature": "bf494bc14be2316096f1cf21f725e31cc5a86c25e306497d971106013240d91b",
+        "affectsGlobalScope": false
+      },
       "./node_modules/@types/big.js/index.d.ts": {
         "version": "90589e3f3eed0a07917117760dc77abb1c6c672eb7d1d3b4ca76b8cb48f73917",
         "signature": "90589e3f3eed0a07917117760dc77abb1c6c672eb7d1d3b4ca76b8cb48f73917",
@@ -481,14 +486,14 @@
         "signature": "88d96c284774f03284cbcb8a57447dfc7b12c5af6f4f2d76fb47dcf56081d3ed",
         "affectsGlobalScope": false
       },
-      "./node_modules/texchange/dist/manager-open-order.d.ts": {
+      "./node_modules/texchange/dist/manager-open-orders.d.ts": {
         "version": "3b227e6fe1e8df7928a57468a06e2c6480a8f4da2adda6c5e4660bc05e678f9b",
         "signature": "3b227e6fe1e8df7928a57468a06e2c6480a8f4da2adda6c5e4660bc05e678f9b",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/2-ordering.d.ts": {
-        "version": "0c4f592b9b6f50cc5b362294b3774a6a6b5f992b66b2635ba688e99b93b989c4",
-        "signature": "0c4f592b9b6f50cc5b362294b3774a6a6b5f992b66b2635ba688e99b93b989c4",
+        "version": "dcc471e6d2a777feb7bed54ca723b9d451aa2e6bf8511564317245cf6c8832c7",
+        "signature": "dcc471e6d2a777feb7bed54ca723b9d451aa2e6bf8511564317245cf6c8832c7",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/3-taken.d.ts": {
@@ -552,7 +557,7 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "7cd20a7913ca27d0f1766085aa734c9dc3788aafaa55a5a9a903a6b38b247281",
+        "version": "4f56bf99809f4e641fccbda70a3771a61977889b143dbf6c541cc63d26ee1d75",
         "signature": "e7d805b37ff192208adc4944e6e2aaef43a86ae29e11d2fda992a97ad7851fa7",
         "affectsGlobalScope": false
       },
@@ -582,7 +587,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "df9f197f61a4f084f89f04b6f162efd17a29f2684f3096f8300c7262115ea129",
+        "version": "a60ce9941cb5a87c1f6e928503ef4a664890e7ed1322f4b4d30c8ac414146f7f",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
@@ -1053,7 +1058,7 @@
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/1-pushing.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
-        "./node_modules/texchange/dist/manager-open-order.d.ts"
+        "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/3-taken.d.ts": [
         "./node_modules/texchange/dist/2-ordering.d.ts",
@@ -1076,7 +1081,7 @@
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
       ],
-      "./node_modules/texchange/dist/manager-open-order.d.ts": [
+      "./node_modules/texchange/dist/manager-open-orders.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
@@ -1098,6 +1103,7 @@
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",
         "./node_modules/startable/dist/index.d.ts",
+        "./src/config.ts",
         "./src/interfaces.ts"
       ],
       "./src/forward.ts": [
@@ -1125,6 +1131,7 @@
         "./node_modules/pollerloop/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./node_modules/texchange/dist/index.d.ts",
+        "./src/config.ts",
         "./src/context.ts",
         "./src/db-reader.ts",
         "./src/forward.ts",
@@ -1445,7 +1452,7 @@
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/1-pushing.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
-        "./node_modules/texchange/dist/manager-open-order.d.ts"
+        "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/3-taken.d.ts": [
         "./node_modules/texchange/dist/2-ordering.d.ts",
@@ -1468,7 +1475,7 @@
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
       ],
-      "./node_modules/texchange/dist/manager-open-order.d.ts": [
+      "./node_modules/texchange/dist/manager-open-orders.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
@@ -1611,9 +1618,10 @@
       "./node_modules/texchange/dist/5-delay.d.ts",
       "./node_modules/texchange/dist/index.d.ts",
       "./node_modules/texchange/dist/interfaces.d.ts",
-      "./node_modules/texchange/dist/manager-open-order.d.ts",
+      "./node_modules/texchange/dist/manager-open-orders.d.ts",
       "./node_modules/texchange/dist/manager-orderbook.d.ts",
       "./node_modules/ts-toolbelt/out/index.d.ts",
+      "./src/config.ts",
       "./src/context.ts",
       "./src/db-reader.ts",
       "./src/forward.ts",
