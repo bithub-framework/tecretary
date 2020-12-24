@@ -6,6 +6,7 @@ function f(x) {
     ;
 }
 class Strategy extends Startable {
+    // private locked = true;
     constructor(ctx) {
         super();
         this.ctx = ctx;
@@ -15,6 +16,9 @@ class Strategy extends Startable {
         //     void console.log(f(trades)));
         ctx[0].on('orderbook', async (orderbook) => {
             try {
+                // console.log(JSON.stringify(orderbook));
+                // if (this.locked) return;
+                // this.locked = true;
                 if (orderbook[ASK][0].price.lte(19200)) {
                     let order;
                     order = LimitOrder.from({
@@ -23,26 +27,29 @@ class Strategy extends Startable {
                         length: SHORT,
                         operation: CLOSE
                     });
-                    if (order.quantity.gt(0))
+                    if (order.quantity.gt(0)) {
+                        console.log(JSON.stringify(order));
                         await this.ctx[0][0].makeLimitOrder(order);
+                    }
                     order = LimitOrder.from({
                         price: new Big(19200),
                         quantity: this.assets.reserve.div(19200).times(1000),
                         length: LONG,
                         operation: OPEN,
                     });
-                    this.ctx[0][0].makeLimitOrder(order);
+                    await this.ctx[0][0].makeLimitOrder(order);
                 }
                 if (orderbook[BID][0].price.gte(19300)) {
                 }
-                console.log(ctx.now());
                 const order = LimitOrder.from({
                     price: new Big('19123.8'),
                     quantity: new Big(100),
                     length: SHORT,
                     operation: OPEN,
                 });
+                // console.log(JSON.stringify(order));
                 await ctx[0][0].makeLimitOrder(order);
+                // this.locked = false;
             }
             catch (err) {
                 console.error(err);
@@ -51,6 +58,7 @@ class Strategy extends Startable {
     }
     async _start() {
         await this.syncAssets();
+        console.log(JSON.stringify(this.assets));
     }
     async _stop() {
     }
@@ -59,7 +67,7 @@ class Strategy extends Startable {
     }
 }
 const tecretary = new Tecretary(Strategy, {
-    DB_FILE_PATH: '/home/zim/Downloads/huobi-test.db',
+    DB_FILE_PATH: '/home/zim/Downloads/secretary-test.db',
     initialBalance: new Big(100),
     leverage: 10,
     PING: 10,

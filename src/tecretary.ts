@@ -51,18 +51,19 @@ class Tecretary extends Startable {
         await this.orderbooksIterator.next();
         this.tradesIterator = this.dbReader.getTrades();
         await this.tradesIterator.next();
-
-        await this.strategy.start(err => void this.stop(err).catch(() => { }));
+        // TODO
         await this.pollerloop.start(err => void this.stop(err).catch(() => { }));
+        await this.strategy.start(err => void this.stop(err).catch(() => { }));
     }
 
     protected async _stop() {
-        await this.pollerloop.stop();
         await this.strategy.stop();
+        await this.pollerloop.stop();
         await this.dbReader.stop();
     }
 
     private loop: Loop = async sleep => {
+        await sleep(1000);
         while (true) {
             const now = this.forward.now();
             let nextTime = this.forward.getNextTime();

@@ -12,7 +12,6 @@ import {
     LimitOrder,
 } from './index';
 import Big from 'big.js';
-import { RoundingMode } from 'big.js';
 
 function f(x: unknown) {
     return JSON.parse(JSON.stringify(x));;
@@ -20,6 +19,7 @@ function f(x: unknown) {
 
 class Strategy extends Startable {
     private assets?: Assets;
+    // private locked = true;
 
     constructor(private ctx: ContextLike) {
         super();
@@ -30,6 +30,9 @@ class Strategy extends Startable {
 
         ctx[0].on('orderbook', async orderbook => {
             try {
+                // console.log(JSON.stringify(orderbook));
+                // if (this.locked) return;
+                // this.locked = true;
                 if (orderbook[ASK][0].price.lte(19200)) {
                     let order: LimitOrder;
                     order = LimitOrder.from({
@@ -38,8 +41,10 @@ class Strategy extends Startable {
                         length: SHORT,
                         operation: CLOSE
                     });
-                    if (order.quantity.gt(0))
+                    if (order.quantity.gt(0)) {
+                        console.log(JSON.stringify(order));
                         await this.ctx[0][0].makeLimitOrder(order);
+                    }
 
                     order = LimitOrder.from({
                         price: new Big(19200),
@@ -47,21 +52,22 @@ class Strategy extends Startable {
                         length: LONG,
                         operation: OPEN,
                     });
-                    this.ctx[0][0].makeLimitOrder(order);
+                    await this.ctx[0][0].makeLimitOrder(order);
                 }
 
                 if (orderbook[BID][0].price.gte(19300)) {
 
                 }
 
-                console.log(ctx.now());
                 const order = LimitOrder.from({
                     price: new Big('19123.8'),
                     quantity: new Big(100),
                     length: SHORT,
                     operation: OPEN,
                 });
+                // console.log(JSON.stringify(order));
                 await ctx[0][0].makeLimitOrder(order);
+                // this.locked = false;
             } catch (err) {
                 console.error(err);
             }
@@ -70,6 +76,7 @@ class Strategy extends Startable {
 
     protected async _start() {
         await this.syncAssets();
+        console.log(JSON.stringify(this.assets));
     }
 
     protected async _stop() {
@@ -84,7 +91,7 @@ class Strategy extends Startable {
 const tecretary = new Tecretary(
     Strategy,
     {
-        DB_FILE_PATH: '/home/zim/Downloads/huobi-test.db',
+        DB_FILE_PATH: '/home/zim/Downloads/secretary-test.db',
         initialBalance: new Big(100),
         leverage: 10,
         PING: 10,
