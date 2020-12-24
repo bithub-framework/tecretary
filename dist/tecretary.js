@@ -11,7 +11,7 @@ class Tecretary extends Startable {
         this.Strategy = Strategy;
         this.config = config;
         this.loop = async (sleep) => {
-            await sleep(1000);
+            await sleep(NEXT_INTERVAL);
             while (true) {
                 const now = this.forward.now();
                 let nextTime = this.forward.getNextTime();
@@ -57,7 +57,6 @@ class Tecretary extends Startable {
         await this.orderbooksIterator.next();
         this.tradesIterator = this.dbReader.getTrades();
         await this.tradesIterator.next();
-        // TODO
         await this.pollerloop.start(err => void this.stop(err).catch(() => { }));
         await this.strategy.start(err => void this.stop(err).catch(() => { }));
     }

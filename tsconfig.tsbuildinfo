@@ -587,7 +587,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "a60ce9941cb5a87c1f6e928503ef4a664890e7ed1322f4b4d30c8ac414146f7f",
+        "version": "3deabb775699de1cbaf0ee81e08348844fbaac449435d1dbfb78a2ad44d571de",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
