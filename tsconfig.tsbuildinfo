@@ -487,8 +487,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/2-ordering.d.ts": {
-        "version": "b9d6933294df06549bb992489ae6e4f9ca23baaca0aed9005b501b4b26352d2f",
-        "signature": "b9d6933294df06549bb992489ae6e4f9ca23baaca0aed9005b501b4b26352d2f",
+        "version": "0c4f592b9b6f50cc5b362294b3774a6a6b5f992b66b2635ba688e99b93b989c4",
+        "signature": "0c4f592b9b6f50cc5b362294b3774a6a6b5f992b66b2635ba688e99b93b989c4",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/3-taken.d.ts": {
@@ -592,7 +592,7 @@
         "affectsGlobalScope": false
       },
       "./src/test.ts": {
-        "version": "25f3d8433e335908645f08d3220319ae35c3c93f56bb041eb3af5417781c8665",
+        "version": "82ef4e70c80a934f60b4cafddb4076c7ea7233ee63f6f0ad96ecf6f62909b4e7",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
