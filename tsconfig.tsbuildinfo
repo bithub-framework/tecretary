@@ -207,8 +207,8 @@
         "affectsGlobalScope": true
       },
       "./node_modules/interfaces/dist/data.d.ts": {
-        "version": "53c68b4d808ba83525bd022f12fd78ccb7cec79dc9255c720ffee04333f0eb33",
-        "signature": "53c68b4d808ba83525bd022f12fd78ccb7cec79dc9255c720ffee04333f0eb33",
+        "version": "2dffbe59da71dcb02ce88fb15f90a44e5a11ff2a225979cc092c121f8ec3d8be",
+        "signature": "2dffbe59da71dcb02ce88fb15f90a44e5a11ff2a225979cc092c121f8ec3d8be",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -252,8 +252,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/crypto.d.ts": {
-        "version": "2636f61a2d5f76d4039c7110f65c407a028ec5265e03d855fc2cf62b198ac415",
-        "signature": "2636f61a2d5f76d4039c7110f65c407a028ec5265e03d855fc2cf62b198ac415",
+        "version": "75d76be86ffc40ae985ebace0cbd2c79b1e10c224c925d91f4df5a2705cc3f76",
+        "signature": "75d76be86ffc40ae985ebace0cbd2c79b1e10c224c925d91f4df5a2705cc3f76",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/dgram.d.ts": {
@@ -392,8 +392,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/util.d.ts": {
-        "version": "f5b9d446783f075eed9e93dfba1a5055b3fd61aab285fef3bbc761eadf598204",
-        "signature": "f5b9d446783f075eed9e93dfba1a5055b3fd61aab285fef3bbc761eadf598204",
+        "version": "f28704c27e1bd58068052f5407541a3306f0ffc77f068e2891f46527a4569e25",
+        "signature": "f28704c27e1bd58068052f5407541a3306f0ffc77f068e2891f46527a4569e25",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/v8.d.ts": {
@@ -452,53 +452,58 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/context.d.ts": {
-        "version": "94d180edefed13840b45c074db9fb49f439a61f253769377eabfb2aaa6dc29be",
-        "signature": "94d180edefed13840b45c074db9fb49f439a61f253769377eabfb2aaa6dc29be",
+        "version": "cee36f9bd937fc11efccc23a685a09116eba9c02f5a6683b190a3ac65a695415",
+        "signature": "cee36f9bd937fc11efccc23a685a09116eba9c02f5a6683b190a3ac65a695415",
         "affectsGlobalScope": false
       },
-      "./node_modules/interfaces/dist/reviver.d.ts": {
-        "version": "dc80d857e567720142a212e22f7381d16b787731d86f50fe0fb6f6e5d8730864",
-        "signature": "dc80d857e567720142a212e22f7381d16b787731d86f50fe0fb6f6e5d8730864",
+      "./node_modules/interfaces/dist/mapping.d.ts": {
+        "version": "2b6e6541512a6e071c3e3f927844b30cd149bf519901c629a602aea71a74d7ce",
+        "signature": "2b6e6541512a6e071c3e3f927844b30cd149bf519901c629a602aea71a74d7ce",
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "67fcb51fb05a8d5581c0c999c058dc7576c45816f9e607768c02df91f82c7e8d",
-        "signature": "67fcb51fb05a8d5581c0c999c058dc7576c45816f9e607768c02df91f82c7e8d",
+        "version": "dbb3fc2b9a70fab45bdaa218238c850313920916f21ebc0f003930165f5b5529",
+        "signature": "dbb3fc2b9a70fab45bdaa218238c850313920916f21ebc0f003930165f5b5529",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
-        "version": "d42aeef9045e7b4a589f7681da13f55c3d5cfcaf3671c33ff8414406482c66b2",
-        "signature": "d42aeef9045e7b4a589f7681da13f55c3d5cfcaf3671c33ff8414406482c66b2",
+        "version": "428ad4d001d91dddbb069dc53494362a41df23662a4e3c48f950f1baf154d902",
+        "signature": "428ad4d001d91dddbb069dc53494362a41df23662a4e3c48f950f1baf154d902",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/orderbook-manager.d.ts": {
-        "version": "d7de447df18195024b00e031cd89bae8c360ae52961059e70c8c8816a43e3c78",
-        "signature": "d7de447df18195024b00e031cd89bae8c360ae52961059e70c8c8816a43e3c78",
+        "version": "c226dee6609f52f894be4efdfddf8d7929cd79a0e92dacf374aa7271c67e8845",
+        "signature": "c226dee6609f52f894be4efdfddf8d7929cd79a0e92dacf374aa7271c67e8845",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/1-pushing.d.ts": {
-        "version": "d60f1697fc5f21ce7a4eeeb6fee152b0b6d8d2a674403db59d2447ddf50357b1",
-        "signature": "d60f1697fc5f21ce7a4eeeb6fee152b0b6d8d2a674403db59d2447ddf50357b1",
+        "version": "c5e7ae8af55f422cc0a38cee1f1e015fbf583b9cf723a1cbf565f00f8a71ccb1",
+        "signature": "c5e7ae8af55f422cc0a38cee1f1e015fbf583b9cf723a1cbf565f00f8a71ccb1",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/texchange/dist/open-order-manager.d.ts": {
+        "version": "3b227e6fe1e8df7928a57468a06e2c6480a8f4da2adda6c5e4660bc05e678f9b",
+        "signature": "3b227e6fe1e8df7928a57468a06e2c6480a8f4da2adda6c5e4660bc05e678f9b",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/2-ordering.d.ts": {
-        "version": "bed9d0ee3da46892f0d5d0619b1c64086d5da8c331f3292fa22c3f1441c7ed65",
-        "signature": "bed9d0ee3da46892f0d5d0619b1c64086d5da8c331f3292fa22c3f1441c7ed65",
+        "version": "fbb4adc20c9549dc98c07493642d578d730a776c162fb4b7f09b13fe54875ec6",
+        "signature": "fbb4adc20c9549dc98c07493642d578d730a776c162fb4b7f09b13fe54875ec6",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/3-taken.d.ts": {
-        "version": "deb9ca410a6721fc2c1bd7180d4d487cf7291f54990e88d2c3edf2ef91c7c28c",
-        "signature": "deb9ca410a6721fc2c1bd7180d4d487cf7291f54990e88d2c3edf2ef91c7c28c",
+        "version": "106b9135230488812e5b54059ab90323031779844e75e94f22f3f4f76ce4d824",
+        "signature": "106b9135230488812e5b54059ab90323031779844e75e94f22f3f4f76ce4d824",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/4-assets.d.ts": {
-        "version": "1e7b75348b606028b71dc223182467dd745d6f963b7f738d2a2d287117514cbf",
-        "signature": "1e7b75348b606028b71dc223182467dd745d6f963b7f738d2a2d287117514cbf",
+        "version": "951bd8c48fe4d515463f2c64521c225421f7e21cc69598b8bc278ba15546e502",
+        "signature": "951bd8c48fe4d515463f2c64521c225421f7e21cc69598b8bc278ba15546e502",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/5-delay.d.ts": {
-        "version": "654067cca5291d9ab2eb96a0764744a2654c3b3e1129d92d90225f9a0a070a32",
-        "signature": "654067cca5291d9ab2eb96a0764744a2654c3b3e1129d92d90225f9a0a070a32",
+        "version": "c20c1799aba789082fd56b16efd489683276ea03feced82429de60cff0fffc7b",
+        "signature": "c20c1799aba789082fd56b16efd489683276ea03feced82429de60cff0fffc7b",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/index.d.ts": {
@@ -548,7 +553,7 @@
       },
       "./src/db-reader.ts": {
         "version": "7cd20a7913ca27d0f1766085aa734c9dc3788aafaa55a5a9a903a6b38b247281",
-        "signature": "1d1b8feda519c6319a9ce0064bfe1bcf3c831ba0547aff91d51bdc35f378df17",
+        "signature": "e7d805b37ff192208adc4944e6e2aaef43a86ae29e11d2fda992a97ad7851fa7",
         "affectsGlobalScope": false
       },
       "./node_modules/sorted-queue/dist/index.d.ts": {
@@ -587,7 +592,7 @@
         "affectsGlobalScope": false
       },
       "./src/test.ts": {
-        "version": "5f29f5a63b1d4d56862e1e17ffa01a3195213af642cba65ec6646685cfca2422",
+        "version": "548d27810cec9cdc2f76cca994edfd578bcb2c1ad1ecca2f74870b8c527c904c",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -1011,7 +1016,7 @@
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
-        "./node_modules/interfaces/dist/reviver.d.ts"
+        "./node_modules/interfaces/dist/mapping.d.ts"
       ],
       "./node_modules/pollerloop/dist/index.d.ts": [
         "./node_modules/pollerloop/dist/pollerloop.d.ts"
@@ -1047,14 +1052,15 @@
       "./node_modules/texchange/dist/2-ordering.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/1-pushing.d.ts",
-        "./node_modules/texchange/dist/interfaces.d.ts"
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/open-order-manager.d.ts"
       ],
       "./node_modules/texchange/dist/3-taken.d.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/2-ordering.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
       "./node_modules/texchange/dist/4-assets.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/3-taken.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
@@ -1069,6 +1075,10 @@
       "./node_modules/texchange/dist/interfaces.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
+      ],
+      "./node_modules/texchange/dist/open-order-manager.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts"
       ],
       "./node_modules/texchange/dist/orderbook-manager.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
@@ -1398,7 +1408,7 @@
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
-        "./node_modules/interfaces/dist/reviver.d.ts"
+        "./node_modules/interfaces/dist/mapping.d.ts"
       ],
       "./node_modules/pollerloop/dist/index.d.ts": [
         "./node_modules/pollerloop/dist/pollerloop.d.ts"
@@ -1434,14 +1444,15 @@
       "./node_modules/texchange/dist/2-ordering.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/1-pushing.d.ts",
-        "./node_modules/texchange/dist/interfaces.d.ts"
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/open-order-manager.d.ts"
       ],
       "./node_modules/texchange/dist/3-taken.d.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/2-ordering.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
       "./node_modules/texchange/dist/4-assets.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/3-taken.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts"
       ],
@@ -1456,6 +1467,10 @@
       "./node_modules/texchange/dist/interfaces.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/index.d.ts"
+      ],
+      "./node_modules/texchange/dist/open-order-manager.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/texchange/dist/interfaces.d.ts"
       ],
       "./node_modules/texchange/dist/orderbook-manager.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
@@ -1472,6 +1487,7 @@
         "./src/public-api.ts"
       ],
       "./src/db-reader.ts": [
+        "./node_modules/interfaces/dist/data.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./src/interfaces.ts"
       ],
@@ -1579,7 +1595,7 @@
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
-      "./node_modules/interfaces/dist/reviver.d.ts",
+      "./node_modules/interfaces/dist/mapping.d.ts",
       "./node_modules/pollerloop/dist/index.d.ts",
       "./node_modules/pollerloop/dist/pollerloop.d.ts",
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts",
@@ -1595,6 +1611,7 @@
       "./node_modules/texchange/dist/5-delay.d.ts",
       "./node_modules/texchange/dist/index.d.ts",
       "./node_modules/texchange/dist/interfaces.d.ts",
+      "./node_modules/texchange/dist/open-order-manager.d.ts",
       "./node_modules/texchange/dist/orderbook-manager.d.ts",
       "./node_modules/ts-toolbelt/out/index.d.ts",
       "./src/context.ts",

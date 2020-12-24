@@ -13,7 +13,7 @@
     "license": "SEE LICENSE IN ./LICENSE",
     "dependencies": {
         "@types/big.js": "^6.0.1",
-        "@types/node": "^14.14.14",
+        "@types/node": "^14.14.16",
         "big.js": "^6.0.3",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
         "pollerloop": "https://gitee.com/zimtsui/pollerloop.git",
