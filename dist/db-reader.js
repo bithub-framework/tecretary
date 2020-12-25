@@ -3,6 +3,8 @@ import Startable from 'startable';
 import { BID, ASK, } from './interfaces';
 import Big from 'big.js';
 import { LIMIT } from './config';
+import { find, whereEq } from 'ramda';
+import assert from 'assert';
 class AsyncForwardIterator {
     constructor(i) {
         this.i = i;
@@ -52,10 +54,10 @@ class DbReader extends Startable {
             ;`);
             if (!orderbooks.length)
                 break;
-            for (const orderbook of orderbooks) {
-                const asks = JSON.parse(orderbook.asks);
-                const bids = JSON.parse(orderbook.bids);
-                yield {
+            for (const stringified of orderbooks) {
+                const asks = JSON.parse(stringified.asks);
+                const bids = JSON.parse(stringified.bids);
+                const orderbook = {
                     [ASK]: asks.map(([_price, _quantity]) => ({
                         price: new Big(_price.toFixed(this.config.PRICE_DP)),
                         quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
@@ -66,8 +68,9 @@ class DbReader extends Startable {
                         quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
                         side: BID,
                     })),
-                    time: orderbook.time,
+                    time: stringified.time,
                 };
+                yield orderbook;
             }
         }
     }
@@ -76,6 +79,8 @@ class DbReader extends Startable {
     }
     async _start() {
         await this.db.start(err => void this.stop(err).catch(() => { }));
+        await this.validateTables();
+        await this.validateOrderbook();
     }
     async _stop() {
         await this.db.stop();
@@ -88,6 +93,63 @@ class DbReader extends Startable {
             SELECT MIN(time) AS "0" FROM trades
         ;`))[0][0];
         return Math.min(orderbooksMinTime, tradesMinTime);
+    }
+    async validateTables() {
+        const tradesTableInfo = await this.db.sql(`
+            PRAGMA table_info(trades)
+        ;`);
+        assert(find(whereEq({
+            name: 'price',
+            type: 'DECIMAL(12 , 2)',
+            notnull: 1,
+        }), tradesTableInfo));
+        assert(find(whereEq({
+            name: 'quantity',
+            type: 'DECIMAL(16 , 6)',
+            notnull: 1,
+        }), tradesTableInfo));
+        assert(find(whereEq({
+            name: 'side',
+            type: 'VARCHAR(4)',
+            notnull: 1,
+        }), tradesTableInfo));
+        assert(find(whereEq({
+            name: 'time',
+            type: 'BIGINT',
+            notnull: 1,
+        }), tradesTableInfo));
+        const orderbooksTableInfo = await this.db.sql(`
+            PRAGMA table_info(orderbooks)
+        ;`);
+        assert(find(whereEq({
+            name: 'asks',
+            type: 'CLOB',
+            notnull: 1,
+        }), orderbooksTableInfo));
+        assert(find(whereEq({
+            name: 'bids',
+            type: 'CLOB',
+            notnull: 1,
+        }), orderbooksTableInfo));
+        assert(find(whereEq({
+            name: 'time',
+            type: 'BIGINT',
+            notnull: 1,
+        }), orderbooksTableInfo));
+    }
+    async validateOrderbook() {
+        const orderbooks = (await this.db.sql(`
+            SELECT bids, asks FROM orderbooks
+            LIMIT 1
+        ;`));
+        if (!orderbooks.length)
+            return;
+        const orderbook = orderbooks[0];
+        const bids = JSON.parse(orderbook.bids);
+        assert(bids instanceof Array);
+        assert(bids[0] instanceof Array);
+        assert(typeof bids[0][0] === 'number');
+        assert(typeof bids[0][1] === 'number');
     }
 }
 export { DbReader as default, DbReader, AsyncForwardIterator, };

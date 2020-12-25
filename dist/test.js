@@ -16,7 +16,7 @@ class Strategy extends Startable {
         //     void console.log(f(trades)));
         ctx[0].on('orderbook', async (orderbook) => {
             try {
-                if (++this.count % 1000 === 0) {
+                if (++this.count % 10000 === 0) {
                     console.log(this.count);
                 }
                 if (this.locked)

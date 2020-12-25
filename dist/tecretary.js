@@ -4,14 +4,13 @@ import { Context } from './context';
 import Texchange from 'texchange';
 import Forward from './forward';
 import { Pollerloop } from 'pollerloop';
-import { NEXT_INTERVAL } from './config';
 class Tecretary extends Startable {
     constructor(Strategy, config) {
         super();
         this.Strategy = Strategy;
         this.config = config;
         this.loop = async (sleep) => {
-            await sleep(NEXT_INTERVAL);
+            await sleep();
             while (true) {
                 const now = this.forward.now();
                 let nextTime = this.forward.getNextTime();
@@ -38,8 +37,7 @@ class Tecretary extends Startable {
                 nextTime = this.forward.getNextTime();
                 if (nextTime === Number.POSITIVE_INFINITY)
                     break;
-                const delay = Math.min(nextTime - now, NEXT_INTERVAL);
-                await sleep(delay);
+                await sleep();
                 this.forward.next();
             }
         };
@@ -62,10 +60,7 @@ class Tecretary extends Startable {
     }
     async _stop() {
         await this.strategy.stop();
-        await this.pollerloop.stop().catch(err => {
-            console.log(1);
-            throw err;
-        });
+        await this.pollerloop.stop();
         await this.dbReader.stop();
     }
 }

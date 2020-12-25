@@ -202,8 +202,8 @@
         "affectsGlobalScope": true
       },
       "./src/config.ts": {
-        "version": "bc68dff53b7ad1e8fc1d3f2b59ab74883358bb5566315bfaac1deaf6ef121b7d",
-        "signature": "42c55c82e73e1d7863715bb2440e052165934c8e680b3917519fb8e86651a263",
+        "version": "38a1b4568cfbc23b99a92dd36d92334b7c0972f4b61f6524e7c8cb849f28d1de",
+        "signature": "027b380db53a8adeefe832ead5981de42d07ad13a1887130ce284a8cff0d9342",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/big.js/index.d.ts": {
@@ -532,8 +532,8 @@
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "996c99df40319315e242ea951233e2122cce892040d727d73ec8ea9bda64af19",
-        "signature": "2544c49da3206e1bd7c0d6686b578fd2b732b202c64a32ce726413ead1d57e45",
+        "version": "3ce53bbb38431bf5371f391a17486e238e88487b5d930982a6b15df27143151c",
+        "signature": "6f2d7ae79756c28e2c0174c1ddd36cbd0c572f0dc2888b3b1a0a83c2a0247dab",
         "affectsGlobalScope": false
       },
       "./src/private-api.ts": {
@@ -556,9 +556,24 @@
         "signature": "0069f8c38df6c8aaf3184ced908a0984b21d4878ac21d901ce349ab6ce73dd07",
         "affectsGlobalScope": false
       },
+      "./node_modules/ts-toolbelt/out/index.d.ts": {
+        "version": "9df147746b0cbd11d022b564e6fdd43ac79b643dc579d2123317ee01cc4f0d70",
+        "signature": "9df147746b0cbd11d022b564e6fdd43ac79b643dc579d2123317ee01cc4f0d70",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/ramda/tools.d.ts": {
+        "version": "ffce841ff8b30e136ea9f045f8c3a6b0ebd986d6a670095826d179de13bf626a",
+        "signature": "ffce841ff8b30e136ea9f045f8c3a6b0ebd986d6a670095826d179de13bf626a",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/ramda/index.d.ts": {
+        "version": "5cc20bb11d8d85c9d6826a8bee507ac072f94c5a5de90cd34f6495808de5601c",
+        "signature": "5cc20bb11d8d85c9d6826a8bee507ac072f94c5a5de90cd34f6495808de5601c",
+        "affectsGlobalScope": false
+      },
       "./src/db-reader.ts": {
-        "version": "4f56bf99809f4e641fccbda70a3771a61977889b143dbf6c541cc63d26ee1d75",
-        "signature": "e7d805b37ff192208adc4944e6e2aaef43a86ae29e11d2fda992a97ad7851fa7",
+        "version": "af9e927fb3aa4bd62eba3e08f25a7b8e0740a08da7450b637a77dd785cf15ab2",
+        "signature": "41ac26e43fd11347af633ee00159201c586a9d89dda6e01182355dee4599a674",
         "affectsGlobalScope": false
       },
       "./node_modules/sorted-queue/dist/index.d.ts": {
@@ -577,17 +592,12 @@
         "affectsGlobalScope": false
       },
       "./node_modules/pollerloop/dist/pollerloop.d.ts": {
-        "version": "975cbdf418f46e14e976c8d251f31c9909971f81753cc74daa2b0685eadd0b17",
-        "signature": "975cbdf418f46e14e976c8d251f31c9909971f81753cc74daa2b0685eadd0b17",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/pollerloop/dist/index.d.ts": {
-        "version": "8b2fa3e4795c719fc67de5b588249fd0729ed88ac62f47ce9a566bc3bd991734",
-        "signature": "8b2fa3e4795c719fc67de5b588249fd0729ed88ac62f47ce9a566bc3bd991734",
+        "version": "0ef136729f4568c01e2747a85f297641c42e40976474cc0a6092920d3fdd0cc2",
+        "signature": "0ef136729f4568c01e2747a85f297641c42e40976474cc0a6092920d3fdd0cc2",
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "53da85fb7458b3b5943eacefb9918cfa9b27ea8640faae3f9ba250225080338d",
+        "version": "4fb01eb6b9e8118e7bee31557c209138e16b221a9bffb3b41d8c05d5c02381b8",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
@@ -597,7 +607,7 @@
         "affectsGlobalScope": false
       },
       "./src/test.ts": {
-        "version": "748d99961334dc156cf7f55c73fcabf1c58dc8630288860a8812601a1865e526",
+        "version": "d7593953c7aab959160baba32370bc972763ecbc21d4bdfa3beceb932cb9bc6e",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -619,21 +629,6 @@
       "./node_modules/@types/node-fetch/index.d.ts": {
         "version": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
         "signature": "f51382950fa81e3a54e9fd9f343fe583cfbb221f15a51936e12411699347effe",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/ts-toolbelt/out/index.d.ts": {
-        "version": "9df147746b0cbd11d022b564e6fdd43ac79b643dc579d2123317ee01cc4f0d70",
-        "signature": "9df147746b0cbd11d022b564e6fdd43ac79b643dc579d2123317ee01cc4f0d70",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@types/ramda/tools.d.ts": {
-        "version": "ffce841ff8b30e136ea9f045f8c3a6b0ebd986d6a670095826d179de13bf626a",
-        "signature": "ffce841ff8b30e136ea9f045f8c3a6b0ebd986d6a670095826d179de13bf626a",
-        "affectsGlobalScope": false
-      },
-      "./node_modules/@types/ramda/index.d.ts": {
-        "version": "5cc20bb11d8d85c9d6826a8bee507ac072f94c5a5de90cd34f6495808de5601c",
-        "signature": "5cc20bb11d8d85c9d6826a8bee507ac072f94c5a5de90cd34f6495808de5601c",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/sqlite3/index.d.ts": {
@@ -1023,9 +1018,6 @@
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
-      "./node_modules/pollerloop/dist/index.d.ts": [
-        "./node_modules/pollerloop/dist/pollerloop.d.ts"
-      ],
       "./node_modules/pollerloop/dist/pollerloop.d.ts": [
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
@@ -1101,6 +1093,8 @@
       ],
       "./src/db-reader.ts": [
         "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/@types/node/assert.d.ts",
+        "./node_modules/@types/ramda/index.d.ts",
         "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./src/config.ts",
@@ -1128,10 +1122,9 @@
         "./src/interfaces.ts"
       ],
       "./src/tecretary.ts": [
-        "./node_modules/pollerloop/dist/index.d.ts",
+        "./node_modules/pollerloop/dist/pollerloop.d.ts",
         "./node_modules/startable/dist/index.d.ts",
         "./node_modules/texchange/dist/index.d.ts",
-        "./src/config.ts",
         "./src/context.ts",
         "./src/db-reader.ts",
         "./src/forward.ts",
@@ -1417,9 +1410,6 @@
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
-      "./node_modules/pollerloop/dist/index.d.ts": [
-        "./node_modules/pollerloop/dist/pollerloop.d.ts"
-      ],
       "./node_modules/pollerloop/dist/pollerloop.d.ts": [
         "./node_modules/@types/node/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
@@ -1603,7 +1593,6 @@
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
-      "./node_modules/pollerloop/dist/index.d.ts",
       "./node_modules/pollerloop/dist/pollerloop.d.ts",
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts",
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",

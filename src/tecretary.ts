@@ -10,7 +10,6 @@ import {
     RawTrade,
     StrategyConstructor,
 } from './interfaces';
-import { NEXT_INTERVAL } from './config';
 
 
 class Tecretary extends Startable {
@@ -62,7 +61,7 @@ class Tecretary extends Startable {
     }
 
     private loop: Loop = async sleep => {
-        await sleep(NEXT_INTERVAL);
+        await sleep();
         while (true) {
             const now = this.forward.now();
             let nextTime = this.forward.getNextTime();
@@ -95,11 +94,7 @@ class Tecretary extends Startable {
 
             nextTime = this.forward.getNextTime();
             if (nextTime === Number.POSITIVE_INFINITY) break;
-            const delay = Math.min(
-                nextTime - now,
-                NEXT_INTERVAL,
-            );
-            await sleep(delay);
+            await sleep();
             this.forward.next();
         }
     }

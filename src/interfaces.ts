@@ -14,16 +14,3 @@ export interface Config extends TexchangeConfig {
 export interface StrategyConstructor {
     new(ctx: ContextLike): StartableLike;
 }
-
-export interface NumberizedRawTrade {
-    price: number;
-    quantity: number;
-    side: string;
-    time: number;
-}
-
-export interface StringifiedOrderbook {
-    time: number;
-    bids: string;
-    asks: string;
-}
