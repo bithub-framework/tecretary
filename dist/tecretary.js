@@ -38,7 +38,7 @@ class Tecretary extends Startable {
                 if (nextTime === Number.POSITIVE_INFINITY)
                     break;
                 await sleep(0);
-                this.forward.next();
+                await this.forward.next();
             }
         };
         this.dbReader = new DbReader(config);
@@ -49,7 +49,7 @@ class Tecretary extends Startable {
         const minTime = await this.dbReader.getMinTime();
         this.forward = new Forward(minTime);
         this.texchange = new Texchange(this.config, this.forward.sleep, this.forward.now);
-        this.context = new Context(this.texchange, this.forward.sleep, this.forward.now);
+        this.context = new Context(this.texchange, this.forward.sleep, this.forward.now, this.forward.escape);
         this.strategy = new this.Strategy(this.context);
         this.orderbooksIterator = this.dbReader.getOrderbooks();
         await this.orderbooksIterator.next();

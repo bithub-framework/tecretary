@@ -457,8 +457,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/context.d.ts": {
-        "version": "cee36f9bd937fc11efccc23a685a09116eba9c02f5a6683b190a3ac65a695415",
-        "signature": "cee36f9bd937fc11efccc23a685a09116eba9c02f5a6683b190a3ac65a695415",
+        "version": "2804a1a3251bcbf1484beb259c3bcbcc688c3afd2fce8bb4e417a4cd306fe671",
+        "signature": "2804a1a3251bcbf1484beb259c3bcbcc688c3afd2fce8bb4e417a4cd306fe671",
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/clone.d.ts": {
@@ -547,8 +547,8 @@
         "affectsGlobalScope": false
       },
       "./src/context.ts": {
-        "version": "e0f533ff507a919950a0b49f4798f678e4e00148c8635b365ea1df350a425abe",
-        "signature": "72754e93d328177f55696975682f39e8125b968162f2984f3265a95fd4317bb1",
+        "version": "412c96dded3a454d9943c4eb4835b538cbe2655298f145db47457e23fd396733",
+        "signature": "11728c1e939c1755ac984b8135c9a93f77da8cbc5625c472d971aaeb3a228336",
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": {
@@ -582,8 +582,8 @@
         "affectsGlobalScope": false
       },
       "./src/forward.ts": {
-        "version": "f30adb4d80c663b6b1f690fba13676458441b77e9adb11025b30c0524d0c8423",
-        "signature": "11fcd96373ea9a7de8a1287a9df9e11c53f78c5c995a5430fdecc9aad580ef15",
+        "version": "c489c0d385df96cbaaabf8bdb004c5bf77b4ac11ae0e5a625e0724e288b20b15",
+        "signature": "e78c84a7b9b4724083c1fb367583868459dc07faf4269b4ac0a1c7cba388896b",
         "affectsGlobalScope": false
       },
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts": {
@@ -612,7 +612,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "d021d15c33178206be502b943ef8b4bef5deb4f57dd2ebd0494e282b2057801d",
+        "version": "56a11d385c047fbafe6597b14ade8e990ec22f5f2348d3a6d09823ad505b1158",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
@@ -1120,6 +1120,7 @@
         "./src/interfaces.ts"
       ],
       "./src/forward.ts": [
+        "./node_modules/@types/node/assert.d.ts",
         "./node_modules/sorted-queue/dist/index.d.ts"
       ],
       "./src/index.ts": [

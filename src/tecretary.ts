@@ -44,6 +44,7 @@ class Tecretary extends Startable {
             this.texchange,
             this.forward.sleep,
             this.forward.now,
+            this.forward.escape,
         );
         this.strategy = new this.Strategy(this.context);
         this.orderbooksIterator = this.dbReader.getOrderbooks();
@@ -95,7 +96,7 @@ class Tecretary extends Startable {
             nextTime = this.forward.getNextTime();
             if (nextTime === Number.POSITIVE_INFINITY) break;
             await sleep(0);
-            this.forward.next();
+            await this.forward.next();
         }
     }
 }

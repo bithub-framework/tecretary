@@ -7,8 +7,9 @@ import { EventEmitter } from 'events';
 declare class Context extends EventEmitter implements ContextLike {
     sleep: (ms: number) => Promise<void>;
     now: () => number;
+    escape: <T>(v: T) => Promise<T>;
     [marketId: number]: ContextMarket;
-    constructor(texchange: Texchange, sleep: (ms: number) => Promise<void>, now: () => number);
+    constructor(texchange: Texchange, sleep: (ms: number) => Promise<void>, now: () => number, escape: <T>(v: T) => Promise<T>);
 }
 declare class ContextMarket extends ContextMarketPublicApi implements ContextMarketLike {
     [accountId: number]: ContextAccount;
