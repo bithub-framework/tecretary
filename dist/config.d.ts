@@ -1,2 +1,2 @@
-export declare const NEXT_INTERVAL = 10;
-export declare const LIMIT = 1;
+export declare const NEXT_INTERVAL = 1;
+export declare const LIMIT = 10000;

@@ -1,3 +1,3 @@
-export const NEXT_INTERVAL = 10;
+export const NEXT_INTERVAL = 1;
 // TODO
-export const LIMIT = 1;
+export const LIMIT = 10000;

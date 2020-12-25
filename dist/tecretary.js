@@ -62,7 +62,10 @@ class Tecretary extends Startable {
     }
     async _stop() {
         await this.strategy.stop();
-        await this.pollerloop.stop();
+        await this.pollerloop.stop().catch(err => {
+            console.log(1);
+            throw err;
+        });
         await this.dbReader.stop();
     }
 }
