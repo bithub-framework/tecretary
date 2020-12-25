@@ -1,1 +1,1 @@
-export declare const LIMIT = 100000;
+export declare const LIMIT = 1000000;

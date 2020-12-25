@@ -61,7 +61,7 @@ class Tecretary extends Startable {
     }
 
     private loop: Loop = async sleep => {
-        await sleep();
+        await sleep(0);
         while (true) {
             const now = this.forward.now();
             let nextTime = this.forward.getNextTime();
@@ -94,7 +94,7 @@ class Tecretary extends Startable {
 
             nextTime = this.forward.getNextTime();
             if (nextTime === Number.POSITIVE_INFINITY) break;
-            await sleep();
+            await sleep(0);
             this.forward.next();
         }
     }

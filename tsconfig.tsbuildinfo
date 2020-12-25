@@ -202,8 +202,8 @@
         "affectsGlobalScope": true
       },
       "./src/config.ts": {
-        "version": "38a1b4568cfbc23b99a92dd36d92334b7c0972f4b61f6524e7c8cb849f28d1de",
-        "signature": "027b380db53a8adeefe832ead5981de42d07ad13a1887130ce284a8cff0d9342",
+        "version": "a144d8bf66f118b8276b365c7256db07050a37dab80c62db49b684bbc9760b47",
+        "signature": "320d36e2c61cc6f51c681ecfa004967161cc3aa37213c137492f7544a0fc9e26",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/big.js/index.d.ts": {
@@ -591,13 +591,28 @@
         "signature": "a8a17c833a6e857778c83fb00d47df12270bd703ce3974baace8dd4be5e0fc47",
         "affectsGlobalScope": false
       },
+      "./node_modules/interruptible-timer/dist/timer.d.ts": {
+        "version": "4eda09896c977c89ccf22140f02356cfc58ffe3cfd92d558a85e0106540e18d8",
+        "signature": "4eda09896c977c89ccf22140f02356cfc58ffe3cfd92d558a85e0106540e18d8",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/interruptible-timer/dist/web-timer.d.ts": {
+        "version": "3bd26547e7c40e4ce1683b7e270b98fbe29cae9d07c5f754f5c5d6e577548402",
+        "signature": "3bd26547e7c40e4ce1683b7e270b98fbe29cae9d07c5f754f5c5d6e577548402",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/interruptible-timer/dist/index.d.ts": {
+        "version": "96cb8354de902ae805f89a3e22033388e12bcb2c43d2a62ea4cda14cd45e52ce",
+        "signature": "96cb8354de902ae805f89a3e22033388e12bcb2c43d2a62ea4cda14cd45e52ce",
+        "affectsGlobalScope": false
+      },
       "./node_modules/pollerloop/dist/pollerloop.d.ts": {
-        "version": "0ef136729f4568c01e2747a85f297641c42e40976474cc0a6092920d3fdd0cc2",
-        "signature": "0ef136729f4568c01e2747a85f297641c42e40976474cc0a6092920d3fdd0cc2",
+        "version": "690a5136a09de00bbd8eb5c9e6f71cda78eb362ed621c17258637ef09e0136f8",
+        "signature": "690a5136a09de00bbd8eb5c9e6f71cda78eb362ed621c17258637ef09e0136f8",
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "4fb01eb6b9e8118e7bee31557c209138e16b221a9bffb3b41d8c05d5c02381b8",
+        "version": "d021d15c33178206be502b943ef8b4bef5deb4f57dd2ebd0494e282b2057801d",
         "signature": "1de4c05ec6c70d12a36483ed5aa21deaac24e3daed99ab4f5911c913c1f34619",
         "affectsGlobalScope": false
       },
@@ -607,7 +622,7 @@
         "affectsGlobalScope": false
       },
       "./src/test.ts": {
-        "version": "d7593953c7aab959160baba32370bc972763ecbc21d4bdfa3beceb932cb9bc6e",
+        "version": "608d4d0943fdd6a53b766f2572eb88ff70190d7074d1750889138ddc567ab625",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -1018,8 +1033,12 @@
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
+      "./node_modules/interruptible-timer/dist/index.d.ts": [
+        "./node_modules/interruptible-timer/dist/timer.d.ts",
+        "./node_modules/interruptible-timer/dist/web-timer.d.ts"
+      ],
       "./node_modules/pollerloop/dist/pollerloop.d.ts": [
-        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interruptible-timer/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
       ],
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts": [
@@ -1410,8 +1429,12 @@
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
+      "./node_modules/interruptible-timer/dist/index.d.ts": [
+        "./node_modules/interruptible-timer/dist/timer.d.ts",
+        "./node_modules/interruptible-timer/dist/web-timer.d.ts"
+      ],
       "./node_modules/pollerloop/dist/pollerloop.d.ts": [
-        "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interruptible-timer/dist/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
       ],
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts": [
@@ -1593,6 +1616,9 @@
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",
+      "./node_modules/interruptible-timer/dist/index.d.ts",
+      "./node_modules/interruptible-timer/dist/timer.d.ts",
+      "./node_modules/interruptible-timer/dist/web-timer.d.ts",
       "./node_modules/pollerloop/dist/pollerloop.d.ts",
       "./node_modules/pollerloop/node_modules/startable/dist/index.d.ts",
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts",

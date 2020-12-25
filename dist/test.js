@@ -16,7 +16,7 @@ class Strategy extends Startable {
         //     void console.log(f(trades)));
         ctx[0].on('orderbook', async (orderbook) => {
             try {
-                if (++this.count % 10000 === 0) {
+                if (++this.count % 100000 === 0) {
                     console.log(this.count);
                 }
                 if (this.locked)
@@ -68,15 +68,18 @@ class Strategy extends Startable {
     }
     async _start() {
         await this.syncAssets();
+        this.startTime = Date.now();
     }
     async _stop() {
+        if (this.startTime)
+            console.log(Date.now() - this.startTime);
     }
     async syncAssets() {
         this.assets = await this.ctx[0][0].getAssets();
     }
 }
 const tecretary = new Tecretary(Strategy, {
-    DB_FILE_PATH: '/home/zim/Downloads/hour.db',
+    DB_FILE_PATH: '/home/zim/Downloads/day.db',
     initialBalance: new Big(100),
     leverage: 10,
     PING: 10,
