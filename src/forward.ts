@@ -21,8 +21,7 @@ class Forward {
         if (!this.heap.peek()) throw new Error('Empty');
         const item = this.heap.pop()!.value;
         this.currentTime = item.time;
-        // in case cb() calls next() syncly
-        setImmediate(item.cb);
+        item.cb();
     }
 
     public now = () => this.currentTime;
