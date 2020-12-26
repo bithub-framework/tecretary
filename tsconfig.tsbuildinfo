@@ -621,11 +621,6 @@
         "signature": "17dd1c0df978262cb6fb1fc0e72abc13a195844915142dc3d385f64822e04e10",
         "affectsGlobalScope": false
       },
-      "./src/test.ts": {
-        "version": "608d4d0943fdd6a53b766f2572eb88ff70190d7074d1750889138ddc567ab625",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-        "affectsGlobalScope": false
-      },
       "./node_modules/@types/bluebird/index.d.ts": {
         "version": "6247a016129906c76ba4012d2d77773c919ea33a96830b0a8d522a9790fc7efe",
         "signature": "6247a016129906c76ba4012d2d77773c919ea33a96830b0a8d522a9790fc7efe",
@@ -1149,11 +1144,6 @@
         "./src/db-reader.ts",
         "./src/forward.ts",
         "./src/interfaces.ts"
-      ],
-      "./src/test.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
-        "./node_modules/startable/dist/index.d.ts",
-        "./src/index.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1646,7 +1636,6 @@
       "./src/private-api.ts",
       "./src/public-api.ts",
       "./src/tecretary.ts",
-      "./src/test.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
