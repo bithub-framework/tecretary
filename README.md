@@ -1,6 +1,6 @@
 # Tecretary
 
-Tecretary 是一个比特币高频交易回测工具 for JavaScript。与 [SecretaryJS](https://github.com/bithub-framework/secretary-js) 对策略暴露相同接口。
+Tecretary 是一个比特币高频交易回测工具 for JavaScript。
 
 ## 特性
 
@@ -18,44 +18,7 @@ Tecretary 是一个比特币高频交易回测工具 for JavaScript。与 [Secre
 
 ## 接口
 
-你需要将你的策略写成这个接口
-
-```ts
-interface ServiceConstructor{
-    new (context: ContextLike): Service;
-}
-
-interface Service {
-    start(): Promise<void>;
-    stop(): Promise<void>;
-}
-```
-
-这个接口完全兼容阿里开源 node 进程管理器 Pandora。
-
-由于本框架是非侵入式的，context 是你的策略与 Tecretary 进行交互的唯一通道。
-
-```ts
-interface ContextLike {
-    [marketId: number]: {
-        [accountId: number]: {
-            makeLimitOrder(order: LimitOrder): Promise<OrderId>;
-            getOpenOrders(): Promise<OpenOrder[]>;
-            cancelOrder(orderId: OrderId): Promise<void>;
-            getAssets(): Promise<Assets>;
-        };
-        on(event: 'orderbook', listener: (orderbook: Orderbook) => void): this;
-        on(event: 'trades', listener: (trades: Trade[]) => void): this;
-        off(event: 'orderbook', listener: (orderbook: Orderbook) => void): this;
-        off(event: 'trades', listener: (trades: Trade[]) => void): this;
-        once(event: 'orderbook', listener: (orderbook: Orderbook) => void): this;
-        once(event: 'trades', listener: (trades: Trade[]) => void): this;
-    };
-    sleep: (ms: number) => Promise<void>;
-    now: () => number;
-    escape: <T>(v: T) => Promise<T>;
-}
-```
+Tecretary 与 [SecretaryJS](https://github.com/bithub-framework/secretary-js) 对策略暴露相同接口。
 
 ### marketId & accountId
 
@@ -71,7 +34,7 @@ Tecretary 只支持一个市场，因此 marketId 和 accountId 只能为 0。
 - 原生 async function 返回值
 - context.sleep 返回值
 
-之外的 PromiseLike，代入 context.escape 来通知框架暂停模拟时间进程。
+之外的 PromiseLike，代入 context.escape 来通知框架暂停模拟时间线。
 
 上面是容易记忆的傻瓜规则，适用于对 JavaScript 不熟悉的同学。对 JavaScript 熟悉的同学可以了解一下这个框架的基本原理，你就能更灵活地遵守这些规则。
 
@@ -156,10 +119,3 @@ class Strategy {
     }
 }
 ```
-
-## Widgets
-
-工欲善其事，必先利其器。
-
-- Startable - 健壮的服务型类框架
-- Pollerloop - 优雅的异步循环
