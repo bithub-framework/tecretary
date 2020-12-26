@@ -1,6 +1,6 @@
 # Tecretary
 
-Tecretary 是一个比特币高频交易回测工具 for JavaScript。
+Tecretary 是一个比特币高频交易回测工具 for JavaScript。与 [SecretaryJS](https://github.com/bithub-framework/secretary-js) 对策略暴露相同接口。
 
 ## 特性
 
@@ -14,6 +14,7 @@ Tecretary 是一个比特币高频交易回测工具 for JavaScript。
 
 - 只支持限价单
 - 只支持 SQLite 导入回测数据
+- 不能同时模拟多个交易所，因此不能回测套利策略。
 
 ## 接口
 
@@ -57,6 +58,8 @@ interface ContextLike {
 ```
 
 ### marketId & accountId
+
+Tecretary 只支持一个市场，因此 marketId 和 accountId 只能为 0。
 
 ### 异步策略
 
