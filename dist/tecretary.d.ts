@@ -13,7 +13,7 @@ declare class Tecretary extends Startable {
     private pollerloop;
     constructor(Strategy: StrategyConstructor, config: Config);
     protected _start(): Promise<void>;
-    protected _stop(): Promise<void>;
+    protected _stop(err?: Error): Promise<void>;
     private loop;
 }
 export { Tecretary as default, Tecretary, };

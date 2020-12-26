@@ -55,8 +55,8 @@ class Tecretary extends Startable {
         await this.strategy.start(err => void this.stop(err).catch(() => { }));
     }
 
-    protected async _stop() {
-        await this.strategy.stop();
+    protected async _stop(err?: Error) {
+        await this.strategy.stop(err);
         await this.pollerloop.stop();
         await this.dbReader.stop();
     }
@@ -94,7 +94,8 @@ class Tecretary extends Startable {
             }
 
             nextTime = this.forward.getNextTime();
-            if (nextTime === Number.POSITIVE_INFINITY) break;
+            if (nextTime === Number.POSITIVE_INFINITY)
+                this.stop().catch(() => { });
             await sleep(0);
             await this.forward.next();
         }
