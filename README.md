@@ -37,7 +37,7 @@ Tecretary 暂只支持一个市场，因此 marketId 和 accountId 只能为 0�
 - 原生 async function 返回值
 - context.sleep 返回值
 
-之外的 PromiseLike，代入 context.escape 来通知框架让框架等你这个 Promise 跑完再继续推进虚拟时间。
+之外的 PromiseLike，在 await 之前都代入 context.escape 来通知框架让框架等你这个 Promise 跑完再继续推进虚拟时间。
 
 上面是容易记忆的傻瓜规则，适用于对 JavaScript 不熟悉的同学。对 JavaScript 熟悉的同学可以了解一下这个框架的基本原理，你就能更灵活地遵守这些规则。
 
