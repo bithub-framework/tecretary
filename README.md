@@ -25,7 +25,7 @@ Tecretary 与 [SecretaryJS](https://github.com/bithub-framework/secretary-js) �
 
 ### marketId & accountId
 
-Tecretary 只支持一个市场，因此 marketId 和 accountId 只能为 0。
+Tecretary 暂只支持一个市场，因此 marketId 和 accountId 只能为 0。
 
 ### 异步策略
 
@@ -37,7 +37,7 @@ Tecretary 只支持一个市场，因此 marketId 和 accountId 只能为 0。
 - 原生 async function 返回值
 - context.sleep 返回值
 
-之外的 PromiseLike，代入 context.escape 来通知框架暂停模拟时间线。
+之外的 PromiseLike，代入 context.escape 来通知框架让框架等你这个 Promise 跑完再继续推进虚拟时间。
 
 上面是容易记忆的傻瓜规则，适用于对 JavaScript 不熟悉的同学。对 JavaScript 熟悉的同学可以了解一下这个框架的基本原理，你就能更灵活地遵守这些规则。
 
@@ -51,17 +51,17 @@ Tecretary 只支持一个市场，因此 marketId 和 accountId 只能为 0。
 
 微队列的优先级比宏队列高，只要微队列非空，就先跑微队列中的函数。
 
-为了让你的异步策略和后台的模拟交易所能快进，Tecretary 自己实现了一个模拟时间线，以及这个模拟时间线的 Timer 优先队列。这个 Timer 优先队列中存储了
+为了让你的异步策略和后台的模拟交易所能快进，Tecretary 自己实现了一个虚拟时间线，以及这个虚拟时间线的 Timer 优先队列。这个 Timer 优先队列中存储了
 
 - 你的策略创建的 Timer
 - 模拟交易所用于推送每一个回测数据的 Timer
 
-context 上的 sleep 函数是就是创建模拟时间线的 Timer。context 上的 now 函数获取的是这个模拟时间线的当前时间。
+context 上的 sleep 函数是就是创建虚拟时间线的 Timer。context 上的 now 函数获取的是这个虚拟时间线的当前时间。
 
 Tecretary 自动运行下面这个调度过程
 
 1. 从 Timer 优先队列中取出时间最近的 Timer
-1. 将模拟时间线的当前时间设为这个 Timer 设定的时间
+1. 将虚拟时间线的当前时间设为这个 Timer 设定的时间
 1. 将这个 Timer 绑定的函数加入宏队列末尾排队
 1. 将本调度过程加入宏队列末尾排队
 
@@ -93,18 +93,18 @@ class Strategy {
 1. 调度 2
 1. 协程 1 的 L2 的 resolve
 
-当协程 1 的 L2 的 await 运行时，引擎会切出这个协程，到宏队列里取出队首运行，调度 2 将模拟时间线的当前时间快进到 trades 2 的时间，并将协程 2 和调度 3 加入宏队列。此时宏队列长这样
+当协程 1 的 L2 的 await 运行时，引擎会切出这个协程，到宏队列里取出队首运行，调度 2 将虚拟时间线的当前时间快进到 trades 2 的时间，并将协程 2 和调度 3 加入宏队列。此时宏队列长这样
 
 1. 协程 1 的 L2 的 resolve
 1. 协程 2
 1. 调度 3
 
-此时协程 1 中的 L3 还没开始跑，但模拟时间线的时间已经是 trades 2 的时间了。等到协程 1 中 L3 跑的时候，输出的早已经不是 trades 1 的时间了。如同你在实盘上用了一台 30 年前的计算机，一个数据还没处理完，交易所就把下一个数据发来了。
+此时协程 1 中的 L3 还没开始跑，但虚拟时间线的时间已经是 trades 2 的时间了。等到协程 1 中 L3 跑的时候，输出的早已经不是 trades 1 的时间了。如同你在实盘上用了一台 30 年前的计算机，一个数据还没处理完，交易所就把下一个数据发来了。
 
 因此你的策略务必保证任何异步事件
 
 - 要么加入微队列。
-- 要么通过 context 提供的 sleep 函数加入模拟时间线的 Timer 优先队列，再由框架自动替你加入宏队列。
+- 要么通过 context 提供的 sleep 函数加入虚拟时间线的 Timer 优先队列，再由框架自动替你加入宏队列。
 - 要么直接加入宏队列之后用 context.escape 函数通知框架让框架下一次调度之前先等等你这个异步事件发生。
 
 总之宏队列已经专用于调度，只有微队列可以自由使用，而宏队列每次使用都必须 escape。
