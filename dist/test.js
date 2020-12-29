@@ -21,6 +21,8 @@ class Strategy extends Startable {
                 this.locked = true;
                 if (orderbook[ASK][0].price.lte(19200)) {
                     this.assets = await this.ctx[0][0].getAssets();
+                    if (this.lifePeriod !== "STARTED" /* STARTED */)
+                        return;
                     let order;
                     // order = LimitOrder.from({
                     //     price: new Big(19200),
@@ -45,11 +47,15 @@ class Strategy extends Startable {
                         console.log(f(this.assets));
                         console.log(f(order));
                         await this.ctx[0][0].makeLimitOrder(order);
+                        if (this.lifePeriod !== "STARTED" /* STARTED */)
+                            return;
                         console.log(f(await this.ctx[0][0].getAssets()));
                     }
                 }
                 if (orderbook[BID][0].price.gte(19300)) {
                     this.assets = await this.ctx[0][0].getAssets();
+                    if (this.lifePeriod !== "STARTED" /* STARTED */)
+                        return;
                     let order;
                     order = LimitOrder.from({
                         price: new Big(19300),
@@ -61,6 +67,8 @@ class Strategy extends Startable {
                         console.log(f(this.assets));
                         console.log(f(order));
                         await this.ctx[0][0].makeLimitOrder(order);
+                        if (this.lifePeriod !== "STARTED" /* STARTED */)
+                            return;
                         console.log(f(await this.ctx[0][0].getAssets()));
                     }
                     // order = LimitOrder.from({
@@ -126,7 +134,7 @@ const tecretary = new Tecretary(Strategy, {
             [LONG]: new Big(0),
             [SHORT]: new Big(0),
         },
-        time: Number.NEGATIVE_INFINITY,
+        time: 1607270831009,
     },
     leverage: 10,
     PING: 10,

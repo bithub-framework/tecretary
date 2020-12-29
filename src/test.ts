@@ -1,6 +1,7 @@
 import {
     Startable,
     adaptor,
+    LifePeriod,
 } from 'startable';
 import {
     Tecretary,
@@ -38,6 +39,7 @@ class Strategy extends Startable {
 
                 if (orderbook[ASK][0].price.lte(19200)) {
                     this.assets = await this.ctx[0][0].getAssets();
+                    if (this.lifePeriod !== LifePeriod.STARTED) return;
 
                     let order: LimitOrder;
                     // order = LimitOrder.from({
@@ -64,12 +66,14 @@ class Strategy extends Startable {
                         console.log(f(this.assets));
                         console.log(f(order));
                         await this.ctx[0][0].makeLimitOrder(order);
+                        if (this.lifePeriod !== LifePeriod.STARTED) return;
                         console.log(f(await this.ctx[0][0].getAssets()));
                     }
                 }
 
                 if (orderbook[BID][0].price.gte(19300)) {
                     this.assets = await this.ctx[0][0].getAssets();
+                    if (this.lifePeriod !== LifePeriod.STARTED) return;
 
                     let order: LimitOrder;
                     order = LimitOrder.from({
@@ -82,6 +86,7 @@ class Strategy extends Startable {
                         console.log(f(this.assets));
                         console.log(f(order));
                         await this.ctx[0][0].makeLimitOrder(order);
+                        if (this.lifePeriod !== LifePeriod.STARTED) return;
                         console.log(f(await this.ctx[0][0].getAssets()));
                     }
 
@@ -153,7 +158,7 @@ const tecretary = new Tecretary(
                 [LONG]: new Big(0),
                 [SHORT]: new Big(0),
             },
-            time: Number.NEGATIVE_INFINITY,
+            time: 1607270831009,
         },
         leverage: 10,
         PING: 10,
