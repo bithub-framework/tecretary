@@ -471,19 +471,14 @@
         "signature": "2b6e6541512a6e071c3e3f927844b30cd149bf519901c629a602aea71a74d7ce",
         "affectsGlobalScope": false
       },
-      "./node_modules/interfaces/dist/auto-assets.d.ts": {
-        "version": "44b2bc89571468ea205fd7aa6343f2be28f62b82449cfa4ec94ec927ff8f2614",
-        "signature": "44b2bc89571468ea205fd7aa6343f2be28f62b82449cfa4ec94ec927ff8f2614",
-        "affectsGlobalScope": false
-      },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "45972ababd12f0af6b1329444bcecc0cedb7c7831c6b8a1788ebc2ff1babcaa3",
-        "signature": "45972ababd12f0af6b1329444bcecc0cedb7c7831c6b8a1788ebc2ff1babcaa3",
+        "version": "4c9c0015a9b037901cbfd1bcaf46496fadc0ead2e62a4524a8e9c7bbacbc7634",
+        "signature": "4c9c0015a9b037901cbfd1bcaf46496fadc0ead2e62a4524a8e9c7bbacbc7634",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
-        "version": "24f9d49f6ceebc28c6af3efa82e763924c0d74b841617de34bdb9b5107c2660c",
-        "signature": "24f9d49f6ceebc28c6af3efa82e763924c0d74b841617de34bdb9b5107c2660c",
+        "version": "34431b72633383f4877d3797e17650183fd55ebbf5fba240de609e342f65dfde",
+        "signature": "34431b72633383f4877d3797e17650183fd55ebbf5fba240de609e342f65dfde",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/manager-orderbook.d.ts": {
@@ -637,13 +632,18 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "338d67467637dfc4879159b660caa06c897a16e49a5d2f2131af5ddd87af7ed7",
+        "version": "aa45ebd51fae4a574ee5c30fe0226b8e2b746fbc6c9500b6d9f157f7583a50d5",
         "signature": "f9fce67750201ed97b1b1cc6198459a694b3a6e3740bcbbd299aec5b7604403b",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "17dd1c0df978262cb6fb1fc0e72abc13a195844915142dc3d385f64822e04e10",
-        "signature": "17dd1c0df978262cb6fb1fc0e72abc13a195844915142dc3d385f64822e04e10",
+        "version": "36dc5dfdb15f6b74cbf273183797c3ad558512dd8bda89eee5d334782e176546",
+        "signature": "36dc5dfdb15f6b74cbf273183797c3ad558512dd8bda89eee5d334782e176546",
+        "affectsGlobalScope": false
+      },
+      "./src/test.ts": {
+        "version": "c0a6d4c6f5ac4795a971a0b926d2437be16cfb6eb574566a02017e5c6bd88907",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/bluebird/index.d.ts": {
@@ -1025,10 +1025,6 @@
         "./node_modules/@types/node/url.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
-      "./node_modules/interfaces/dist/auto-assets.d.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
-        "./node_modules/interfaces/dist/data.d.ts"
-      ],
       "./node_modules/interfaces/dist/context.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts",
@@ -1038,7 +1034,6 @@
         "./node_modules/@types/big.js/index.d.ts"
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
-        "./node_modules/interfaces/dist/auto-assets.d.ts",
         "./node_modules/interfaces/dist/clone.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
@@ -1165,6 +1160,12 @@
         "./src/db-reader.ts",
         "./src/forward.ts",
         "./src/interfaces.ts"
+      ],
+      "./src/test.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/interfaces/dist/index.d.ts",
+        "./node_modules/startable/dist/index.d.ts",
+        "./src/index.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1428,10 +1429,6 @@
         "./node_modules/@types/node/url.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
-      "./node_modules/interfaces/dist/auto-assets.d.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
-        "./node_modules/interfaces/dist/data.d.ts"
-      ],
       "./node_modules/interfaces/dist/context.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts",
@@ -1441,7 +1438,6 @@
         "./node_modules/@types/big.js/index.d.ts"
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
-        "./node_modules/interfaces/dist/auto-assets.d.ts",
         "./node_modules/interfaces/dist/clone.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
@@ -1633,7 +1629,6 @@
       "./node_modules/@types/ramda/tools.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
-      "./node_modules/interfaces/dist/auto-assets.d.ts",
       "./node_modules/interfaces/dist/clone.d.ts",
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",
@@ -1667,19 +1662,8 @@
       "./src/interfaces.ts",
       "./src/private-api.ts",
       "./src/public-api.ts",
-      [
-        "./src/tecretary.ts",
-        [
-          {
-            "file": "./src/tecretary.ts",
-            "start": 443,
-            "length": 14,
-            "messageText": "Module '\"./config\"' has no exported member 'LOCAL_HOSTNAME'.",
-            "category": 1,
-            "code": 2305
-          }
-        ]
-      ],
+      "./src/tecretary.ts",
+      "./src/test.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
@@ -1720,20 +1704,6 @@
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.promise.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.string.d.ts"
-    ],
-    "affectedFilesPendingEmit": [
-      [
-        "./src/config.ts",
-        1
-      ],
-      [
-        "./src/db-reader.ts",
-        1
-      ],
-      [
-        "./src/tecretary.ts",
-        1
-      ]
     ]
   },
   "version": "4.0.2"

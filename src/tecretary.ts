@@ -14,7 +14,6 @@ import {
 } from './interfaces';
 import {
     REDIRECTOR_URL,
-    LOCAL_HOSTNAME,
 } from './config';
 
 

@@ -1,3 +1,3 @@
-export { Tecretary as default } from './tecretary';
+export { default } from './tecretary';
 export * from './tecretary';
-export * from './interfaces';
+export { Config } from './interfaces';

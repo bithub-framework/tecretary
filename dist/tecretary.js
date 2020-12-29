@@ -5,7 +5,7 @@ import Texchange from 'texchange';
 import Forward from './forward';
 import { Pollerloop } from 'pollerloop';
 import fetch from 'node-fetch';
-import { SECRETARIAT_URL, } from './config';
+import { REDIRECTOR_URL, } from './config';
 class Tecretary extends Startable {
     constructor(Strategy, config) {
         super();
@@ -49,7 +49,7 @@ class Tecretary extends Startable {
     async _start() {
         await this.dbReader.start(err => void this.stop(err).catch(() => { }));
         const dbMinTime = await this.dbReader.getMinTime();
-        const res = await fetch(`${SECRETARIAT_URL}/assets/latest?id=${this.config.projectId}`);
+        const res = await fetch(`${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
         if (res.ok)
             this.config.initialAssets = await res.json();
         const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
