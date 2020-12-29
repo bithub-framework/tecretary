@@ -641,14 +641,14 @@
         "signature": "36dc5dfdb15f6b74cbf273183797c3ad558512dd8bda89eee5d334782e176546",
         "affectsGlobalScope": false
       },
-      "./src/test.ts": {
-        "version": "6886ea7df81ecbc9f435adb9bbdd1d35b816ef0afe2b15450191288a7c60e3bb",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-        "affectsGlobalScope": false
-      },
       "./node_modules/@types/bluebird/index.d.ts": {
         "version": "6247a016129906c76ba4012d2d77773c919ea33a96830b0a8d522a9790fc7efe",
         "signature": "6247a016129906c76ba4012d2d77773c919ea33a96830b0a8d522a9790fc7efe",
+        "affectsGlobalScope": false
+      },
+      "./node_modules/@types/fs-extra/index.d.ts": {
+        "version": "8126afccdf4a55b90e010207e6fa74ea47dc0932b4d1347726b92502fe11a2e1",
+        "signature": "8126afccdf4a55b90e010207e6fa74ea47dc0932b4d1347726b92502fe11a2e1",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/sqlite3/index.d.ts": {
@@ -822,6 +822,10 @@
       "../../../node_modules/@types/serve-static/index.d.ts": [
         "../../../node_modules/@types/mime/index.d.ts",
         "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts"
+      ],
+      "./node_modules/@types/fs-extra/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/index.d.ts"
       ],
       "./node_modules/@types/node-fetch/index.d.ts": [
@@ -1161,12 +1165,6 @@
         "./src/db-reader.ts",
         "./src/forward.ts",
         "./src/interfaces.ts"
-      ],
-      "./src/test.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
-        "./node_modules/interfaces/dist/index.d.ts",
-        "./node_modules/startable/dist/index.d.ts",
-        "./src/index.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1227,6 +1225,10 @@
       "../../../node_modules/@types/serve-static/index.d.ts": [
         "../../../node_modules/@types/mime/index.d.ts",
         "./node_modules/@types/node/http.d.ts",
+        "./node_modules/@types/node/index.d.ts"
+      ],
+      "./node_modules/@types/fs-extra/index.d.ts": [
+        "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/index.d.ts"
       ],
       "./node_modules/@types/node-fetch/index.d.ts": [
@@ -1576,6 +1578,7 @@
       "./node_modules/@types/big.js/index.d.ts",
       "./node_modules/@types/bluebird/index.d.ts",
       "./node_modules/@types/events/index.d.ts",
+      "./node_modules/@types/fs-extra/index.d.ts",
       "./node_modules/@types/node-fetch/externals.d.ts",
       "./node_modules/@types/node-fetch/index.d.ts",
       "./node_modules/@types/node-fetch/node_modules/form-data/index.d.ts",
@@ -1664,7 +1667,6 @@
       "./src/private-api.ts",
       "./src/public-api.ts",
       "./src/tecretary.ts",
-      "./src/test.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
