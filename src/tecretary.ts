@@ -10,6 +10,7 @@ import {
     Config,
     RawTrade,
     StrategyConstructor,
+    Assets,
 } from './interfaces';
 import {
     SECRETARIAT_URL,
@@ -40,7 +41,7 @@ class Tecretary extends Startable {
         const dbMinTime = await this.dbReader.getMinTime();
         const res = await fetch(
             `${SECRETARIAT_URL}/assets/latest?id=${this.config.projectId}`);
-        if (res.ok) this.config.initialAssets = await res.json();
+        if (res.ok) this.config.initialAssets = <Assets>await res.json();
         const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
         this.forward = new Forward(startingTime);
         this.texchange = new Texchange(
