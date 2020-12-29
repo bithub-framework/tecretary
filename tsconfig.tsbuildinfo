@@ -212,8 +212,8 @@
         "affectsGlobalScope": true
       },
       "./node_modules/interfaces/dist/data.d.ts": {
-        "version": "2dffbe59da71dcb02ce88fb15f90a44e5a11ff2a225979cc092c121f8ec3d8be",
-        "signature": "2dffbe59da71dcb02ce88fb15f90a44e5a11ff2a225979cc092c121f8ec3d8be",
+        "version": "e9771f6e530bb919bd782b7a87195ed5bb28f63cffd588dd846c9713ac3afe19",
+        "signature": "e9771f6e530bb919bd782b7a87195ed5bb28f63cffd588dd846c9713ac3afe19",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -466,14 +466,19 @@
         "signature": "2b6e6541512a6e071c3e3f927844b30cd149bf519901c629a602aea71a74d7ce",
         "affectsGlobalScope": false
       },
+      "./node_modules/interfaces/dist/auto-assets.d.ts": {
+        "version": "44b2bc89571468ea205fd7aa6343f2be28f62b82449cfa4ec94ec927ff8f2614",
+        "signature": "44b2bc89571468ea205fd7aa6343f2be28f62b82449cfa4ec94ec927ff8f2614",
+        "affectsGlobalScope": false
+      },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "9aac9da5a883d974c400e3d703e64ea7eda42f08862e476f2d48deb0ee425357",
-        "signature": "9aac9da5a883d974c400e3d703e64ea7eda42f08862e476f2d48deb0ee425357",
+        "version": "bd67529aaa15b57e746e056ad85fc53a654ca43884c1a3b2d174c67fa44ab936",
+        "signature": "bd67529aaa15b57e746e056ad85fc53a654ca43884c1a3b2d174c67fa44ab936",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
-        "version": "428ad4d001d91dddbb069dc53494362a41df23662a4e3c48f950f1baf154d902",
-        "signature": "428ad4d001d91dddbb069dc53494362a41df23662a4e3c48f950f1baf154d902",
+        "version": "24f9d49f6ceebc28c6af3efa82e763924c0d74b841617de34bdb9b5107c2660c",
+        "signature": "24f9d49f6ceebc28c6af3efa82e763924c0d74b841617de34bdb9b5107c2660c",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/manager-orderbook.d.ts": {
@@ -572,8 +577,8 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "af9e927fb3aa4bd62eba3e08f25a7b8e0740a08da7450b637a77dd785cf15ab2",
-        "signature": "41ac26e43fd11347af633ee00159201c586a9d89dda6e01182355dee4599a674",
+        "version": "69b72385d6c83e76f4dfbca7380f9645791b2a12912f512c1a91f0c03a2f02bc",
+        "signature": "ac6c87aaa5b93c7746d5dea87760e3267a56c51f20c29c62b17b04145f707de0",
         "affectsGlobalScope": false
       },
       "./node_modules/sorted-queue/dist/index.d.ts": {
@@ -1015,6 +1020,10 @@
         "./node_modules/@types/node/url.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
+      "./node_modules/interfaces/dist/auto-assets.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
       "./node_modules/interfaces/dist/context.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts",
@@ -1024,6 +1033,7 @@
         "./node_modules/@types/big.js/index.d.ts"
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
+        "./node_modules/interfaces/dist/auto-assets.d.ts",
         "./node_modules/interfaces/dist/clone.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
@@ -1407,6 +1417,10 @@
         "./node_modules/@types/node/url.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
+      "./node_modules/interfaces/dist/auto-assets.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts"
+      ],
       "./node_modules/interfaces/dist/context.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts",
@@ -1416,6 +1430,7 @@
         "./node_modules/@types/big.js/index.d.ts"
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
+        "./node_modules/interfaces/dist/auto-assets.d.ts",
         "./node_modules/interfaces/dist/clone.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
@@ -1603,6 +1618,7 @@
       "./node_modules/@types/ramda/tools.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
+      "./node_modules/interfaces/dist/auto-assets.d.ts",
       "./node_modules/interfaces/dist/clone.d.ts",
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",

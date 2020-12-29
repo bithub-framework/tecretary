@@ -11,14 +11,14 @@ import { LIMIT } from './config';
 import { find, whereEq } from 'ramda';
 import assert from 'assert';
 
-interface NumberizedRawTrade {
+interface DatabaseRawTrade {
     price: number;
     quantity: number;
     side: string;
     time: number;
 }
 
-interface StringifiedOrderbook {
+interface DatabaseOrderbook {
     time: number;
     bids: string;
     asks: string;
@@ -55,18 +55,14 @@ class DbReader extends Startable {
 
     private async * getTradesIterator(): AsyncIterator<RawTrade> {
         for (let i = 1; ; i += LIMIT) {
-            const numberizedRawTrades = await this.db.sql<NumberizedRawTrade>(`
+            const dbRawTrades = await this.db.sql<DatabaseRawTrade>(`
                 SELECT * FROM trades
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
-            if (!numberizedRawTrades.length) break;
-            for (const numberizedRawTrade of numberizedRawTrades) yield {
-                ...numberizedRawTrade,
-                price: new Big(numberizedRawTrade.price.toFixed(this.config.PRICE_DP)),
-                quantity: new Big(numberizedRawTrade.price.toFixed(this.config.QUANTITY_DP)),
-                side: numberizedRawTrade.side === 'BUY' ? BID : ASK,
-            };
+            if (!dbRawTrades.length) break;
+            for (const dbRawTrade of dbRawTrades)
+                yield this.dbRawTrade2RawTrade(dbRawTrade);
         }
     }
 
@@ -76,31 +72,14 @@ class DbReader extends Startable {
 
     private async * getOrderbooksIterator(): AsyncIterator<Orderbook> {
         for (let i = 1; ; i += LIMIT) {
-            const orderbooks = await this.db.sql<StringifiedOrderbook>(`
+            const dbOrderbooks = await this.db.sql<DatabaseOrderbook>(`
                 SELECT * FROM orderbooks
                 ORDER BY time
                 LIMIT ${LIMIT} OFFSET ${i}
             ;`);
-            if (!orderbooks.length) break;
-            for (const stringified of orderbooks) {
-                type A = [number, number][];
-                const asks: A = JSON.parse(stringified.asks);
-                const bids: A = JSON.parse(stringified.bids);
-                const orderbook = {
-                    [ASK]: asks.map(([_price, _quantity]) => ({
-                        price: new Big(_price.toFixed(this.config.PRICE_DP)),
-                        quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
-                        side: ASK,
-                    })),
-                    [BID]: bids.map(([_price, _quantity]) => ({
-                        price: new Big(_price.toFixed(this.config.PRICE_DP)),
-                        quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
-                        side: BID,
-                    })),
-                    time: stringified.time,
-                };
-                yield orderbook;
-            }
+            if (!dbOrderbooks.length) break;
+            for (const dbOrderbook of dbOrderbooks)
+                yield this.dbOrderbook2Orderbook(dbOrderbook);
         }
     }
 
@@ -173,7 +152,7 @@ class DbReader extends Startable {
     }
 
     private async validateOrderbook() {
-        const orderbooks = (await this.db.sql<Pick<StringifiedOrderbook, 'bids' | 'asks'>>(`
+        const orderbooks = (await this.db.sql<Pick<DatabaseOrderbook, 'bids' | 'asks'>>(`
             SELECT bids, asks FROM orderbooks
             LIMIT 1
         ;`));
@@ -184,6 +163,34 @@ class DbReader extends Startable {
         assert(bids[0] instanceof Array);
         assert(typeof bids[0][0] === 'number');
         assert(typeof bids[0][1] === 'number');
+    }
+
+    private dbRawTrade2RawTrade(dbRawTrade: DatabaseRawTrade): RawTrade {
+        return {
+            ...dbRawTrade,
+            price: new Big(dbRawTrade.price.toFixed(this.config.PRICE_DP)),
+            quantity: new Big(dbRawTrade.price.toFixed(this.config.QUANTITY_DP)),
+            side: dbRawTrade.side === 'BUY' ? BID : ASK,
+        }
+    }
+
+    private dbOrderbook2Orderbook(dbOrderbook: DatabaseOrderbook): Orderbook {
+        type A = [number, number][];
+        const asks: A = JSON.parse(dbOrderbook.asks);
+        const bids: A = JSON.parse(dbOrderbook.bids);
+        return {
+            [ASK]: asks.map(([_price, _quantity]) => ({
+                price: new Big(_price.toFixed(this.config.PRICE_DP)),
+                quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
+                side: ASK,
+            })),
+            [BID]: bids.map(([_price, _quantity]) => ({
+                price: new Big(_price.toFixed(this.config.PRICE_DP)),
+                quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
+                side: BID,
+            })),
+            time: dbOrderbook.time,
+        };
     }
 }
 
