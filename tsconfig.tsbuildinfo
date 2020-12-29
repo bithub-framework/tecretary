@@ -202,8 +202,8 @@
         "affectsGlobalScope": true
       },
       "./src/config.ts": {
-        "version": "e455edbad206c672a80cf8ef7fff56ed312dd948065891963cbf7b5926ca5e52",
-        "signature": "f727a6e8f10e5016bb9312b9352f229273a4751734062f3cf58aaed29583a47f",
+        "version": "4aa903431ed195eebf1bf42927a95aa08a5d18eb08bbf9ea837438af74df2da7",
+        "signature": "682487b1e3432b62cbf7a9ede9483a61db27d4d30bd27b08edbde72f056d5a0b",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/big.js/index.d.ts": {
@@ -637,7 +637,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "095dbb6eaac977c49352ba146f0c0f5b4de2f49034a2f3b27059d30a50bb2bc9",
+        "version": "338d67467637dfc4879159b660caa06c897a16e49a5d2f2131af5ddd87af7ed7",
         "signature": "f9fce67750201ed97b1b1cc6198459a694b3a6e3740bcbbd299aec5b7604403b",
         "affectsGlobalScope": false
       },
@@ -1667,7 +1667,19 @@
       "./src/interfaces.ts",
       "./src/private-api.ts",
       "./src/public-api.ts",
-      "./src/tecretary.ts",
+      [
+        "./src/tecretary.ts",
+        [
+          {
+            "file": "./src/tecretary.ts",
+            "start": 443,
+            "length": 14,
+            "messageText": "Module '\"./config\"' has no exported member 'LOCAL_HOSTNAME'.",
+            "category": 1,
+            "code": 2305
+          }
+        ]
+      ],
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
@@ -1708,6 +1720,20 @@
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.promise.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.esnext.string.d.ts"
+    ],
+    "affectedFilesPendingEmit": [
+      [
+        "./src/config.ts",
+        1
+      ],
+      [
+        "./src/db-reader.ts",
+        1
+      ],
+      [
+        "./src/tecretary.ts",
+        1
+      ]
     ]
   },
   "version": "4.0.2"
