@@ -9,6 +9,7 @@ import {
 
 export interface Config extends TexchangeConfig {
     DB_FILE_PATH: string;
+    projectId: string;
 }
 
 export interface StrategyConstructor {

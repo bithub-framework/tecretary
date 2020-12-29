@@ -6,10 +6,13 @@ class Forward {
         this.heap = new Heap((a, b) => a.time - b.time);
         this.lock = new Lock();
         this.now = () => this.currentTime;
-        this.setTimeout = (cb, ms) => this.heap.push({
-            time: this.currentTime + ms,
-            cb,
-        });
+        this.setTimeout = (cb, ms) => {
+            assert(ms >= 0);
+            return this.heap.push({
+                time: this.currentTime + ms,
+                cb,
+            });
+        };
         this.clearTimeout = (timeout) => {
             timeout.pop();
         };

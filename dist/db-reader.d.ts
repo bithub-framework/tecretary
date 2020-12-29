@@ -11,9 +11,9 @@ declare class DbReader extends Startable {
     private db;
     constructor(config: Config);
     private getTradesIterator;
-    getTrades(): AsyncForwardIterator<Pick<import("interfaces/dist/data").Trade, "side" | "price" | "quantity" | "time">>;
+    getTrades(after?: number): AsyncForwardIterator<Pick<import("interfaces/dist/data").Trade, "side" | "price" | "quantity" | "time">>;
     private getOrderbooksIterator;
-    getOrderbooks(): AsyncForwardIterator<Orderbook>;
+    getOrderbooks(after?: number): AsyncForwardIterator<Orderbook>;
     protected _start(): Promise<void>;
     protected _stop(): Promise<void>;
     getMinTime(): Promise<number>;

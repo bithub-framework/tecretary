@@ -24,37 +24,51 @@ class DbReader extends Startable {
         this.config = config;
         this.db = new Database(config.DB_FILE_PATH);
     }
-    async *getTradesIterator() {
+    async *getTradesIterator(after) {
         for (let i = 1;; i += LIMIT) {
-            const dbRawTrades = await this.db.sql(`
-                SELECT * FROM trades
-                ORDER BY time
-                LIMIT ${LIMIT} OFFSET ${i}
-            ;`);
+            const dbRawTrades = typeof after === 'number'
+                ? await this.db.sql(`
+                    SELECT * FROM trades
+                    WHERE time >= ${after}
+                    ORDER BY time
+                    LIMIT ${LIMIT} OFFSET ${i}
+                ;`)
+                : await this.db.sql(`
+                    SELECT * FROM trades
+                    ORDER BY time
+                    LIMIT ${LIMIT} OFFSET ${i}
+                ;`);
             if (!dbRawTrades.length)
                 break;
             for (const dbRawTrade of dbRawTrades)
                 yield this.dbRawTrade2RawTrade(dbRawTrade);
         }
     }
-    getTrades() {
-        return new AsyncForwardIterator(this.getTradesIterator());
+    getTrades(after) {
+        return new AsyncForwardIterator(this.getTradesIterator(after));
     }
-    async *getOrderbooksIterator() {
+    async *getOrderbooksIterator(after) {
         for (let i = 1;; i += LIMIT) {
-            const dbOrderbooks = await this.db.sql(`
-                SELECT * FROM orderbooks
-                ORDER BY time
-                LIMIT ${LIMIT} OFFSET ${i}
-            ;`);
+            const dbOrderbooks = typeof after === 'number'
+                ? await this.db.sql(`
+                    SELECT * FROM orderbooks
+                    WHERE time >= ${after}
+                    ORDER BY time
+                    LIMIT ${LIMIT} OFFSET ${i}
+                ;`)
+                : await this.db.sql(`
+                    SELECT * FROM orderbooks
+                    ORDER BY time
+                    LIMIT ${LIMIT} OFFSET ${i}
+                ;`);
             if (!dbOrderbooks.length)
                 break;
             for (const dbOrderbook of dbOrderbooks)
                 yield this.dbOrderbook2Orderbook(dbOrderbook);
         }
     }
-    getOrderbooks() {
-        return new AsyncForwardIterator(this.getOrderbooksIterator());
+    getOrderbooks(after) {
+        return new AsyncForwardIterator(this.getOrderbooksIterator(after));
     }
     async _start() {
         await this.db.start(err => void this.stop(err).catch(() => { }));
@@ -66,12 +80,16 @@ class DbReader extends Startable {
     }
     async getMinTime() {
         const orderbooksMinTime = (await this.db.sql(`
-            SELECT MIN(time) AS "0" FROM orderbooks
-        ;`))[0][0];
+            SELECT MIN(time) AS min_time FROM orderbooks
+        ;`))[0]['min_time'];
         const tradesMinTime = (await this.db.sql(`
             SELECT MIN(time) AS "0" FROM trades
-        ;`))[0][0];
-        return Math.min(orderbooksMinTime, tradesMinTime);
+        ;`))[0]['min_time'];
+        assert(typeof orderbooksMinTime === 'number');
+        if (typeof tradesMinTime === 'number')
+            return Math.min(orderbooksMinTime, tradesMinTime);
+        else
+            return orderbooksMinTime;
     }
     async validateTables() {
         const tradesTableInfo = await this.db.sql(`

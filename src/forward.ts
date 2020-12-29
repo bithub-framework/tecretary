@@ -31,11 +31,13 @@ class Forward {
         return peek ? peek.value.time : Number.POSITIVE_INFINITY;
     }
 
-    public setTimeout = (cb: () => void, ms: number): HeapItem<Item> =>
-        this.heap.push({
+    public setTimeout = (cb: () => void, ms: number): HeapItem<Item> => {
+        assert(ms >= 0);
+        return this.heap.push({
             time: this.currentTime + ms,
             cb,
         });
+    }
 
     public clearTimeout = (timeout: HeapItem<Item>): void => {
         timeout.pop();

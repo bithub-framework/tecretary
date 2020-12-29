@@ -4,6 +4,8 @@ import { Context } from './context';
 import Texchange from 'texchange';
 import Forward from './forward';
 import { Pollerloop } from 'pollerloop';
+import fetch from 'node-fetch';
+import { SECRETARIAT_URL, } from './config';
 class Tecretary extends Startable {
     constructor(Strategy, config) {
         super();
@@ -46,14 +48,18 @@ class Tecretary extends Startable {
     }
     async _start() {
         await this.dbReader.start(err => void this.stop(err).catch(() => { }));
-        const minTime = await this.dbReader.getMinTime();
-        this.forward = new Forward(minTime);
+        const dbMinTime = await this.dbReader.getMinTime();
+        const res = await fetch(`${SECRETARIAT_URL}/assets/latest?id=${this.config.projectId}`);
+        if (res.ok)
+            this.config.initialAssets = await res.json();
+        const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
+        this.forward = new Forward(startingTime);
         this.texchange = new Texchange(this.config, this.forward.sleep, this.forward.now);
         this.context = new Context(this.texchange, this.forward.sleep, this.forward.now, this.forward.escape);
         this.strategy = new this.Strategy(this.context);
-        this.orderbooksIterator = this.dbReader.getOrderbooks();
+        this.orderbooksIterator = this.dbReader.getOrderbooks(startingTime);
         await this.orderbooksIterator.next();
-        this.tradesIterator = this.dbReader.getTrades();
+        this.tradesIterator = this.dbReader.getTrades(startingTime);
         await this.tradesIterator.next();
         await this.pollerloop.start(err => void this.stop(err).catch(() => { }));
         await this.strategy.start(err => void this.stop(err).catch(() => { }));
