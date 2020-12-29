@@ -83,10 +83,10 @@ class DbReader extends Startable {
             SELECT MIN(time) AS min_time FROM orderbooks
         ;`))[0]['min_time'];
         const tradesMinTime = (await this.db.sql(`
-            SELECT MIN(time) AS "0" FROM trades
+            SELECT MIN(time) AS min_time FROM trades
         ;`))[0]['min_time'];
-        assert(typeof orderbooksMinTime === 'number');
-        if (typeof tradesMinTime === 'number')
+        assert(orderbooksMinTime !== null);
+        if (tradesMinTime !== null)
             return Math.min(orderbooksMinTime, tradesMinTime);
         else
             return orderbooksMinTime;

@@ -577,7 +577,7 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "936dcc98b54a71e234d8e19818c1b27f8426541ee170eb1766e89012b4455795",
+        "version": "66cd4b122debd17a63b27851b11a33a1b15ad367c5d769c3092e3844f36c3874",
         "signature": "feefb2514a8c130bb928e7c031604886afadf407923faf7cc0df49fd7bae9999",
         "affectsGlobalScope": false
       },
