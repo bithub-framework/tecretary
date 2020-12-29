@@ -12,6 +12,7 @@ declare class Tecretary extends Startable {
     private tradesIterator;
     private pollerloop;
     constructor(Strategy: StrategyConstructor, config: Config);
+    private NAssets2Assets;
     protected _start(): Promise<void>;
     protected _stop(err?: Error): Promise<void>;
     private loop;

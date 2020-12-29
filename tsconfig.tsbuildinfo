@@ -632,8 +632,8 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "aa45ebd51fae4a574ee5c30fe0226b8e2b746fbc6c9500b6d9f157f7583a50d5",
-        "signature": "f9fce67750201ed97b1b1cc6198459a694b3a6e3740bcbbd299aec5b7604403b",
+        "version": "1f18f9db62ff906659819bc87e4ea7f290847f2f0a2efee40733f49b816acd46",
+        "signature": "5cb9ba4aa21ab79692a64d95947fcc135161030a3dbc4781bfd9b05063da286e",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
@@ -1151,6 +1151,7 @@
         "./src/interfaces.ts"
       ],
       "./src/tecretary.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/@types/node-fetch/index.d.ts",
         "./node_modules/pollerloop/dist/pollerloop.d.ts",
         "./node_modules/startable/dist/index.d.ts",
