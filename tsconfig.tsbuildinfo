@@ -572,8 +572,8 @@
         "affectsGlobalScope": false
       },
       "./src/context.ts": {
-        "version": "c8f658410f991489d7525ef4b40ed90dbdf7f70acb1ff6125295790b59d563af",
-        "signature": "6bda3083af474330af93b982e4a4b11e8779cf8cfa6476cd0c405789e892f4ed",
+        "version": "d25f321621326614505bcf0c14803a7cd215a14e970989bbaa536b6ab0118faf",
+        "signature": "7a9375f7ac89f4c95b9258ecc6caa246bc03b5839f527cfde6e2d6ec7d0c633a",
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": {
@@ -637,7 +637,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "59e98490306662cff2d00fd25ae2c4e327a1d0bb001ce1fdf9b4baab13acecee",
+        "version": "6aa3bbd3cc9221d307c0b9d8aeb537dde1922f026cca74c1cd4457692fcf94a8",
         "signature": "f9fce67750201ed97b1b1cc6198459a694b3a6e3740bcbbd299aec5b7604403b",
         "affectsGlobalScope": false
       },

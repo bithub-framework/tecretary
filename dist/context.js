@@ -5,9 +5,11 @@ import fetch from 'node-fetch';
 import assert from 'assert';
 import { REDIRECTOR_URL } from './config';
 class Context extends EventEmitter {
-    constructor(texchange, config, sleep, now, escape) {
+    constructor(texchange, config, setTimeout, clearTimeout, sleep, now, escape) {
         super();
         this.config = config;
+        this.setTimeout = setTimeout;
+        this.clearTimeout = clearTimeout;
         this.sleep = sleep;
         this.now = now;
         this.escape = escape;

@@ -20,6 +20,8 @@ class Context extends EventEmitter implements ContextLike {
     constructor(
         texchange: Texchange,
         private config: Config,
+        public setTimeout: (cb: () => void, ms: number) => any,
+        public clearTimeout: (timerId: any) => void,
         public sleep: (ms: number) => Promise<void>,
         public now: () => number,
         public escape: <T>(v: T) => Promise<T>,

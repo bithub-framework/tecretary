@@ -7,11 +7,13 @@ import { EventEmitter } from 'events';
 import Big from 'big.js';
 declare class Context extends EventEmitter implements ContextLike {
     private config;
+    setTimeout: (cb: () => void, ms: number) => any;
+    clearTimeout: (timerId: any) => void;
     sleep: (ms: number) => Promise<void>;
     now: () => number;
     escape: <T>(v: T) => Promise<T>;
     [marketId: number]: ContextMarket;
-    constructor(texchange: Texchange, config: Config, sleep: (ms: number) => Promise<void>, now: () => number, escape: <T>(v: T) => Promise<T>);
+    constructor(texchange: Texchange, config: Config, setTimeout: (cb: () => void, ms: number) => any, clearTimeout: (timerId: any) => void, sleep: (ms: number) => Promise<void>, now: () => number, escape: <T>(v: T) => Promise<T>);
     submitAssets(assets: Assets): Promise<void>;
 }
 declare class ContextMarket extends ContextMarketPublicApi implements ContextMarketLike {

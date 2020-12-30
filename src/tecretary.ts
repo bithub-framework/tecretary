@@ -57,6 +57,8 @@ class Tecretary extends Startable {
         this.context = new Context(
             this.texchange,
             this.config,
+            this.forward.setTimeout,
+            this.forward.clearTimeout,
             this.forward.sleep,
             this.forward.now,
             this.forward.escape,
