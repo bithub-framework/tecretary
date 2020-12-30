@@ -1,13 +1,25 @@
 import { ContextAccountPrivateApi } from './private-api';
 import { ContextMarketPublicApi } from './public-api';
 import { EventEmitter } from 'events';
+import fetch from 'node-fetch';
+import assert from 'assert';
+import { REDIRECTOR_URL } from './config';
 class Context extends EventEmitter {
     constructor(texchange, config, sleep, now, escape) {
         super();
+        this.config = config;
         this.sleep = sleep;
         this.now = now;
         this.escape = escape;
         this[0] = new ContextMarket(texchange, config);
+    }
+    async submitAssets(assets) {
+        const res = await this.escape(fetch(`${REDIRECTOR_URL}/secretariat/assets?id=${this.config.projectId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(assets),
+        }));
+        assert(res.ok);
     }
 }
 class ContextMarket extends ContextMarketPublicApi {

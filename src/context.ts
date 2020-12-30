@@ -5,23 +5,37 @@ import {
     ContextMarketLike,
     ContextLike,
     Config,
+    Assets,
 } from './interfaces';
 import { Texchange } from 'texchange';
 import { EventEmitter } from 'events';
 import Big from 'big.js';
+import fetch from 'node-fetch';
+import assert from 'assert';
+import { REDIRECTOR_URL } from './config';
 
 class Context extends EventEmitter implements ContextLike {
     [marketId: number]: ContextMarket;
 
     constructor(
         texchange: Texchange,
-        config: Config,
+        private config: Config,
         public sleep: (ms: number) => Promise<void>,
         public now: () => number,
         public escape: <T>(v: T) => Promise<T>,
     ) {
         super();
         this[0] = new ContextMarket(texchange, config);
+    }
+
+    public async submitAssets(assets: Assets) {
+        const res = await this.escape(fetch(
+            `${REDIRECTOR_URL}/secretariat/assets?id=${this.config.projectId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(assets),
+        }));
+        assert(res.ok);
     }
 }
 

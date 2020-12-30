@@ -27,6 +27,7 @@ class ContextAccountPrivateApi implements ContextAccountPrivateApiLike {
     public async getAssets(): Promise<Assets> {
         return this.texchange.getAssets();
     }
+
 }
 
 export {
