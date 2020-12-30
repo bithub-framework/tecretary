@@ -19,7 +19,6 @@ declare class DbReader extends Startable {
     getMinTime(): Promise<number>;
     private validateTables;
     private validateOrderbook;
-    private dbRawTrade2RawTrade;
     private dbOrderbook2Orderbook;
 }
 export { DbReader as default, DbReader, AsyncForwardIterator, };

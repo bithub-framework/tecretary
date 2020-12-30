@@ -3,20 +3,17 @@ import Startable from 'startable';
 import {
     Orderbook,
     BID, ASK,
-    RawTrade,
+    UnidentifiedTrade,
     Config,
+    reviver,
+    ConvertPropertyTypeRecursively,
 } from './interfaces';
 import Big from 'big.js';
 import { LIMIT } from './config';
 import { find, whereEq } from 'ramda';
 import assert from 'assert';
 
-interface DatabaseRawTrade {
-    price: number;
-    quantity: number;
-    side: string;
-    time: number;
-}
+type StringifiedRawTrade = ConvertPropertyTypeRecursively<UnidentifiedTrade, Big, string>;
 
 interface DatabaseOrderbook {
     time: number;
@@ -53,23 +50,47 @@ class DbReader extends Startable {
         this.db = new Database(config.DB_FILE_PATH);
     }
 
-    private async * getTradesIterator(after?: number): AsyncIterator<RawTrade> {
+    private async * getTradesIterator(after?: number): AsyncIterator<UnidentifiedTrade> {
         for (let i = 1; ; i += LIMIT) {
-            const dbRawTrades = typeof after === 'number'
-                ? await this.db.sql<DatabaseRawTrade>(`
-                    SELECT * FROM trades
+            const stringifiedRawTrades = typeof after === 'number'
+                ? await this.db.sql<StringifiedRawTrade>(`
+                    SELECT
+                        CAST(price AS CHAR) AS price,
+                        CAST(quantity AS CHAR) AS quantity,
+                        CASE 
+                            WHEN side = 'BUY' THEN 1 ELSE -1
+                        END AS side,
+                        time
+                    FROM trades
                     WHERE time >= ${after}
                     ORDER BY time
                     LIMIT ${LIMIT} OFFSET ${i}
                 ;`)
-                : await this.db.sql<DatabaseRawTrade>(`
-                    SELECT * FROM trades
+                : await this.db.sql<StringifiedRawTrade>(`
+                    SELECT
+                        CAST(price AS CHAR) AS price,
+                        CAST(quantity AS CHAR) AS quantity,
+                        CASE 
+                            WHEN side = 'BUY' THEN 1 ELSE -1
+                        END AS side,
+                        time
+                    FROM trades
                     ORDER BY time
                     LIMIT ${LIMIT} OFFSET ${i}
                 ;`);
-            if (!dbRawTrades.length) break;
-            for (const dbRawTrade of dbRawTrades)
-                yield this.dbRawTrade2RawTrade(dbRawTrade);
+            if (!stringifiedRawTrades.length) break;
+            for (const stringifiedRawTrade of stringifiedRawTrades) {
+                const rawTrade = JSON.parse(
+                    JSON.stringify(stringifiedRawTrade),
+                    reviver,
+                );
+                yield {
+                    price: rawTrade.price.round(this.config.PRICE_DP),
+                    quantity: rawTrade.quantity.round(this.config.QUANTITY_DP),
+                    side: rawTrade.side,
+                    time: rawTrade.time,
+                };
+            }
         }
     }
 
@@ -183,28 +204,19 @@ class DbReader extends Startable {
         assert(typeof bids[0][1] === 'number');
     }
 
-    private dbRawTrade2RawTrade(dbRawTrade: DatabaseRawTrade): RawTrade {
-        return {
-            ...dbRawTrade,
-            price: new Big(dbRawTrade.price.toFixed(this.config.PRICE_DP)),
-            quantity: new Big(dbRawTrade.price.toFixed(this.config.QUANTITY_DP)),
-            side: dbRawTrade.side === 'BUY' ? BID : ASK,
-        }
-    }
-
     private dbOrderbook2Orderbook(dbOrderbook: DatabaseOrderbook): Orderbook {
-        type A = [number, number][];
-        const asks: A = JSON.parse(dbOrderbook.asks);
-        const bids: A = JSON.parse(dbOrderbook.bids);
+        type T = [Big, Big][];
+        const asks: T = JSON.parse(dbOrderbook.asks, reviver);
+        const bids: T = JSON.parse(dbOrderbook.bids, reviver);
         return {
-            [ASK]: asks.map(([_price, _quantity]) => ({
-                price: new Big(_price.toFixed(this.config.PRICE_DP)),
-                quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
+            [ASK]: asks.map(([price, quantity]) => ({
+                price: price.round(this.config.PRICE_DP),
+                quantity: quantity.round(this.config.QUANTITY_DP),
                 side: ASK,
             })),
-            [BID]: bids.map(([_price, _quantity]) => ({
-                price: new Big(_price.toFixed(this.config.PRICE_DP)),
-                quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
+            [BID]: bids.map(([price, quantity]) => ({
+                price: price.round(this.config.PRICE_DP),
+                quantity: quantity.round(this.config.QUANTITY_DP),
                 side: BID,
             })),
             time: dbOrderbook.time,

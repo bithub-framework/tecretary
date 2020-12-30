@@ -8,11 +8,12 @@ import fetch from 'node-fetch';
 import {
     Orderbook,
     Config,
-    RawTrade,
+    UnidentifiedTrade,
     StrategyConstructor,
     Assets,
-    NumberizedAssets,
     LONG, SHORT,
+    StringifiedAssets,
+    reviver,
 } from './interfaces';
 import {
     REDIRECTOR_URL,
@@ -27,7 +28,7 @@ class Tecretary extends Startable {
     private texchange!: Texchange;
     private context!: Context;
     private orderbooksIterator!: AsyncForwardIterator<Orderbook>;
-    private tradesIterator!: AsyncForwardIterator<RawTrade>;
+    private tradesIterator!: AsyncForwardIterator<UnidentifiedTrade>;
     private pollerloop: Pollerloop;
 
     constructor(
@@ -39,40 +40,16 @@ class Tecretary extends Startable {
         this.pollerloop = new Pollerloop(this.loop);
     }
 
-    private NAssets2Assets(nAssets: NumberizedAssets): Assets {
-        const { CURRENCY_DP, QUANTITY_DP } = this.config;
-        return {
-            balance: new Big(nAssets.balance).round(CURRENCY_DP),
-            position: {
-                [LONG]: new Big(nAssets.position[LONG]).round(QUANTITY_DP),
-                [SHORT]: new Big(nAssets.position[SHORT]).round(QUANTITY_DP),
-            },
-            cost: {
-                [LONG]: new Big(nAssets.cost[LONG]).round(CURRENCY_DP),
-                [SHORT]: new Big(nAssets.cost[SHORT]).round(CURRENCY_DP),
-            },
-            margin: new Big(nAssets.margin).round(CURRENCY_DP),
-            frozenMargin: new Big(nAssets.frozenMargin).round(CURRENCY_DP),
-            frozenPosition: {
-                [LONG]: new Big(nAssets.frozenPosition[LONG]).round(QUANTITY_DP),
-                [SHORT]: new Big(nAssets.frozenPosition[SHORT]).round(QUANTITY_DP),
-            },
-            reserve: new Big(nAssets.reserve).round(CURRENCY_DP),
-            closable: {
-                [LONG]: new Big(nAssets.closable[LONG]).round(QUANTITY_DP),
-                [SHORT]: new Big(nAssets.closable[SHORT]).round(QUANTITY_DP),
-            },
-            time: nAssets.time,
-        }
-    }
-
     protected async _start() {
         await this.dbReader.start(err => void this.stop(err).catch(() => { }));
         const dbMinTime = await this.dbReader.getMinTime();
         const res = await fetch(
             `${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
-        if (res.ok) this.config.initialAssets = this.NAssets2Assets(
-            <NumberizedAssets>await res.json());
+        if (res.ok) this.config.initialAssets =
+            JSON.parse(
+                JSON.stringify(<StringifiedAssets>await res.json()),
+                reviver,
+            );
         const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
         this.forward = new Forward(startingTime);
         this.texchange = new Texchange(
@@ -122,7 +99,7 @@ class Tecretary extends Startable {
                 this.tradesIterator.current &&
                 this.tradesIterator.current.time <= nextTime
             ) {
-                const trades: RawTrade[] = [];
+                const trades: UnidentifiedTrade[] = [];
                 const time = this.tradesIterator.current.time;
                 while (this.tradesIterator.current?.time === time) {
                     trades.push(this.tradesIterator.current);

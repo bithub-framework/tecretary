@@ -1,7 +1,6 @@
 import Database from 'promisified-sqlite';
 import Startable from 'startable';
-import { BID, ASK, } from './interfaces';
-import Big from 'big.js';
+import { BID, ASK, reviver, } from './interfaces';
 import { LIMIT } from './config';
 import { find, whereEq } from 'ramda';
 import assert from 'assert';
@@ -26,22 +25,43 @@ class DbReader extends Startable {
     }
     async *getTradesIterator(after) {
         for (let i = 1;; i += LIMIT) {
-            const dbRawTrades = typeof after === 'number'
+            const stringifiedRawTrades = typeof after === 'number'
                 ? await this.db.sql(`
-                    SELECT * FROM trades
+                    SELECT
+                        CAST(price AS CHAR) AS price,
+                        CAST(quantity AS CHAR) AS quantity,
+                        CASE 
+                            WHEN side = 'BUY' THEN 1 ELSE -1
+                        END AS side,
+                        time
+                    FROM trades
                     WHERE time >= ${after}
                     ORDER BY time
                     LIMIT ${LIMIT} OFFSET ${i}
                 ;`)
                 : await this.db.sql(`
-                    SELECT * FROM trades
+                    SELECT
+                        CAST(price AS CHAR) AS price,
+                        CAST(quantity AS CHAR) AS quantity,
+                        CASE 
+                            WHEN side = 'BUY' THEN 1 ELSE -1
+                        END AS side,
+                        time
+                    FROM trades
                     ORDER BY time
                     LIMIT ${LIMIT} OFFSET ${i}
                 ;`);
-            if (!dbRawTrades.length)
+            if (!stringifiedRawTrades.length)
                 break;
-            for (const dbRawTrade of dbRawTrades)
-                yield this.dbRawTrade2RawTrade(dbRawTrade);
+            for (const stringifiedRawTrade of stringifiedRawTrades) {
+                const rawTrade = JSON.parse(JSON.stringify(stringifiedRawTrade), reviver);
+                yield {
+                    price: rawTrade.price.round(this.config.PRICE_DP),
+                    quantity: rawTrade.quantity.round(this.config.QUANTITY_DP),
+                    side: rawTrade.side,
+                    time: rawTrade.time,
+                };
+            }
         }
     }
     getTrades(after) {
@@ -148,26 +168,18 @@ class DbReader extends Startable {
         assert(typeof bids[0][0] === 'number');
         assert(typeof bids[0][1] === 'number');
     }
-    dbRawTrade2RawTrade(dbRawTrade) {
-        return {
-            ...dbRawTrade,
-            price: new Big(dbRawTrade.price.toFixed(this.config.PRICE_DP)),
-            quantity: new Big(dbRawTrade.price.toFixed(this.config.QUANTITY_DP)),
-            side: dbRawTrade.side === 'BUY' ? BID : ASK,
-        };
-    }
     dbOrderbook2Orderbook(dbOrderbook) {
-        const asks = JSON.parse(dbOrderbook.asks);
-        const bids = JSON.parse(dbOrderbook.bids);
+        const asks = JSON.parse(dbOrderbook.asks, reviver);
+        const bids = JSON.parse(dbOrderbook.bids, reviver);
         return {
-            [ASK]: asks.map(([_price, _quantity]) => ({
-                price: new Big(_price.toFixed(this.config.PRICE_DP)),
-                quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
+            [ASK]: asks.map(([price, quantity]) => ({
+                price: price.round(this.config.PRICE_DP),
+                quantity: quantity.round(this.config.QUANTITY_DP),
                 side: ASK,
             })),
-            [BID]: bids.map(([_price, _quantity]) => ({
-                price: new Big(_price.toFixed(this.config.PRICE_DP)),
-                quantity: new Big(_quantity.toFixed(this.config.QUANTITY_DP)),
+            [BID]: bids.map(([price, quantity]) => ({
+                price: price.round(this.config.PRICE_DP),
+                quantity: quantity.round(this.config.QUANTITY_DP),
                 side: BID,
             })),
             time: dbOrderbook.time,

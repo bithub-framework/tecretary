@@ -1,5 +1,5 @@
 export * from 'interfaces';
-export { RawTrade } from 'texchange';
+export { UnidentifiedTrade } from 'texchange';
 
 import { Config as TexchangeConfig } from 'texchange';
 import { StartableLike } from 'startable';

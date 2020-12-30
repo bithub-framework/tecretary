@@ -217,8 +217,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/serialization.d.ts": {
-        "version": "a828d2d685410366b83e3b636fadb971c2def2eb6ec590608c408f05e572b7b2",
-        "signature": "a828d2d685410366b83e3b636fadb971c2def2eb6ec590608c408f05e572b7b2",
+        "version": "e5b01ffb793e947ae5e3bb993292a8e3d8d31daac3dd6a1bc3041aa54f8d236d",
+        "signature": "e5b01ffb793e947ae5e3bb993292a8e3d8d31daac3dd6a1bc3041aa54f8d236d",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -477,8 +477,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
-        "version": "34431b72633383f4877d3797e17650183fd55ebbf5fba240de609e342f65dfde",
-        "signature": "34431b72633383f4877d3797e17650183fd55ebbf5fba240de609e342f65dfde",
+        "version": "b2a05f51404edf2477596e4809699cf810273326491a8f01f4e1522b0d5eea27",
+        "signature": "b2a05f51404edf2477596e4809699cf810273326491a8f01f4e1522b0d5eea27",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/manager-orderbook.d.ts": {
@@ -487,8 +487,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/1-pushing.d.ts": {
-        "version": "88d96c284774f03284cbcb8a57447dfc7b12c5af6f4f2d76fb47dcf56081d3ed",
-        "signature": "88d96c284774f03284cbcb8a57447dfc7b12c5af6f4f2d76fb47dcf56081d3ed",
+        "version": "c42c9b5df0e13f54d042f71639f00aee1186c01252fd4ffffde934a6593fdf80",
+        "signature": "c42c9b5df0e13f54d042f71639f00aee1186c01252fd4ffffde934a6593fdf80",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/manager-open-orders.d.ts": {
@@ -497,28 +497,28 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/2-ordering.d.ts": {
-        "version": "dcc471e6d2a777feb7bed54ca723b9d451aa2e6bf8511564317245cf6c8832c7",
-        "signature": "dcc471e6d2a777feb7bed54ca723b9d451aa2e6bf8511564317245cf6c8832c7",
+        "version": "a0b1cf178568f4f8d68172bbdb757e42d60a376229e282dd2e32a03ec447823f",
+        "signature": "a0b1cf178568f4f8d68172bbdb757e42d60a376229e282dd2e32a03ec447823f",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/3-taken.d.ts": {
-        "version": "106b9135230488812e5b54059ab90323031779844e75e94f22f3f4f76ce4d824",
-        "signature": "106b9135230488812e5b54059ab90323031779844e75e94f22f3f4f76ce4d824",
+        "version": "6136dc1f1a0da05ff7babf55befafbfa0e1b05016970a660de4f1f88a338eda5",
+        "signature": "6136dc1f1a0da05ff7babf55befafbfa0e1b05016970a660de4f1f88a338eda5",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/4-assets.d.ts": {
-        "version": "951bd8c48fe4d515463f2c64521c225421f7e21cc69598b8bc278ba15546e502",
-        "signature": "951bd8c48fe4d515463f2c64521c225421f7e21cc69598b8bc278ba15546e502",
+        "version": "35629239121992f918e44b8cd7e11c741bf1b8e056372823258563be3e9ba0a8",
+        "signature": "35629239121992f918e44b8cd7e11c741bf1b8e056372823258563be3e9ba0a8",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/5-delay.d.ts": {
-        "version": "c20c1799aba789082fd56b16efd489683276ea03feced82429de60cff0fffc7b",
-        "signature": "c20c1799aba789082fd56b16efd489683276ea03feced82429de60cff0fffc7b",
+        "version": "6a1d480764e221e63ad2f235065e5d36c84dc8f60cc7c08d0d8463ae222b1e8e",
+        "signature": "6a1d480764e221e63ad2f235065e5d36c84dc8f60cc7c08d0d8463ae222b1e8e",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/index.d.ts": {
-        "version": "980a71bb255e5f2e2da310cc4d8f4169720ed396ea7e4029750c8610b3ac502e",
-        "signature": "980a71bb255e5f2e2da310cc4d8f4169720ed396ea7e4029750c8610b3ac502e",
+        "version": "7513c9dc5861dbcc5abd502d71b00de1d8bd40b1370075e1bdd7f62d79a9e289",
+        "signature": "7513c9dc5861dbcc5abd502d71b00de1d8bd40b1370075e1bdd7f62d79a9e289",
         "affectsGlobalScope": false
       },
       "./node_modules/startable/dist/startable.d.ts": {
@@ -537,8 +537,8 @@
         "affectsGlobalScope": false
       },
       "./src/interfaces.ts": {
-        "version": "9de78785103c993f22fe276e7dad86c751b4697fd9d5cc79bdb1cc2fddabbb35",
-        "signature": "809eba589e78edd5a0488a3b4b8fe866eafce13b6ceb0a086228023ce26db445",
+        "version": "894335dab017702144679dad99089730677e7ea90acb78067c8eb410b26c6abc",
+        "signature": "d54d3419b5c7226b0c29407b4a210944e63a9eebb011e05e8c065583713632da",
         "affectsGlobalScope": false
       },
       "./src/private-api.ts": {
@@ -557,8 +557,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": {
-        "version": "0069f8c38df6c8aaf3184ced908a0984b21d4878ac21d901ce349ab6ce73dd07",
-        "signature": "0069f8c38df6c8aaf3184ced908a0984b21d4878ac21d901ce349ab6ce73dd07",
+        "version": "84a81986ba1c22341949decf588d8a44f7065e03fff92994c5eb49891ac5a289",
+        "signature": "84a81986ba1c22341949decf588d8a44f7065e03fff92994c5eb49891ac5a289",
         "affectsGlobalScope": false
       },
       "./node_modules/ts-toolbelt/out/index.d.ts": {
@@ -577,8 +577,8 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "66cd4b122debd17a63b27851b11a33a1b15ad367c5d769c3092e3844f36c3874",
-        "signature": "feefb2514a8c130bb928e7c031604886afadf407923faf7cc0df49fd7bae9999",
+        "version": "2ffe10a0c44d62cebbafb85deb22b878b6e8e0285076ab671246826ed380c2e1",
+        "signature": "7494e16aec6b0ff5b88a14e5e5b7db6a7fb0dc2f62aa2d88601f25cb0f7aa210",
         "affectsGlobalScope": false
       },
       "./node_modules/sorted-queue/dist/index.d.ts": {
@@ -632,8 +632,8 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "1f18f9db62ff906659819bc87e4ea7f290847f2f0a2efee40733f49b816acd46",
-        "signature": "5cb9ba4aa21ab79692a64d95947fcc135161030a3dbc4781bfd9b05063da286e",
+        "version": "9d93e5b394527f0215863dbfe6fd80bc00311dc451365f61c67994a1df282406",
+        "signature": "f9fce67750201ed97b1b1cc6198459a694b3a6e3740bcbbd299aec5b7604403b",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
@@ -1044,6 +1044,7 @@
         "./node_modules/interfaces/dist/serialization.d.ts"
       ],
       "./node_modules/interfaces/dist/serialization.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
       "./node_modules/interruptible-timer/dist/index.d.ts": [
@@ -1059,6 +1060,7 @@
         "./node_modules/startable/dist/startable.d.ts"
       ],
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": [
+        "./node_modules/@types/sqlite3/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
       ],
       "./node_modules/startable/dist/adaptor.d.ts": [
@@ -1447,6 +1449,7 @@
         "./node_modules/interfaces/dist/serialization.d.ts"
       ],
       "./node_modules/interfaces/dist/serialization.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
       "./node_modules/interruptible-timer/dist/index.d.ts": [
@@ -1462,6 +1465,7 @@
         "./node_modules/startable/dist/startable.d.ts"
       ],
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": [
+        "./node_modules/@types/sqlite3/index.d.ts",
         "./node_modules/startable/dist/index.d.ts"
       ],
       "./node_modules/startable/dist/adaptor.d.ts": [
