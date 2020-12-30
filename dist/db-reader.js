@@ -1,6 +1,7 @@
 import Database from 'promisified-sqlite';
 import Startable from 'startable';
 import { BID, ASK, reviver, } from './interfaces';
+import Big from 'big.js';
 import { LIMIT } from './config';
 import { find, whereEq } from 'ramda';
 import assert from 'assert';
@@ -140,12 +141,12 @@ class DbReader extends Startable {
         ;`);
         assert(find(whereEq({
             name: 'asks',
-            type: 'CLOB',
+            type: 'JSON',
             notnull: 1,
         }), orderbooksTableInfo));
         assert(find(whereEq({
             name: 'bids',
-            type: 'CLOB',
+            type: 'JSON',
             notnull: 1,
         }), orderbooksTableInfo));
         assert(find(whereEq({
@@ -169,17 +170,17 @@ class DbReader extends Startable {
         assert(typeof bids[0][1] === 'number');
     }
     dbOrderbook2Orderbook(dbOrderbook) {
-        const asks = JSON.parse(dbOrderbook.asks, reviver);
-        const bids = JSON.parse(dbOrderbook.bids, reviver);
+        const asks = JSON.parse(dbOrderbook.asks);
+        const bids = JSON.parse(dbOrderbook.bids);
         return {
             [ASK]: asks.map(([price, quantity]) => ({
-                price: price.round(this.config.PRICE_DP),
-                quantity: quantity.round(this.config.QUANTITY_DP),
+                price: new Big(price.toFixed(this.config.PRICE_DP)),
+                quantity: new Big(quantity.toFixed(this.config.QUANTITY_DP)),
                 side: ASK,
             })),
             [BID]: bids.map(([price, quantity]) => ({
-                price: price.round(this.config.PRICE_DP),
-                quantity: quantity.round(this.config.QUANTITY_DP),
+                price: new Big(price.toFixed(this.config.PRICE_DP)),
+                quantity: new Big(quantity.toFixed(this.config.QUANTITY_DP)),
                 side: BID,
             })),
             time: dbOrderbook.time,

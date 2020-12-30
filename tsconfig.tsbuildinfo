@@ -202,8 +202,8 @@
         "affectsGlobalScope": true
       },
       "./src/config.ts": {
-        "version": "4aa903431ed195eebf1bf42927a95aa08a5d18eb08bbf9ea837438af74df2da7",
-        "signature": "682487b1e3432b62cbf7a9ede9483a61db27d4d30bd27b08edbde72f056d5a0b",
+        "version": "9d106fb50b3ee1e237ee31ce850e6c904153c72b39d087cab5755f2a84675af1",
+        "signature": "1742f41401708f2d48357bc3f22ee6fe3d58c7dfe63448fbbcee96a71c956747",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/big.js/index.d.ts": {
@@ -577,7 +577,7 @@
         "affectsGlobalScope": false
       },
       "./src/db-reader.ts": {
-        "version": "2ffe10a0c44d62cebbafb85deb22b878b6e8e0285076ab671246826ed380c2e1",
+        "version": "3e4da2b6b0150970e33184a04cd176b79e71f9a54a18b34d913697c293ee87b2",
         "signature": "7494e16aec6b0ff5b88a14e5e5b7db6a7fb0dc2f62aa2d88601f25cb0f7aa210",
         "affectsGlobalScope": false
       },

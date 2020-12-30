@@ -175,12 +175,12 @@ class DbReader extends Startable {
         ;`);
         assert(find(whereEq({
             name: 'asks',
-            type: 'CLOB',
+            type: 'JSON',
             notnull: 1,
         }), orderbooksTableInfo));
         assert(find(whereEq({
             name: 'bids',
-            type: 'CLOB',
+            type: 'JSON',
             notnull: 1,
         }), orderbooksTableInfo));
         assert(find(whereEq({
@@ -205,18 +205,18 @@ class DbReader extends Startable {
     }
 
     private dbOrderbook2Orderbook(dbOrderbook: DatabaseOrderbook): Orderbook {
-        type T = [Big, Big][];
-        const asks: T = JSON.parse(dbOrderbook.asks, reviver);
-        const bids: T = JSON.parse(dbOrderbook.bids, reviver);
+        type T = [number, number][];
+        const asks: T = JSON.parse(dbOrderbook.asks);
+        const bids: T = JSON.parse(dbOrderbook.bids);
         return {
             [ASK]: asks.map(([price, quantity]) => ({
-                price: price.round(this.config.PRICE_DP),
-                quantity: quantity.round(this.config.QUANTITY_DP),
+                price: new Big(price.toFixed(this.config.PRICE_DP)),
+                quantity: new Big(quantity.toFixed(this.config.QUANTITY_DP)),
                 side: ASK,
             })),
             [BID]: bids.map(([price, quantity]) => ({
-                price: price.round(this.config.PRICE_DP),
-                quantity: quantity.round(this.config.QUANTITY_DP),
+                price: new Big(price.toFixed(this.config.PRICE_DP)),
+                quantity: new Big(quantity.toFixed(this.config.QUANTITY_DP)),
                 side: BID,
             })),
             time: dbOrderbook.time,
