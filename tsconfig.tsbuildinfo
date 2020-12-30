@@ -461,9 +461,14 @@
         "signature": "5825520e2099309182c6e2a2b3061b060d42a098c58f67d1754880a7e2cce99a",
         "affectsGlobalScope": false
       },
+      "./node_modules/interfaces/dist/config.d.ts": {
+        "version": "922ee130bde6053afca27daac6aa17ce34f107d4678efee0b28d94c0a578c0bf",
+        "signature": "922ee130bde6053afca27daac6aa17ce34f107d4678efee0b28d94c0a578c0bf",
+        "affectsGlobalScope": false
+      },
       "./node_modules/interfaces/dist/context.d.ts": {
-        "version": "2804a1a3251bcbf1484beb259c3bcbcc688c3afd2fce8bb4e417a4cd306fe671",
-        "signature": "2804a1a3251bcbf1484beb259c3bcbcc688c3afd2fce8bb4e417a4cd306fe671",
+        "version": "56feee1764623bdd5205c4f6f2ef442ac076713b0d5ad0b36d42f8cab74fceca",
+        "signature": "56feee1764623bdd5205c4f6f2ef442ac076713b0d5ad0b36d42f8cab74fceca",
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/clone.d.ts": {
@@ -472,8 +477,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "4c9c0015a9b037901cbfd1bcaf46496fadc0ead2e62a4524a8e9c7bbacbc7634",
-        "signature": "4c9c0015a9b037901cbfd1bcaf46496fadc0ead2e62a4524a8e9c7bbacbc7634",
+        "version": "c6957ed8477a5de5fdce474c21370b9f88675980aec27f219261a4f398572180",
+        "signature": "c6957ed8477a5de5fdce474c21370b9f88675980aec27f219261a4f398572180",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
@@ -552,8 +557,8 @@
         "affectsGlobalScope": false
       },
       "./src/context.ts": {
-        "version": "412c96dded3a454d9943c4eb4835b538cbe2655298f145db47457e23fd396733",
-        "signature": "11728c1e939c1755ac984b8135c9a93f77da8cbc5625c472d971aaeb3a228336",
+        "version": "66cc443f869d884f9e337754b211df75332099a0a8d8e36b3dab21b76278265a",
+        "signature": "4f2480a1b7b6dc96255385ed7977dc399d061862c03d2614712f883c65599649",
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": {
@@ -632,7 +637,7 @@
         "affectsGlobalScope": false
       },
       "./src/tecretary.ts": {
-        "version": "9d93e5b394527f0215863dbfe6fd80bc00311dc451365f61c67994a1df282406",
+        "version": "59e98490306662cff2d00fd25ae2c4e327a1d0bb001ce1fdf9b4baab13acecee",
         "signature": "f9fce67750201ed97b1b1cc6198459a694b3a6e3740bcbbd299aec5b7604403b",
         "affectsGlobalScope": false
       },
@@ -1029,9 +1034,13 @@
         "./node_modules/@types/node/url.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
+      "./node_modules/interfaces/dist/config.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts"
+      ],
       "./node_modules/interfaces/dist/context.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interfaces/dist/config.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
       "./node_modules/interfaces/dist/data.d.ts": [
@@ -1039,6 +1048,7 @@
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/clone.d.ts",
+        "./node_modules/interfaces/dist/config.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
         "./node_modules/interfaces/dist/serialization.d.ts"
@@ -1119,6 +1129,7 @@
         "./node_modules/ts-toolbelt/out/index.d.ts"
       ],
       "./src/context.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/texchange/dist/index.d.ts",
         "./src/interfaces.ts",
@@ -1157,7 +1168,6 @@
         "./src/interfaces.ts"
       ],
       "./src/tecretary.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/@types/node-fetch/index.d.ts",
         "./node_modules/pollerloop/dist/pollerloop.d.ts",
         "./node_modules/startable/dist/index.d.ts",
@@ -1434,9 +1444,13 @@
         "./node_modules/@types/node/url.d.ts",
         "./node_modules/@types/node/zlib.d.ts"
       ],
+      "./node_modules/interfaces/dist/config.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts"
+      ],
       "./node_modules/interfaces/dist/context.d.ts": [
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/@types/node/index.d.ts",
+        "./node_modules/interfaces/dist/config.d.ts",
         "./node_modules/interfaces/dist/data.d.ts"
       ],
       "./node_modules/interfaces/dist/data.d.ts": [
@@ -1444,6 +1458,7 @@
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
         "./node_modules/interfaces/dist/clone.d.ts",
+        "./node_modules/interfaces/dist/config.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
         "./node_modules/interfaces/dist/serialization.d.ts"
@@ -1524,6 +1539,7 @@
         "./node_modules/ts-toolbelt/out/index.d.ts"
       ],
       "./src/context.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/@types/node/events.d.ts",
         "./node_modules/texchange/dist/index.d.ts",
         "./src/interfaces.ts",
@@ -1638,6 +1654,7 @@
       "./node_modules/@types/sqlite3/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
       "./node_modules/interfaces/dist/clone.d.ts",
+      "./node_modules/interfaces/dist/config.d.ts",
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",
       "./node_modules/interfaces/dist/index.d.ts",

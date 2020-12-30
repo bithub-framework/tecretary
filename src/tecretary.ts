@@ -10,15 +10,12 @@ import {
     Config,
     UnidentifiedTrade,
     StrategyConstructor,
-    Assets,
-    LONG, SHORT,
     StringifiedAssets,
     reviver,
 } from './interfaces';
 import {
     REDIRECTOR_URL,
 } from './config';
-import Big from 'big.js';
 
 
 class Tecretary extends Startable {
@@ -59,6 +56,7 @@ class Tecretary extends Startable {
         );
         this.context = new Context(
             this.texchange,
+            this.config,
             this.forward.sleep,
             this.forward.now,
             this.forward.escape,

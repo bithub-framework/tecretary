@@ -57,7 +57,7 @@ class Tecretary extends Startable {
         const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
         this.forward = new Forward(startingTime);
         this.texchange = new Texchange(this.config, this.forward.sleep, this.forward.now);
-        this.context = new Context(this.texchange, this.forward.sleep, this.forward.now, this.forward.escape);
+        this.context = new Context(this.texchange, this.config, this.forward.sleep, this.forward.now, this.forward.escape);
         this.strategy = new this.Strategy(this.context);
         this.orderbooksIterator = this.dbReader.getOrderbooks(startingTime);
         await this.orderbooksIterator.next();
