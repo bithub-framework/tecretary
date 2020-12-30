@@ -646,11 +646,6 @@
         "signature": "36dc5dfdb15f6b74cbf273183797c3ad558512dd8bda89eee5d334782e176546",
         "affectsGlobalScope": false
       },
-      "./src/test.ts": {
-        "version": "23807fd52bf71b5ee5f26b3f7731cf3d9f0195521960999d455b371cf9ab41ee",
-        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
-        "affectsGlobalScope": false
-      },
       "./node_modules/@types/bluebird/index.d.ts": {
         "version": "6247a016129906c76ba4012d2d77773c919ea33a96830b0a8d522a9790fc7efe",
         "signature": "6247a016129906c76ba4012d2d77773c919ea33a96830b0a8d522a9790fc7efe",
@@ -1185,15 +1180,6 @@
         "./src/db-reader.ts",
         "./src/forward.ts",
         "./src/interfaces.ts"
-      ],
-      "./src/test.ts": [
-        "./node_modules/@types/big.js/index.d.ts",
-        "./node_modules/@types/node-fetch/index.d.ts",
-        "./node_modules/@types/node/assert.d.ts",
-        "./node_modules/interfaces/dist/index.d.ts",
-        "./node_modules/startable/dist/index.d.ts",
-        "./src/config.ts",
-        "./src/index.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1705,7 +1691,6 @@
       "./src/private-api.ts",
       "./src/public-api.ts",
       "./src/tecretary.ts",
-      "./src/test.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "../../../../../usr/local/lib/node_modules/typescript/lib/lib.es2015.d.ts",
