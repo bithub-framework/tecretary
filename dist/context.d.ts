@@ -22,6 +22,7 @@ declare class ContextMarket extends ContextMarketPublicApi implements ContextMar
     QUANTITY_DP: number;
     CURRENCY_DP: number;
     calcDollarVolume: (price: Big, quantity: Big) => Big;
+    calcQuantity: (price: Big, dollarVolume: Big) => Big;
     constructor(texchange: Texchange, config: Config);
 }
 declare class ContextAccount extends ContextAccountPrivateApi implements ContextAccountLike {

@@ -48,6 +48,7 @@ class ContextMarket extends ContextMarketPublicApi implements ContextMarketLike 
     public QUANTITY_DP: number;
     public CURRENCY_DP: number;
     public calcDollarVolume: (price: Big, quantity: Big) => Big;
+    public calcQuantity: (price: Big, dollarVolume: Big) => Big;
 
     constructor(
         texchange: Texchange,
@@ -60,6 +61,7 @@ class ContextMarket extends ContextMarketPublicApi implements ContextMarketLike 
             QUANTITY_DP: this.QUANTITY_DP,
             CURRENCY_DP: this.CURRENCY_DP,
             calcDollarVolume: this.calcDollarVolume,
+            calcQuantity: this.calcQuantity,
         } = config);
     }
 }

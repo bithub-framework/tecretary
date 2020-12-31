@@ -13,7 +13,7 @@
     "license": "SEE LICENSE IN ./LICENSE",
     "dependencies": {
         "@types/big.js": "^6.0.1",
-        "@types/node": "^14.14.16",
+        "@types/node": "^14.14.17",
         "@types/ramda": "^0.27.34",
         "big.js": "^6.0.3",
         "interfaces": "https://gitee.com/zimtsui/interfaces.git",
