@@ -212,13 +212,13 @@
         "affectsGlobalScope": true
       },
       "./node_modules/interfaces/dist/data.d.ts": {
-        "version": "e9771f6e530bb919bd782b7a87195ed5bb28f63cffd588dd846c9713ac3afe19",
-        "signature": "e9771f6e530bb919bd782b7a87195ed5bb28f63cffd588dd846c9713ac3afe19",
+        "version": "02cd50413883cd7a9e24aa0c69bdf819aefec15083d8da35cff4ebee11c3105e",
+        "signature": "02cd50413883cd7a9e24aa0c69bdf819aefec15083d8da35cff4ebee11c3105e",
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/serialization.d.ts": {
-        "version": "e5b01ffb793e947ae5e3bb993292a8e3d8d31daac3dd6a1bc3041aa54f8d236d",
-        "signature": "e5b01ffb793e947ae5e3bb993292a8e3d8d31daac3dd6a1bc3041aa54f8d236d",
+        "version": "9010779de5f4beba2f4fadfa9e5f8b346e6be70a741d4d432d2a206cfe9c0fa0",
+        "signature": "9010779de5f4beba2f4fadfa9e5f8b346e6be70a741d4d432d2a206cfe9c0fa0",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/events/index.d.ts": {
@@ -227,8 +227,8 @@
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/config.d.ts": {
-        "version": "d62edc18ff835d1784d5fe218fc5ff99e9d0e5b84f454c7dbf807c7884366388",
-        "signature": "d62edc18ff835d1784d5fe218fc5ff99e9d0e5b84f454c7dbf807c7884366388",
+        "version": "9a89372db99d87797e8346ab03b22f524c329ec50fe7e987e8f8be32cfd7c69f",
+        "signature": "9a89372db99d87797e8346ab03b22f524c329ec50fe7e987e8f8be32cfd7c69f",
         "affectsGlobalScope": false
       },
       "./node_modules/interfaces/dist/context.d.ts": {
@@ -236,14 +236,9 @@
         "signature": "cd6166e75d80b2b8a056cafd944c0b975c8d2ed0f59fa861342226ac4b90e487",
         "affectsGlobalScope": false
       },
-      "./node_modules/interfaces/dist/clone.d.ts": {
-        "version": "2b6e6541512a6e071c3e3f927844b30cd149bf519901c629a602aea71a74d7ce",
-        "signature": "2b6e6541512a6e071c3e3f927844b30cd149bf519901c629a602aea71a74d7ce",
-        "affectsGlobalScope": false
-      },
       "./node_modules/interfaces/dist/index.d.ts": {
-        "version": "c6957ed8477a5de5fdce474c21370b9f88675980aec27f219261a4f398572180",
-        "signature": "c6957ed8477a5de5fdce474c21370b9f88675980aec27f219261a4f398572180",
+        "version": "4062b915bfff3de063bfd9f32d450872d644cc071f40f615b87bdf54a8687542",
+        "signature": "4062b915bfff3de063bfd9f32d450872d644cc071f40f615b87bdf54a8687542",
         "affectsGlobalScope": false
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -482,43 +477,43 @@
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/interfaces.d.ts": {
-        "version": "e35006829b3422a4424506328d7b2a94651968941e0445b367cbcdb22c7c17d1",
-        "signature": "e35006829b3422a4424506328d7b2a94651968941e0445b367cbcdb22c7c17d1",
+        "version": "c05d59dd23c69036a9b3bb1bd921bd79f622b1b693e19797580de48263d24228",
+        "signature": "c05d59dd23c69036a9b3bb1bd921bd79f622b1b693e19797580de48263d24228",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/manager-orderbook.d.ts": {
-        "version": "0ad60e4ef9ac6b5418dea96e2bd88a2b11c856154a27871d20de044d05881d70",
-        "signature": "0ad60e4ef9ac6b5418dea96e2bd88a2b11c856154a27871d20de044d05881d70",
+        "version": "21688a8e33be642dff17f51f2efdda3d3e7c3b9f0f83d983892475a9461c3055",
+        "signature": "21688a8e33be642dff17f51f2efdda3d3e7c3b9f0f83d983892475a9461c3055",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/1-pushing.d.ts": {
-        "version": "c42c9b5df0e13f54d042f71639f00aee1186c01252fd4ffffde934a6593fdf80",
-        "signature": "c42c9b5df0e13f54d042f71639f00aee1186c01252fd4ffffde934a6593fdf80",
+        "version": "9bd5372871ef329ce121829422c17b75b20151816b6623afa55edfaa11b63805",
+        "signature": "9bd5372871ef329ce121829422c17b75b20151816b6623afa55edfaa11b63805",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/manager-open-orders.d.ts": {
-        "version": "3b227e6fe1e8df7928a57468a06e2c6480a8f4da2adda6c5e4660bc05e678f9b",
-        "signature": "3b227e6fe1e8df7928a57468a06e2c6480a8f4da2adda6c5e4660bc05e678f9b",
+        "version": "51f2a936995d16ed3759adeaebad22444fcde31b98a3028929a46cbece021c43",
+        "signature": "51f2a936995d16ed3759adeaebad22444fcde31b98a3028929a46cbece021c43",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/2-ordering.d.ts": {
-        "version": "a0b1cf178568f4f8d68172bbdb757e42d60a376229e282dd2e32a03ec447823f",
-        "signature": "a0b1cf178568f4f8d68172bbdb757e42d60a376229e282dd2e32a03ec447823f",
+        "version": "747d75a08fa9f34ec03cf3963bac10d2c1b017678a9113c76ce9990f24e97f51",
+        "signature": "747d75a08fa9f34ec03cf3963bac10d2c1b017678a9113c76ce9990f24e97f51",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/3-taken.d.ts": {
-        "version": "6136dc1f1a0da05ff7babf55befafbfa0e1b05016970a660de4f1f88a338eda5",
-        "signature": "6136dc1f1a0da05ff7babf55befafbfa0e1b05016970a660de4f1f88a338eda5",
+        "version": "64ec4c83b378427ce0b4df688c60a06b692340b8c1e8454b3426806f56a88931",
+        "signature": "64ec4c83b378427ce0b4df688c60a06b692340b8c1e8454b3426806f56a88931",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/4-assets.d.ts": {
-        "version": "35629239121992f918e44b8cd7e11c741bf1b8e056372823258563be3e9ba0a8",
-        "signature": "35629239121992f918e44b8cd7e11c741bf1b8e056372823258563be3e9ba0a8",
+        "version": "99c2276d33da9b815f7849b93a32fc009ec63a885ab6d87340711b7c15dc4ad5",
+        "signature": "99c2276d33da9b815f7849b93a32fc009ec63a885ab6d87340711b7c15dc4ad5",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/5-delay.d.ts": {
-        "version": "6a1d480764e221e63ad2f235065e5d36c84dc8f60cc7c08d0d8463ae222b1e8e",
-        "signature": "6a1d480764e221e63ad2f235065e5d36c84dc8f60cc7c08d0d8463ae222b1e8e",
+        "version": "44e24f652816cc68ab8682c975cb2d5ce6740e543b3a0776d22a86a31aa9fd50",
+        "signature": "44e24f652816cc68ab8682c975cb2d5ce6740e543b3a0776d22a86a31aa9fd50",
         "affectsGlobalScope": false
       },
       "./node_modules/texchange/dist/index.d.ts": {
@@ -572,8 +567,8 @@
         "affectsGlobalScope": false
       },
       "./src/context.ts": {
-        "version": "2441834eabbcf31256d1c48b407f0761ec2bc99716fc7db9d6d97cf45088b806",
-        "signature": "41c371e32c442d3db7180ad6d0291224119acd0faa0a29ea552aded029bc10e7",
+        "version": "4c21c3e51ae20408ec5cd2578d424b258ef7e0a1eca617993e0b68374bf8667d",
+        "signature": "00128bf5e995133202bc9b62e913a3d171f0a77364b13f36e8c87ff93b225e45",
         "affectsGlobalScope": false
       },
       "./node_modules/promisified-sqlite/dist/promisified-sqlite.d.ts": {
@@ -902,7 +897,6 @@
         "./node_modules/@types/big.js/index.d.ts"
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
-        "./node_modules/interfaces/dist/clone.d.ts",
         "./node_modules/interfaces/dist/config.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
@@ -947,18 +941,23 @@
       ],
       "./node_modules/texchange/dist/2-ordering.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts",
         "./node_modules/texchange/dist/1-pushing.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
         "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/3-taken.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/2-ordering.d.ts",
-        "./node_modules/texchange/dist/interfaces.d.ts"
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/4-assets.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts",
         "./node_modules/texchange/dist/3-taken.d.ts",
-        "./node_modules/texchange/dist/interfaces.d.ts"
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/5-delay.d.ts": [
         "./node_modules/texchange/dist/4-assets.d.ts",
@@ -1255,7 +1254,6 @@
         "./node_modules/@types/big.js/index.d.ts"
       ],
       "./node_modules/interfaces/dist/index.d.ts": [
-        "./node_modules/interfaces/dist/clone.d.ts",
         "./node_modules/interfaces/dist/config.d.ts",
         "./node_modules/interfaces/dist/context.d.ts",
         "./node_modules/interfaces/dist/data.d.ts",
@@ -1300,18 +1298,23 @@
       ],
       "./node_modules/texchange/dist/2-ordering.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts",
         "./node_modules/texchange/dist/1-pushing.d.ts",
         "./node_modules/texchange/dist/interfaces.d.ts",
         "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/3-taken.d.ts": [
+        "./node_modules/@types/big.js/index.d.ts",
         "./node_modules/texchange/dist/2-ordering.d.ts",
-        "./node_modules/texchange/dist/interfaces.d.ts"
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/4-assets.d.ts": [
         "./node_modules/@types/big.js/index.d.ts",
+        "./node_modules/interfaces/dist/data.d.ts",
         "./node_modules/texchange/dist/3-taken.d.ts",
-        "./node_modules/texchange/dist/interfaces.d.ts"
+        "./node_modules/texchange/dist/interfaces.d.ts",
+        "./node_modules/texchange/dist/manager-open-orders.d.ts"
       ],
       "./node_modules/texchange/dist/5-delay.d.ts": [
         "./node_modules/texchange/dist/4-assets.d.ts",
@@ -1434,7 +1437,6 @@
       "./node_modules/@types/ramda/tools.d.ts",
       "./node_modules/@types/sqlite3/index.d.ts",
       "./node_modules/@types/ws/index.d.ts",
-      "./node_modules/interfaces/dist/clone.d.ts",
       "./node_modules/interfaces/dist/config.d.ts",
       "./node_modules/interfaces/dist/context.d.ts",
       "./node_modules/interfaces/dist/data.d.ts",

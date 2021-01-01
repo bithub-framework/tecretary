@@ -32,6 +32,7 @@ class ContextMarket extends ContextMarketPublicApi {
             PRICE_DP: this.PRICE_DP,
             QUANTITY_DP: this.QUANTITY_DP,
             CURRENCY_DP: this.CURRENCY_DP,
+            MINIMUM_PRICE_INC: this.MINIMUM_PRICE_INC,
             calcDollarVolume: this.calcDollarVolume,
             calcQuantity: this.calcQuantity,
         } = config);

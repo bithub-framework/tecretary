@@ -21,6 +21,7 @@ declare class ContextMarket extends ContextMarketPublicApi implements ContextMar
     PRICE_DP: number;
     QUANTITY_DP: number;
     CURRENCY_DP: number;
+    MINIMUM_PRICE_INC: Big;
     calcDollarVolume: (price: Big, quantity: Big) => Big;
     calcQuantity: (price: Big, dollarVolume: Big) => Big;
     constructor(texchange: Texchange, config: Config);
