@@ -12,6 +12,8 @@ import {
     StrategyConstructor,
     StringifiedAssets,
     reviver,
+    InitialAssets,
+    Assets,
 } from './interfaces';
 import {
     REDIRECTOR_URL,
@@ -40,13 +42,8 @@ class Tecretary extends Startable {
     protected async _start() {
         await this.dbReader.start(err => void this.stop(err).catch(() => { }));
         const dbMinTime = await this.dbReader.getMinTime();
-        const res = await fetch(
-            `${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
-        if (res.ok) this.config.initialAssets =
-            JSON.parse(
-                JSON.stringify(<StringifiedAssets>await res.json()),
-                reviver,
-            );
+        this.config.initialAssets =
+            await this.readInitialAssets() || this.config.initialAssets;
         const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
         this.forward = new Forward(startingTime);
         this.texchange = new Texchange(
@@ -76,6 +73,21 @@ class Tecretary extends Startable {
         await this.strategy.stop(err);
         await this.pollerloop.stop();
         await this.dbReader.stop();
+    }
+
+    private async readInitialAssets(): Promise<InitialAssets | void> {
+        const res = await fetch(
+            `${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
+        if (res.ok) {
+            const assets = <Assets>JSON.parse(
+                JSON.stringify(<StringifiedAssets>await res.json()),
+                reviver,
+            );
+            return {
+                balance: assets.balance,
+                time: assets.time,
+            };
+        }
     }
 
     private loop: Loop = async sleep => {

@@ -14,6 +14,7 @@ declare class Tecretary extends Startable {
     constructor(Strategy: StrategyConstructor, config: Config);
     protected _start(): Promise<void>;
     protected _stop(err?: Error): Promise<void>;
+    private readInitialAssets;
     private loop;
 }
 export { Tecretary as default, Tecretary, };

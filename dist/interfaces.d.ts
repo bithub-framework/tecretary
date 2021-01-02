@@ -1,5 +1,5 @@
 export * from 'interfaces';
-export { UnidentifiedTrade } from 'texchange';
+export { UnidentifiedTrade, InitialAssets, } from 'texchange';
 import { Config as TexchangeConfig } from 'texchange';
 import { StartableLike } from 'startable';
 import { ContextLike } from 'interfaces';

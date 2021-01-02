@@ -50,10 +50,8 @@ class Tecretary extends Startable {
     async _start() {
         await this.dbReader.start(err => void this.stop(err).catch(() => { }));
         const dbMinTime = await this.dbReader.getMinTime();
-        const res = await fetch(`${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
-        if (res.ok)
-            this.config.initialAssets =
-                JSON.parse(JSON.stringify(await res.json()), reviver);
+        this.config.initialAssets =
+            await this.readInitialAssets() || this.config.initialAssets;
         const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
         this.forward = new Forward(startingTime);
         this.texchange = new Texchange(this.config, this.forward.sleep, this.forward.now);
@@ -70,6 +68,16 @@ class Tecretary extends Startable {
         await this.strategy.stop(err);
         await this.pollerloop.stop();
         await this.dbReader.stop();
+    }
+    async readInitialAssets() {
+        const res = await fetch(`${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
+        if (res.ok) {
+            const assets = JSON.parse(JSON.stringify(await res.json()), reviver);
+            return {
+                balance: assets.balance,
+                time: assets.time,
+            };
+        }
     }
 }
 export { Tecretary as default, Tecretary, };
