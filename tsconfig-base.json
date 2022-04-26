@@ -1,15 +1,12 @@
 {
     "compilerOptions": {
-        /* Basic Options */
         "target": "es2020",
-        "module": "esnext",
-        "moduleResolution": "node",
+        "module": "CommonJS",
         "lib": [
             "esnext"
         ],
         "sourceMap": true,
         "strict": true,
-        "esModuleInterop": true,
-        "experimentalDecorators": true,
+        "experimentalDecorators": true
     }
 }

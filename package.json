@@ -3,26 +3,24 @@
     "version": "0.0.1",
     "description": "",
     "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./build/index.js",
+    "types": "./build/index.d.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "tsc -b"
+        "build": "tsc -b ./src/tsconfig.json"
     },
     "author": "Zim",
-    "license": "SEE LICENSE IN ./LICENSE",
     "dependencies": {
-        "@types/big.js": "^6.0.1",
-        "@types/node": "^14.14.17",
+        "@types/node": "^16.11.28",
         "@types/ramda": "^0.27.34",
-        "big.js": "^6.0.3",
-        "interfaces": "https://gitee.com/zimtsui/interfaces.git",
-        "pollerloop": "https://gitee.com/zimtsui/pollerloop.git",
-        "promisified-sqlite": "https://gitee.com/zimtsui/promisified-sqlite.git",
+        "coroutine-locks": "github:zimtsui/coroutine-locks",
+        "interfaces": "github:bithub-framework/interfaces",
+        "manual-promise": "github:zimtsui/manual-promise",
         "ramda": "^0.27.1",
-        "secretary": "https://gitee.com/zimtsui/secretary-js.git",
         "sorted-queue": "^0.3.2",
-        "startable": "https://gitee.com/zimtsui/startable.git",
-        "texchange": "https://gitee.com/zimtsui/texchange.git"
+        "sortque": "github:zimtsui/sortque"
+    },
+    "peerDependencies": {
+        "texchange": "github:bithub-framework/texchange"
     }
 }
