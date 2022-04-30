@@ -7,21 +7,17 @@ import {
     Balances,
     Positions,
     TimelineLike,
-} from 'interfaces';
-import {
-    TradeId,
-    OrderId,
     OpenOrder,
     Amendment,
-} from 'texchange/build/interfaces';
+} from 'interfaces';
 import { Latency } from 'texchange/build/facades.d/latency';
 import { AccountLatency } from 'texchange/build/facades.d/latency/account'
 import { MarketLatency } from 'texchange/build/facades.d/latency/market';
 
 
 
-export class Context<H extends HLike<H>> implements ContextLike<H, OrderId, TradeId> {
-    [marketId: number]: MarketLike<H, OrderId, TradeId>;
+export class Context<H extends HLike<H>> implements ContextLike<H> {
+    [marketId: number]: MarketLike<H>;
 
     constructor(
         userTexes: Latency<H>[],
@@ -49,8 +45,8 @@ export class Context<H extends HLike<H>> implements ContextLike<H, OrderId, Trad
 }
 
 
-class ContextMarket<H extends HLike<H>> implements MarketLike<H, OrderId, TradeId> {
-    [accountId: number]: AccountLike<H, OrderId, TradeId>;
+class ContextMarket<H extends HLike<H>> implements MarketLike<H> {
+    [accountId: number]: AccountLike<H>;
     public spec = this.market.spec;
     public events = this.market.events;
 
@@ -71,7 +67,7 @@ class ContextMarket<H extends HLike<H>> implements MarketLike<H, OrderId, TradeI
 }
 
 
-class ContextAccout<H extends HLike<H>> implements AccountLike<H, OrderId, TradeId> {
+class ContextAccout<H extends HLike<H>> implements AccountLike<H> {
     public spec = this.account.spec
     public events = this.account.events;
 

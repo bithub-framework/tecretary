@@ -1,8 +1,8 @@
 import { HLike } from 'interfaces';
 import { CheckPoint } from './time-engine';
 import { AdminTex } from 'texchange/build/texchange';
-import { DatabaseOrderbook } from 'texchange/build/use-cases.d/update-orderbook';
-import { DatabaseTrade } from 'texchange/build/use-cases.d/update-trades';
+import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
+import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 
 
 export function* checkPointsFromDatabaseOrderbooks<H extends HLike<H>>(

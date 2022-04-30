@@ -1,5 +1,4 @@
 import { Startable } from 'startable';
-import { OrderId, TradeId } from 'texchange/build/interfaces';
 import { Texchange } from 'texchange/build/texchange';
 import { Config } from './config';
 import { HLike, HStatic } from 'interfaces';
@@ -15,7 +14,7 @@ export declare class Tecretary<H extends HLike<H>> {
     private dataCheckPoints;
     private pollerloop;
     startable: Startable;
-    constructor(Strategy: StrategyStatic<H, OrderId, TradeId>, config: Config<H>, texMap: Map<string, Texchange<H, unknown>>, H: HStatic<H>);
+    constructor(Strategy: StrategyStatic<H>, config: Config<H>, texMap: Map<string, Texchange<H, unknown>>, H: HStatic<H>);
     private start;
     private stop;
     private loop;

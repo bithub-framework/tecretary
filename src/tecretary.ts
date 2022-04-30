@@ -1,14 +1,17 @@
 import { Startable, StartableLike } from 'startable';
-import { DatabaseReader } from './database-reader';
+import { DatabaseReader } from './database-reader/database-reader';
 import { Context } from './context';
 import { Timeline } from './timeline';
-import { OrderId, TradeId } from 'texchange/build/interfaces';
 import { Texchange } from 'texchange/build/texchange';
 import { AdminTex } from 'texchange/build/texchange';
 import { UserTex } from 'texchange/build/texchange';
 import { Config } from './config';
-import { HLike, HStatic } from 'interfaces';
-import { StrategyLike, StrategyStatic } from 'interfaces/build/secretaries/strategy-like';
+import {
+    HLike, HStatic,
+} from 'interfaces';
+import {
+    StrategyLike, StrategyStatic,
+} from 'interfaces/build/secretaries/strategy-like';
 import {
     checkPointsFromDatabaseOrderbooks,
     checkPointsFromDatabaseTradeGroups,
@@ -37,7 +40,7 @@ export class Tecretary<H extends HLike<H>> {
     );
 
     public constructor(
-        Strategy: StrategyStatic<H, OrderId, TradeId>,
+        Strategy: StrategyStatic<H>,
         config: Config<H>,
         texMap: Map<string, Texchange<H, unknown>>,
         private H: HStatic<H>,

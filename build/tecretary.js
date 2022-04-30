@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tecretary = void 0;
 const startable_1 = require("startable");
-const database_reader_1 = require("./database-reader");
+const database_reader_1 = require("./database-reader/database-reader");
 const context_1 = require("./context");
 const timeline_1 = require("./timeline");
 const check_points_1 = require("./check-points");
