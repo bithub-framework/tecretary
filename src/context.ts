@@ -6,7 +6,7 @@ import {
     LimitOrder,
     Balances,
     Positions,
-    Timeline,
+    TimelineLike,
 } from 'interfaces';
 import {
     TradeId,
@@ -25,7 +25,7 @@ export class Context<H extends HLike<H>> implements ContextLike<H, OrderId, Trad
 
     constructor(
         userTexes: Latency<H>[],
-        public timeline: Timeline,
+        public timeline: TimelineLike,
     ) {
         for (let i = 0; i < userTexes.length; i++) {
             this[i] = new ContextMarket(

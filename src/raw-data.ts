@@ -1,20 +1,19 @@
-export interface RawOrderbook {
-	marketName: string;
-	asks: string;
-	bids: string;
-	time: number;
-}
+import { Side } from 'interfaces';
 
-export namespace RawOrderbook {
-	export type Asks = [string, string][];
-	export type Bids = [string, string][];
+export interface RawBookOrder {
+	marketName: string;
+	time: number;
+	id: number;
+	price: string;
+	quantity: string;
+	side: Side;
 }
 
 export interface RawTrade {
 	marketName: string;
 	price: string;
 	quantity: string;
-	side: string;
+	side: Side;
 	time: number;
-	id: string;
+	id: number;
 }

@@ -1,16 +1,19 @@
 import {
 	TimeEngineLike,
-	CheckPoint,
 	TimeoutLike,
 	Callback,
-} from './time-engine-like';
-import { Sortque } from 'sortque';
-import assert = require('assert');
+} from 'cancellable';
+import { Sortque, Removable } from 'sortque';
 
+export { Callback }
+export interface CheckPoint {
+	time: number;
+	cb: Callback;
+}
 
 class Timeout implements TimeoutLike {
 	public constructor(
-		private pointer: Sortque.Pointer<CheckPoint>,
+		private pointer: Removable<CheckPoint>,
 	) { }
 
 	public clear(): void {
@@ -18,25 +21,45 @@ class Timeout implements TimeoutLike {
 	}
 }
 
-export class TimeEngine implements TimeEngineLike {
-	private sortque = new Sortque<CheckPoint>();
+export class TimeEngine implements TimeEngineLike, IterableIterator<Callback> {
+	private sortque: Sortque<CheckPoint>;
+
 	public constructor(
 		public time: number,
-	) { }
+		sortedInitialCheckPoints: Iterator<CheckPoint> = [][Symbol.iterator](),
+	) {
+		this.sortque = new Sortque(
+			sortedInitialCheckPoints,
+			(a, b) => a.time - b.time,
+		);
+	}
 
-	public setTimeout(checkPoint: CheckPoint): TimeoutLike {
-		assert(checkPoint.time >= this.time);
-		const pointer = this.sortque.push(checkPoint);
+	public setTimeout(cb: Callback, ms: number): TimeoutLike {
+		const pointer = this.sortque.push({
+			time: this.time + ms,
+			cb,
+		});
 		return new Timeout(pointer);
 	}
 
+	public [Symbol.iterator]() {
+		return this;
+	}
+
 	public next(): IteratorResult<Callback> {
-		const checkPoint = this.sortque.shift();
-		this.time = checkPoint.time;
-		return {
-			done: false,
-			value: checkPoint.cb,
-		};
+		try {
+			const checkPoint = this.sortque.shift();
+			this.time = checkPoint.time;
+			return {
+				done: false,
+				value: checkPoint.cb,
+			};
+		} catch (err) {
+			return {
+				done: true,
+				value: void null,
+			}
+		}
 	}
 
 	public now(): number {

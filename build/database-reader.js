@@ -1,89 +1,44 @@
-import {
-    RawBookOrder,
-    RawTrade,
-} from './raw-data';
-import { find, whereEq } from 'ramda';
-import { Startable } from 'startable';
-import Database = require('better-sqlite3');
-import {
-    HStatic, HLike,
-    Side,
-    BookOrder,
-} from 'interfaces';
-import { DatabaseOrderbook } from 'texchange/build/use-cases.d/update-orderbook';
-import { DatabaseTrade } from 'texchange/build/use-cases.d/update-trades';
-import { AdminTex } from 'texchange/build/texchange';
-import assert = require('assert');
-
-
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DatabaseReader = void 0;
+const startable_1 = require("startable");
+const Database = require("better-sqlite3");
+const interfaces_1 = require("interfaces");
+const assert = require("assert");
 // interface DatabaseOrderbook {
 //     time: number;
 //     bids: string;
 //     asks: string;
 // }
-
 // interface TableInfo {
 //     name: string;
 //     type: string;
 //     notnull: 0 | 1,
 // }
-
-
-export class DatabaseReader<H extends HLike<H>> {
-    private db: Database.Database;
-    public startable = new Startable(
-        () => this.start(),
-        () => this.stop(),
-    );
-
-    public constructor(
-        filePath: string,
-        private H: HStatic<H>,
-        private adminTexMap: Map<string, AdminTex<H>>,
-    ) {
+class DatabaseReader {
+    constructor(filePath, H, adminTexMap) {
+        this.H = H;
+        this.adminTexMap = adminTexMap;
+        this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
         this.db = new Database(filePath, {
             readonly: true,
             fileMustExist: true,
         });
     }
-
-    public getDatabaseTradeGroups(
-        marketName: string,
-        afterTradeId?: number,
-    ): IterableIterator<DatabaseTrade<H>[]> {
+    getDatabaseTradeGroups(marketName, afterTradeId) {
         const adminTex = this.adminTexMap.get(marketName);
         assert(adminTex);
-
         const rawTrades = typeof afterTradeId !== 'undefined'
-            ? this.getRawTradesAfterTradeId(
-                marketName,
-                afterTradeId,
-            ) : this.getRawTrades(
-                marketName,
-            );
-
-        const databaseTrades = this.databaseTradesFromRawTrades(
-            rawTrades,
-            adminTex,
-        );
-
-        const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(
-            databaseTrades,
-        );
-
+            ? this.getRawTradesAfterTradeId(marketName, afterTradeId) : this.getRawTrades(marketName);
+        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
+        const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
-
-    private *databaseTradeGroupsFromDatabaseTrades(
-        trades: IterableIterator<DatabaseTrade<H>>,
-    ): Generator<DatabaseTrade<H>[], void> {
-        let $group: DatabaseTrade<H>[] = [];
+    *databaseTradeGroupsFromDatabaseTrades(trades) {
+        let $group = [];
         for (const trade of trades) {
-            if (
-                $group.length > 0 &&
-                $group[0].time !== trade.time
-            ) {
+            if ($group.length > 0 &&
+                $group[0].time !== trade.time) {
                 yield $group;
                 $group = [];
             }
@@ -92,11 +47,7 @@ export class DatabaseReader<H extends HLike<H>> {
         if ($group.length > 0)
             yield $group;
     }
-
-    private *databaseTradesFromRawTrades(
-        rawTrades: IterableIterator<RawTrade>,
-        adminTex: AdminTex<H>,
-    ): Generator<DatabaseTrade<H>, void> {
+    *databaseTradesFromRawTrades(rawTrades, adminTex) {
         for (const rawTrade of rawTrades) {
             yield {
                 price: new this.H(rawTrade.price).round(adminTex.config.market.PRICE_DP),
@@ -107,10 +58,7 @@ export class DatabaseReader<H extends HLike<H>> {
             };
         }
     }
-
-    private getRawTrades(
-        marketName: string,
-    ): IterableIterator<RawTrade> {
+    getRawTrades(marketName) {
         return this.db.prepare(`
             SELECT
                 name AS marketName,
@@ -122,26 +70,16 @@ export class DatabaseReader<H extends HLike<H>> {
             WHERE trades.mid = markets.id
                 AND markets.name = ?
             ORDER BY time
-        ;`).iterate(
-            marketName,
-        );
+        ;`).iterate(marketName);
     }
-
-    private getRawTradesAfterTradeId(
-        marketName: string,
-        afterTradeId: number,
-    ): IterableIterator<RawTrade> {
-        const afterTime: number = this.db.prepare(`
+    getRawTradesAfterTradeId(marketName, afterTradeId) {
+        const afterTime = this.db.prepare(`
             SELECT time
             FROM trades, markets
             WHERE trades.mid = markets.id
                 AND markets.name = ?
                 AND trades.id = ?
-        ;`).get(
-            marketName,
-            afterTradeId,
-        ).time;
-
+        ;`).get(marketName, afterTradeId).time;
         return this.db.prepare(`
             SELECT
                 markets.name AS marketName,
@@ -158,45 +96,19 @@ export class DatabaseReader<H extends HLike<H>> {
                     OR trades.time > ?
                 )
             ORDER BY time
-        ;`).iterate(
-            marketName,
-            afterTime,
-            afterTradeId,
-            afterTime,
-        );
+        ;`).iterate(marketName, afterTime, afterTradeId, afterTime);
     }
-
-    public getDatabaseOrderbooks(
-        marketName: string,
-        afterOrderbookId?: number,
-    ): IterableIterator<DatabaseOrderbook<H>> {
+    getDatabaseOrderbooks(marketName, afterOrderbookId) {
         const adminTex = this.adminTexMap.get(marketName);
         assert(adminTex);
-
         const rawBookOrders = typeof afterOrderbookId !== 'undefined'
-            ? this.getRawBookOrdersAfterOrderbookId(
-                marketName,
-                afterOrderbookId,
-            ) : this.getRawBookOrders(
-                marketName,
-            );
-
-        const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(
-            rawBookOrders,
-        );
-
-        const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
-            rawBookOrderGroups,
-            adminTex,
-        );
-
+            ? this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId) : this.getRawBookOrders(marketName);
+        const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
+        const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
         return datavaseOrderbooks;
     }
-
-    private *rawBookOrderGroupsFromRawBookOrders(
-        rawBookOrders: IterableIterator<RawBookOrder>,
-    ): Generator<RawBookOrder[], void> {
-        let $group: RawBookOrder[] = [];
+    *rawBookOrderGroupsFromRawBookOrders(rawBookOrders) {
+        let $group = [];
         for (const rawBookOrder of rawBookOrders) {
             if ($group.length > 0 && rawBookOrder.id !== $group[0].id) {
                 yield $group;
@@ -207,38 +119,31 @@ export class DatabaseReader<H extends HLike<H>> {
         if ($group.length > 0)
             yield $group;
     }
-
-    private *databaseOrderbooksFromRawBookOrderGroups(
-        groups: IterableIterator<RawBookOrder[]>,
-        adminTex: AdminTex<H>,
-    ): Generator<DatabaseOrderbook<H>, void> {
+    *databaseOrderbooksFromRawBookOrderGroups(groups, adminTex) {
         for (const group of groups) {
-            const asks: BookOrder<H>[] = group
-                .filter(order => order.side === Side.ASK)
+            const asks = group
+                .filter(order => order.side === interfaces_1.Side.ASK)
                 .map(order => ({
-                    price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
-                    quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
-                    side: order.side,
-                }));
+                price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
+                quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
+                side: order.side,
+            }));
             const bids = group
-                .filter(order => order.side === Side.BID)
+                .filter(order => order.side === interfaces_1.Side.BID)
                 .map(order => ({
-                    price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
-                    quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
-                    side: order.side,
-                }));
+                price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
+                quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
+                side: order.side,
+            }));
             yield {
                 id: group[0].id.toString(),
                 time: group[0].time,
-                [Side.ASK]: asks,
-                [Side.BID]: bids,
-            }
+                [interfaces_1.Side.ASK]: asks,
+                [interfaces_1.Side.BID]: bids,
+            };
         }
     }
-
-    private getRawBookOrders(
-        marketName: string,
-    ): IterableIterator<RawBookOrder> {
+    getRawBookOrders(marketName) {
         return this.db.prepare(`
             SELECT
                 markets.name AS marketName
@@ -252,26 +157,16 @@ export class DatabaseReader<H extends HLike<H>> {
                 AND orderbooks.id = book_orders.bid
                 AND markets.name = ?
             ORDER BY time, bid, price
-        ;`).iterate(
-            marketName,
-        );
+        ;`).iterate(marketName);
     }
-
-    private getRawBookOrdersAfterOrderbookId(
-        marketName: string,
-        afterOrderbookId: number,
-    ): IterableIterator<RawBookOrder> {
-        const afterTime: number = this.db.prepare(`
+    getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId) {
+        const afterTime = this.db.prepare(`
             SELECT time
             FROM orderbooks, markets
             WHERE orderbooks.mid = markets.id
                 AND markets.name = ?
                 AND orderbooks.id = ?
-        ;`).get(
-            marketName,
-            afterOrderbookId,
-        ).time;
-
+        ;`).get(marketName, afterOrderbookId).time;
         return this.db.prepare(`
             SELECT
                 markets.name AS marketName
@@ -289,14 +184,8 @@ export class DatabaseReader<H extends HLike<H>> {
                     OR orderbooks.time > ?
                 )
             ORDER BY time, bid, price
-        ;`).iterate(
-            marketName,
-            afterOrderbookId,
-            afterOrderbookId,
-            afterTime,
-        );
+        ;`).iterate(marketName, afterOrderbookId, afterOrderbookId, afterTime);
     }
-
     // private async validateTables() {
     //     const tradesTableInfo = await this.db.sql<TableInfo>(`
     //         PRAGMA table_info(trades)
@@ -340,7 +229,6 @@ export class DatabaseReader<H extends HLike<H>> {
     //         notnull: 1,
     //     }), orderbooksTableInfo));
     // }
-
     // private async validateOrderbook() {
     //     const orderbooks = (await this.db.sql<Pick<DatabaseOrderbook, 'bids' | 'asks'>>(`
     //         SELECT bids, asks FROM orderbooks
@@ -354,12 +242,11 @@ export class DatabaseReader<H extends HLike<H>> {
     //     assert(typeof bids[0][0] === 'number');
     //     assert(typeof bids[0][1] === 'number');
     // }
-
-    private async start(): Promise<void> {
-
+    async start() {
     }
-
-    private async stop(): Promise<void> {
+    async stop() {
         this.db.close();
     }
 }
+exports.DatabaseReader = DatabaseReader;
+//# sourceMappingURL=database-reader.js.map

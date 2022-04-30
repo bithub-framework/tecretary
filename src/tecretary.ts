@@ -1,7 +1,7 @@
 import { Startable, StartableLike } from 'startable';
 import { DatabaseReader } from './database-reader';
 import { Context } from './context';
-import { Forward } from './forward';
+import { Timeline } from './timeline';
 import { OrderId, TradeId } from 'texchange/build/interfaces';
 import { Texchange } from 'texchange/build/texchange';
 import { AdminTex } from 'texchange/build/texchange';
@@ -9,24 +9,34 @@ import { UserTex } from 'texchange/build/texchange';
 import { Config } from './config';
 import { HLike, HStatic } from 'interfaces';
 import { StrategyLike, StrategyStatic } from 'interfaces/build/secretaries/strategy-like';
-import { orderbookFromRawOrderbooks } from './orderbook-from-raw-orderbooks';
-import { tradesfromRawTrade } from './trades-from-raw-trade';
-import { sortMerge } from './merge';
-import { DataItem } from './data-item';
+import {
+    checkPointsFromDatabaseOrderbooks,
+    checkPointsFromDatabaseTradeGroups,
+} from './check-points';
+import { sortMergeAll } from './merge';
+import { Pollerloop, Loop } from 'pollerloop';
+import { CheckPoint } from './time-engine';
+import { NodeTimeEngine } from 'node-time-engine';
 import assert = require('assert');
+const nodeTimeEngine = new NodeTimeEngine();
 
 
 
-class Tecretary<H extends HLike<H>> {
-    private reader: DatabaseReader;
+export class Tecretary<H extends HLike<H>> {
+    private reader: DatabaseReader<H>;
     private strategy: StrategyLike;
-    private forward: Forward;
+    private timeline: Timeline;
     private context: Context<H>;
     private adminTexMap: Map<string, AdminTex<H>>;
     private userTexes: UserTex<H>[];
-    private data: AsyncIterable<DataItem<H>>;
+    private dataCheckPoints: Iterator<CheckPoint>;
+    private pollerloop: Pollerloop;
+    public startable = new Startable(
+        () => this.start(),
+        () => this.stop(),
+    );
 
-    constructor(
+    public constructor(
         Strategy: StrategyStatic<H, OrderId, TradeId>,
         config: Config<H>,
         texMap: Map<string, Texchange<H, unknown>>,
@@ -38,80 +48,74 @@ class Tecretary<H extends HLike<H>> {
             ),
         );
 
+        this.reader = new DatabaseReader(
+            config.DB_FILE_PATH,
+            this.H,
+            this.adminTexMap,
+        )
+
         this.userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
             assert(tex);
             return tex.user;
         });
 
-        this.forward = new Forward(
+        const orderbookDataCheckPoints = [...this.adminTexMap].map(
+            ([marketName, adminTex]) => checkPointsFromDatabaseOrderbooks(
+                this.reader.getDatabaseOrderbooks(
+                    marketName,
+                ),
+                adminTex,
+            ),
+        );
+
+        const tradesDataCheckPoints = [...this.adminTexMap].map(
+            ([marketName, adminTex]) => checkPointsFromDatabaseTradeGroups(
+                this.reader.getDatabaseTradeGroups(
+                    marketName,
+                ),
+                adminTex,
+            ),
+        );
+
+        this.dataCheckPoints = sortMergeAll<CheckPoint>(
+            (a, b) => a.time - b.time,
+        )(
+            ...orderbookDataCheckPoints,
+            ...tradesDataCheckPoints,
+        );
+
+        this.timeline = new Timeline(
             config.startTime,
+            this.dataCheckPoints
         );
 
         this.context = new Context<H>(
             this.userTexes,
-            this.forward,
+            this.timeline,
         );
 
         this.strategy = new Strategy(
             this.context,
         );
 
-        const orderbookData = orderbookFromRawOrderbooks(
-            this.reader.getOrderbookIterator(),
-            this.H,
-            this.adminTexMap,
-        );
-
-        const tradesData = tradesfromRawTrade(
-            this.reader.getTradeIterator(),
-            this.H,
-            this.adminTexMap,
-        );
-
-        this.data = sortMerge<DataItem<H>>(
-            (a, b) => a.time - b.time,
-        )(
-            orderbookData,
-            tradesData,
+        this.pollerloop = new Pollerloop(
+            this.loop,
+            nodeTimeEngine,
         );
     }
 
-    // protected async _start() {
-    //     await this.dbReader.start(err => void this.stop(err).catch(() => { }));
-    //     const dbMinTime = await this.dbReader.getMinTime();
-    //     this.config.initialAssets =
-    //         await this.readInitialAssets() || this.config.initialAssets;
-    //     const startingTime = Math.max(dbMinTime, this.config.initialAssets.time);
-    //     this.forward = new Forward(startingTime);
-    //     this.texchange = new Texchange(
-    //         this.config,
-    //         this.forward.sleep,
-    //         this.forward.now,
-    //     );
-    //     this.context = new Context(
-    //         this.texchange,
-    //         this.config,
-    //         this.forward.setTimeout,
-    //         this.forward.clearTimeout,
-    //         this.forward.sleep,
-    //         this.forward.now,
-    //         this.forward.escape,
-    //     );
-    //     this.strategy = new this.Strategy(this.context);
-    //     this.orderbooksIterator = this.dbReader.getOrderbooks(startingTime);
-    //     await this.orderbooksIterator.next();
-    //     this.tradesIterator = this.dbReader.getTrades(startingTime);
-    //     await this.tradesIterator.next();
-    //     await this.pollerloop.start(err => void this.stop(err).catch(() => { }));
-    //     await this.strategy.start(err => void this.stop(err).catch(() => { }));
-    // }
+    private async start() {
+        await this.reader.startable.start(this.startable.starp);
+        await this.strategy.startable.start(this.startable.starp);
+        await this.pollerloop.startable.start(this.startable.starp);
+    }
 
-    // protected async _stop(err?: Error) {
-    //     await this.strategy.stop(err);
-    //     await this.pollerloop.stop();
-    //     await this.dbReader.stop();
-    // }
+    private async stop() {
+        await this.strategy.startable.stop();
+        await this.pollerloop.startable.stop();
+        await this.reader.startable.stop();
+    }
 
     // private async readInitialAssets(): Promise<InitialAssets | void> {
     //     const res = await fetch(
@@ -128,48 +132,8 @@ class Tecretary<H extends HLike<H>> {
     //     }
     // }
 
-    // private loop: Loop = async sleep => {
-    //     await sleep(0);
-    //     while (true) {
-    //         const now = this.forward.now();
-    //         let nextTime = this.forward.getNextTime();
-
-    //         if (
-    //             this.orderbooksIterator.current &&
-    //             this.orderbooksIterator.current.time <= nextTime
-    //         ) {
-    //             const orderbook = this.orderbooksIterator.current;
-    //             this.forward.setTimeout(() => {
-    //                 this.texchange.updateOrderbook(orderbook);
-    //             }, orderbook.time - now);
-    //             await this.orderbooksIterator.next();
-    //         }
-
-    //         if (
-    //             this.tradesIterator.current &&
-    //             this.tradesIterator.current.time <= nextTime
-    //         ) {
-    //             const trades: UnidentifiedTrade[] = [];
-    //             const time = this.tradesIterator.current.time;
-    //             while (this.tradesIterator.current?.time === time) {
-    //                 trades.push(this.tradesIterator.current);
-    //                 await this.tradesIterator.next();
-    //             }
-    //             this.forward.setTimeout(() => {
-    //                 this.texchange.updateTrades(trades);
-    //             }, time - now);
-    //         }
-
-    //         nextTime = this.forward.getNextTime();
-    //         if (nextTime === Number.POSITIVE_INFINITY)
-    //             this.stop().catch(() => { });
-    //         await sleep(0);
-    //         await this.forward.next();
-    //     }
-    // }
-}
-
-export {
-    Tecretary as default,
-    Tecretary,
+    private loop: Loop = async sleep => {
+        for await (const v of this.timeline)
+            await sleep(0);
+    }
 }

@@ -1,33 +1,33 @@
 export const sortMerge = <T>(
 	cmp: (a: T, b: T) => number,
-) => async function* (
-	it1: AsyncIterator<T>,
-	it2: AsyncIterator<T>,
-	): AsyncGenerator<T, void> {
+) => function* (
+	it1: Iterator<T>,
+	it2: Iterator<T>,
+	): Generator<T, void> {
 		try {
-			let r1 = await it1.next();
-			let r2 = await it2.next();
+			let r1 = it1.next();
+			let r2 = it2.next();
 			while (!r1.done || !r2.done) {
 				if (r1.done) {
 					yield r2.value;
-					r2 = await it2.next();
+					r2 = it2.next();
 				} else if (r2.done) {
 					yield r1.value;
-					r1 = await it1.next();
+					r1 = it1.next();
 				} else if (cmp(r1.value, r2.value) < 0) {
 					yield r1.value;
-					r1 = await it1.next();
+					r1 = it1.next();
 				} else {
 					yield r2.value;
-					r2 = await it2.next();
+					r2 = it2.next();
 				}
 			}
 		} finally {
-			if (it1.return) await it1.return();
-			if (it2.return) await it2.return();
+			if (it1.return) it1.return();
+			if (it2.return) it2.return();
 		}
 	}
 
 export const sortMergeAll = <T>(cmp: (a: T, b: T) => number) =>
-	(...iterators: AsyncIterator<T>[]) =>
+	(...iterators: Iterator<T>[]) =>
 		iterators.reduce(sortMerge(cmp));
