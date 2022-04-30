@@ -1,4 +1,4 @@
-import { Startable, StartableLike } from 'startable';
+import { Startable } from 'startable';
 import { DatabaseReader } from './database-reader/database-reader';
 import { Context } from './context';
 import { Timeline } from './timeline';
@@ -41,7 +41,7 @@ export class Tecretary<H extends HLike<H>> {
 
     public constructor(
         Strategy: StrategyStatic<H>,
-        config: Config<H>,
+        config: Config,
         texMap: Map<string, Texchange<H, unknown>>,
         private H: HStatic<H>,
     ) {

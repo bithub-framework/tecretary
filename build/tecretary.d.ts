@@ -14,7 +14,7 @@ export declare class Tecretary<H extends HLike<H>> {
     private dataCheckPoints;
     private pollerloop;
     startable: Startable;
-    constructor(Strategy: StrategyStatic<H>, config: Config<H>, texMap: Map<string, Texchange<H, unknown>>, H: HStatic<H>);
+    constructor(Strategy: StrategyStatic<H>, config: Config, texMap: Map<string, Texchange<H, unknown>>, H: HStatic<H>);
     private start;
     private stop;
     private loop;
