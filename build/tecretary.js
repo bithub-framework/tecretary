@@ -34,7 +34,7 @@ class Tecretary {
                 await sleep(0);
         };
         this.adminTexMap = new Map([...texMap].map(([name, tex]) => [name, tex.admin]));
-        this.reader = new database_reader_1.DatabaseReader(config.DB_FILE_PATH, this.H, this.adminTexMap);
+        this.reader = new database_reader_1.DatabaseReader(config.DB_FILE_PATH, this.adminTexMap, this.H);
         this.userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
             assert(tex);

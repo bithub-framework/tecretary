@@ -19,8 +19,8 @@ export class DatabaseReader<H extends HLike<H>> {
 
     public constructor(
         filePath: string,
-        private H: HStatic<H>,
         private adminTexMap: Map<string, AdminTex<H>>,
+        private H: HStatic<H>,
     ) {
         this.db = new Database(filePath, {
             readonly: true,
@@ -29,14 +29,14 @@ export class DatabaseReader<H extends HLike<H>> {
 
         this.orderbookReader = new OrderbookReader(
             this.db,
-            this.H,
             this.adminTexMap,
+            this.H,
         );
 
         this.tradeGroupReader = new TradeGroupReader(
             this.db,
-            this.H,
             this.adminTexMap,
+            this.H,
         );
     }
 

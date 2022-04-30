@@ -13,8 +13,8 @@ import assert = require('assert');
 export class OrderbookReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private H: HStatic<H>,
 		private adminTexMap: Map<string, AdminTex<H>>,
+		private H: HStatic<H>,
 	) { }
 
 	public getDatabaseOrderbooks(

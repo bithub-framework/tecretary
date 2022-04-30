@@ -4,10 +4,10 @@ exports.OrderbookReader = void 0;
 const interfaces_1 = require("interfaces");
 const assert = require("assert");
 class OrderbookReader {
-    constructor(db, H, adminTexMap) {
+    constructor(db, adminTexMap, H) {
         this.db = db;
-        this.H = H;
         this.adminTexMap = adminTexMap;
+        this.H = H;
     }
     getDatabaseOrderbooks(marketName, afterOrderbookId) {
         const adminTex = this.adminTexMap.get(marketName);

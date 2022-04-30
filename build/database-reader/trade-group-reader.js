@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TradeGroupReader = void 0;
 const assert = require("assert");
 class TradeGroupReader {
-    constructor(db, H, adminTexMap) {
+    constructor(db, adminTexMap, H) {
         this.db = db;
-        this.H = H;
         this.adminTexMap = adminTexMap;
+        this.H = H;
     }
     getDatabaseTradeGroups(marketName, afterTradeId) {
         const adminTex = this.adminTexMap.get(marketName);

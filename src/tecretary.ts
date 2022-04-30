@@ -53,8 +53,8 @@ export class Tecretary<H extends HLike<H>> {
 
         this.reader = new DatabaseReader(
             config.DB_FILE_PATH,
-            this.H,
             this.adminTexMap,
+            this.H,
         )
 
         this.userTexes = config.markets.map(name => {
@@ -65,18 +65,14 @@ export class Tecretary<H extends HLike<H>> {
 
         const orderbookDataCheckPoints = [...this.adminTexMap].map(
             ([marketName, adminTex]) => checkPointsFromDatabaseOrderbooks(
-                this.reader.getDatabaseOrderbooks(
-                    marketName,
-                ),
+                this.reader.getDatabaseOrderbooks(marketName),
                 adminTex,
             ),
         );
 
         const tradesDataCheckPoints = [...this.adminTexMap].map(
             ([marketName, adminTex]) => checkPointsFromDatabaseTradeGroups(
-                this.reader.getDatabaseTradeGroups(
-                    marketName,
-                ),
+                this.reader.getDatabaseTradeGroups(marketName),
                 adminTex,
             ),
         );
