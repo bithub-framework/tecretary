@@ -5,16 +5,6 @@ const startable_1 = require("startable");
 const Database = require("better-sqlite3");
 const interfaces_1 = require("interfaces");
 const assert = require("assert");
-// interface DatabaseOrderbook {
-//     time: number;
-//     bids: string;
-//     asks: string;
-// }
-// interface TableInfo {
-//     name: string;
-//     type: string;
-//     notnull: 0 | 1,
-// }
 class DatabaseReader {
     constructor(filePath, H, adminTexMap) {
         this.H = H;
@@ -186,62 +176,6 @@ class DatabaseReader {
             ORDER BY time, bid, price
         ;`).iterate(marketName, afterOrderbookId, afterOrderbookId, afterTime);
     }
-    // private async validateTables() {
-    //     const tradesTableInfo = await this.db.sql<TableInfo>(`
-    //         PRAGMA table_info(trades)
-    //     ;`);
-    //     assert(find(whereEq({
-    //         name: 'price',
-    //         type: 'DECIMAL(12 , 2)',
-    //         notnull: 1,
-    //     }), tradesTableInfo));
-    //     assert(find(whereEq({
-    //         name: 'quantity',
-    //         type: 'DECIMAL(16 , 6)',
-    //         notnull: 1,
-    //     }), tradesTableInfo));
-    //     assert(find(whereEq({
-    //         name: 'side',
-    //         type: 'VARCHAR(4)',
-    //         notnull: 1,
-    //     }), tradesTableInfo));
-    //     assert(find(whereEq({
-    //         name: 'time',
-    //         type: 'BIGINT',
-    //         notnull: 1,
-    //     }), tradesTableInfo));
-    //     const orderbooksTableInfo = await this.db.sql<TableInfo>(`
-    //         PRAGMA table_info(orderbooks)
-    //     ;`);
-    //     assert(find(whereEq({
-    //         name: 'asks',
-    //         type: 'JSON',
-    //         notnull: 1,
-    //     }), orderbooksTableInfo));
-    //     assert(find(whereEq({
-    //         name: 'bids',
-    //         type: 'JSON',
-    //         notnull: 1,
-    //     }), orderbooksTableInfo));
-    //     assert(find(whereEq({
-    //         name: 'time',
-    //         type: 'BIGINT',
-    //         notnull: 1,
-    //     }), orderbooksTableInfo));
-    // }
-    // private async validateOrderbook() {
-    //     const orderbooks = (await this.db.sql<Pick<DatabaseOrderbook, 'bids' | 'asks'>>(`
-    //         SELECT bids, asks FROM orderbooks
-    //         LIMIT 1
-    //     ;`));
-    //     if (!orderbooks.length) return;
-    //     const orderbook = orderbooks[0];
-    //     const bids = JSON.parse(orderbook.bids);
-    //     assert(bids instanceof Array);
-    //     assert(bids[0] instanceof Array);
-    //     assert(typeof bids[0][0] === 'number');
-    //     assert(typeof bids[0][1] === 'number');
-    // }
     async start() {
     }
     async stop() {

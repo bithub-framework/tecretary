@@ -4,7 +4,6 @@ import { TimeEngine, CheckPoint } from './time-engine';
 import {
     Cancellable,
 } from 'cancellable';
-import assert = require('assert');
 
 
 
