@@ -17,20 +17,41 @@ export class OrderbookReader<H extends HLike<H>> {
 		private H: HStatic<H>,
 	) { }
 
-	public getDatabaseOrderbooks(
+	public getDatabaseOrderbooksAfterOrderbookId(
 		marketName: string,
-		afterOrderbookId?: number,
+		afterOrderbookId: number,
 	): IterableIterator<DatabaseOrderbook<H>> {
 		const adminTex = this.adminTexMap.get(marketName);
 		assert(adminTex);
 
-		const rawBookOrders = typeof afterOrderbookId !== 'undefined'
-			? this.getRawBookOrdersAfterOrderbookId(
-				marketName,
-				afterOrderbookId,
-			) : this.getRawBookOrders(
-				marketName,
-			);
+		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
+			marketName,
+			afterOrderbookId,
+		);
+
+		const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(
+			rawBookOrders,
+		);
+
+		const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
+			rawBookOrderGroups,
+			adminTex,
+		);
+
+		return datavaseOrderbooks;
+	}
+
+	public getDatabaseOrderbooksAfterTime(
+		marketName: string,
+		afterTime: number,
+	): IterableIterator<DatabaseOrderbook<H>> {
+		const adminTex = this.adminTexMap.get(marketName);
+		assert(adminTex);
+
+		const rawBookOrders = this.getRawBookOrdersAfterTime(
+			marketName,
+			afterTime,
+		);
 
 		const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(
 			rawBookOrders,
@@ -87,8 +108,9 @@ export class OrderbookReader<H extends HLike<H>> {
 		}
 	}
 
-	private getRawBookOrders(
+	private getRawBookOrdersAfterTime(
 		marketName: string,
+		afterTime: number,
 	): IterableIterator<RawBookOrder> {
 		return this.db.prepare(`
             SELECT
@@ -102,9 +124,11 @@ export class OrderbookReader<H extends HLike<H>> {
             WHERE markets.id = orderbooks.mid
                 AND orderbooks.id = book_orders.bid
                 AND markets.name = ?
+				AND orderbooks.time >= ?
             ORDER BY time, bid, price
         ;`).iterate(
 			marketName,
+			afterTime,
 		);
 	}
 

@@ -7,21 +7,25 @@ const orderbook_reader_1 = require("./orderbook-reader");
 const trade_group_reader_1 = require("./trade-group-reader");
 class DataReader {
     constructor(config, adminTexMap, H) {
-        this.adminTexMap = adminTexMap;
-        this.H = H;
         this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
         this.db = new Database(config.DATA_DB_FILE_PATH, {
             readonly: true,
             fileMustExist: true,
         });
-        this.orderbookReader = new orderbook_reader_1.OrderbookReader(this.db, this.adminTexMap, this.H);
-        this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.db, this.adminTexMap, this.H);
+        this.orderbookReader = new orderbook_reader_1.OrderbookReader(this.db, adminTexMap, H);
+        this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.db, adminTexMap, H);
     }
-    getDatabaseOrderbooks(marketName, afterOrderbookId) {
-        return this.orderbookReader.getDatabaseOrderbooks(marketName, afterOrderbookId);
+    getDatabaseOrderbooksAfterOrderbookId(marketName, afterOrderbookId) {
+        return this.orderbookReader.getDatabaseOrderbooksAfterOrderbookId(marketName, afterOrderbookId);
     }
-    getDatabaseTradeGroups(marketName, afterTradeId) {
-        return this.tradeGroupReader.getDatabaseTradeGroups(marketName, afterTradeId);
+    getDatabaseOrderbooksAfterTime(marketName, afterTime) {
+        return this.orderbookReader.getDatabaseOrderbooksAfterTime(marketName, afterTime);
+    }
+    getDatabaseTradeGroupsAfterTradeId(marketName, afterTradeId) {
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterTradeId(marketName, afterTradeId);
+    }
+    getDatabaseTradeGroupsAfterTime(marketName, afterTime) {
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(marketName, afterTime);
     }
     async start() { }
     async stop() {

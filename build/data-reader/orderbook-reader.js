@@ -9,11 +9,18 @@ class OrderbookReader {
         this.adminTexMap = adminTexMap;
         this.H = H;
     }
-    getDatabaseOrderbooks(marketName, afterOrderbookId) {
+    getDatabaseOrderbooksAfterOrderbookId(marketName, afterOrderbookId) {
         const adminTex = this.adminTexMap.get(marketName);
         assert(adminTex);
-        const rawBookOrders = typeof afterOrderbookId !== 'undefined'
-            ? this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId) : this.getRawBookOrders(marketName);
+        const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId);
+        const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
+        const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
+        return datavaseOrderbooks;
+    }
+    getDatabaseOrderbooksAfterTime(marketName, afterTime) {
+        const adminTex = this.adminTexMap.get(marketName);
+        assert(adminTex);
+        const rawBookOrders = this.getRawBookOrdersAfterTime(marketName, afterTime);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
         const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
         return datavaseOrderbooks;
@@ -54,7 +61,7 @@ class OrderbookReader {
             };
         }
     }
-    getRawBookOrders(marketName) {
+    getRawBookOrdersAfterTime(marketName, afterTime) {
         return this.db.prepare(`
             SELECT
                 markets.name AS marketName
@@ -67,8 +74,9 @@ class OrderbookReader {
             WHERE markets.id = orderbooks.mid
                 AND orderbooks.id = book_orders.bid
                 AND markets.name = ?
+				AND orderbooks.time >= ?
             ORDER BY time, bid, price
-        ;`).iterate(marketName);
+        ;`).iterate(marketName, afterTime);
     }
     getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId) {
         const afterTime = this.db.prepare(`

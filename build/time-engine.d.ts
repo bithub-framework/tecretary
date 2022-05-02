@@ -5,7 +5,7 @@ export interface CheckPoint {
     cb: Callback;
 }
 export declare class TimeEngine implements TimeEngineLike, IterableIterator<Callback> {
-    time: number;
+    private time;
     private sortque;
     constructor(time: number, sortedInitialCheckPoints?: Iterator<CheckPoint>);
     setTimeout(cb: Callback, ms: number): TimeoutLike;

@@ -8,11 +8,18 @@ class TradeGroupReader {
         this.adminTexMap = adminTexMap;
         this.H = H;
     }
-    getDatabaseTradeGroups(marketName, afterTradeId) {
+    getDatabaseTradeGroupsAfterTradeId(marketName, afterTradeId) {
         const adminTex = this.adminTexMap.get(marketName);
         assert(adminTex);
-        const rawTrades = typeof afterTradeId !== 'undefined'
-            ? this.getRawTradesAfterTradeId(marketName, afterTradeId) : this.getRawTrades(marketName);
+        const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId);
+        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
+        const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
+        return databaseTradeGroups;
+    }
+    getDatabaseTradeGroupsAfterTime(marketName, afterTime) {
+        const adminTex = this.adminTexMap.get(marketName);
+        assert(adminTex);
+        const rawTrades = this.getRawTradesAfterTime(marketName, afterTime);
         const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
@@ -41,7 +48,7 @@ class TradeGroupReader {
             };
         }
     }
-    getRawTrades(marketName) {
+    getRawTradesAfterTime(marketName, afterTime) {
         return this.db.prepare(`
             SELECT
                 name AS marketName,
@@ -52,8 +59,9 @@ class TradeGroupReader {
             FROM trades, markets
             WHERE trades.mid = markets.id
                 AND markets.name = ?
+				AND trades.time >= ?
             ORDER BY time
-        ;`).iterate(marketName);
+        ;`).iterate(marketName, afterTime);
     }
     getRawTradesAfterTradeId(marketName, afterTradeId) {
         const afterTime = this.db.prepare(`

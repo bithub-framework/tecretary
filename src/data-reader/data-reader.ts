@@ -21,8 +21,8 @@ export class DataReader<H extends HLike<H>> {
 
     public constructor(
         config: Config,
-        private adminTexMap: Map<string, AdminTex<H, unknown>>,
-        private H: HStatic<H>,
+        adminTexMap: Map<string, AdminTex<H, unknown>>,
+        H: HStatic<H>,
     ) {
         this.db = new Database(
             config.DATA_DB_FILE_PATH,
@@ -34,34 +34,54 @@ export class DataReader<H extends HLike<H>> {
 
         this.orderbookReader = new OrderbookReader(
             this.db,
-            this.adminTexMap,
-            this.H,
+            adminTexMap,
+            H,
         );
 
         this.tradeGroupReader = new TradeGroupReader(
             this.db,
-            this.adminTexMap,
-            this.H,
+            adminTexMap,
+            H,
         );
     }
 
-    public getDatabaseOrderbooks(
+    public getDatabaseOrderbooksAfterOrderbookId(
         marketName: string,
-        afterOrderbookId?: number,
+        afterOrderbookId: number,
     ): IterableIterator<DatabaseOrderbook<H>> {
-        return this.orderbookReader.getDatabaseOrderbooks(
+        return this.orderbookReader.getDatabaseOrderbooksAfterOrderbookId(
             marketName,
             afterOrderbookId,
         );
     }
 
-    public getDatabaseTradeGroups(
+    public getDatabaseOrderbooksAfterTime(
         marketName: string,
-        afterTradeId?: number,
+        afterTime: number,
+    ): IterableIterator<DatabaseOrderbook<H>> {
+        return this.orderbookReader.getDatabaseOrderbooksAfterTime(
+            marketName,
+            afterTime,
+        );
+    }
+
+    public getDatabaseTradeGroupsAfterTradeId(
+        marketName: string,
+        afterTradeId: number,
     ): IterableIterator<DatabaseTrade<H>[]> {
-        return this.tradeGroupReader.getDatabaseTradeGroups(
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterTradeId(
             marketName,
             afterTradeId,
+        );
+    }
+
+    public getDatabaseTradeGroupsAfterTime(
+        marketName: string,
+        afterTime: number,
+    ): IterableIterator<DatabaseTrade<H>[]> {
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
+            marketName,
+            afterTime,
         );
     }
 

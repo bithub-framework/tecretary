@@ -5,14 +5,11 @@ import { HLike, HStatic } from 'interfaces';
 import { StrategyStatic } from 'interfaces/build/secretaries/strategy-like';
 export declare class Tecretary<H extends HLike<H>> {
     private config;
-    private H;
-    private dataReader;
     private progressReader;
+    private dataReader;
     private strategy;
     private timeline;
-    private context;
     private adminTexMap;
-    private userTexes;
     private dataCheckPoints;
     private pollerloop;
     private lastSnapshotTime;
@@ -21,5 +18,5 @@ export declare class Tecretary<H extends HLike<H>> {
     private start;
     private stop;
     private loop;
-    private capture;
+    private tryCapture;
 }

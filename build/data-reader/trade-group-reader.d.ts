@@ -7,9 +7,10 @@ export declare class TradeGroupReader<H extends HLike<H>> {
     private adminTexMap;
     private H;
     constructor(db: Database.Database, adminTexMap: Map<string, AdminTex<H, unknown>>, H: HStatic<H>);
-    getDatabaseTradeGroups(marketName: string, afterTradeId?: number): IterableIterator<DatabaseTrade<H>[]>;
+    getDatabaseTradeGroupsAfterTradeId(marketName: string, afterTradeId: number): IterableIterator<DatabaseTrade<H>[]>;
+    getDatabaseTradeGroupsAfterTime(marketName: string, afterTime: number): IterableIterator<DatabaseTrade<H>[]>;
     private databaseTradeGroupsFromDatabaseTrades;
     private databaseTradesFromRawTrades;
-    private getRawTrades;
+    private getRawTradesAfterTime;
     private getRawTradesAfterTradeId;
 }

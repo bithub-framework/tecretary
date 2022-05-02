@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProgressReader = void 0;
 const Database = require("better-sqlite3");
 const startable_1 = require("startable");
+const assert = require("assert");
 class ProgressReader {
     constructor(config) {
         this.config = config;
@@ -11,22 +12,52 @@ class ProgressReader {
             fileMustExist: true,
         });
         this.db.prepare(`
-            INSERT OR IGNORE INTO projects
-            (name, time)
-            VALUES (?, ?)
-        ;`).run(config.projectName, config.startTime);
-        const result = this.db.prepare(`
+			INSERT OR IGNORE INTO projects
+			(name, time, running)
+			VALUES (?, ?, 0)
+		;`).run(config.projectName, config.startTime);
+        this.projectId = this.db.prepare(`
+			SELECT id
+			FROM projects
+			WHERE name = ?
+		;`).get(this.config.projectName).id;
+        this.db.transaction(() => this.lock());
+    }
+    lock() {
+        const running = this.db.prepare(`
+			SELECT running
+			FROM projects
+			WHERE id = ?
+		;`).get(this.projectId).running;
+        assert(running === 0);
+        this.db.prepare(`
+			UPDATE projects
+			SET running = 1
+			WHERE id = ?
+		;`).run(this.projectId);
+    }
+    unlock() {
+        this.db.prepare(`
+			UPDATE projects
+			SET running = 0
+			WHERE id = ?
+		;`).run(this.projectId);
+    }
+    getTime() {
+        return this.db.prepare(`
             SELECT
 				id,
 				time
             FROM projects
             WHERE name = ?
-        ;`).get(this.config.projectName);
-        this.projectId = result.id;
-        this.time = result.time;
+        ;`).get(this.config.projectName).time;
     }
-    getTime() {
-        return this.time;
+    setTime(time) {
+        this.db.prepare(`
+            UPDATE projects
+			SET time = ?
+			WHERE id = ?
+        ;`).run(time, this.projectId);
     }
     getSnapshot(marketName) {
         const result = this.db.prepare(`
@@ -54,6 +85,7 @@ class ProgressReader {
     }
     async start() { }
     async stop() {
+        this.unlock();
         this.db.close();
     }
 }

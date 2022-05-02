@@ -27,13 +27,11 @@ const nodeTimeEngine = new NodeTimeEngine();
 
 
 export class Tecretary<H extends HLike<H>> {
-    private dataReader: DataReader<H>;
     private progressReader: ProgressReader;
+    private dataReader: DataReader<H>;
     private strategy: StrategyLike;
     private timeline: Timeline;
-    private context: Context<H>;
     private adminTexMap: Map<string, AdminTex<H, unknown>>;
-    private userTexes: UserTex<H>[];
     private dataCheckPoints: Iterator<CheckPoint>;
     private pollerloop: Pollerloop;
     private lastSnapshotTime = Number.NEGATIVE_INFINITY;
@@ -46,7 +44,7 @@ export class Tecretary<H extends HLike<H>> {
         Strategy: StrategyStatic<H>,
         private config: Config,
         texMap: Map<string, Texchange<H, unknown>>,
-        private H: HStatic<H>,
+        H: HStatic<H>,
     ) {
         this.adminTexMap = new Map(
             [...texMap].map(
@@ -54,35 +52,26 @@ export class Tecretary<H extends HLike<H>> {
             ),
         );
 
-        this.userTexes = config.markets.map(name => {
-            const tex = texMap.get(name);
-            assert(tex);
-            return tex.user;
-        });
-
-        this.dataReader = new DataReader(
-            config,
-            this.adminTexMap,
-            this.H,
-        );
-
         this.progressReader = new ProgressReader(
             config,
         );
-
         for (const [name, tex] of this.adminTexMap) {
             const snapshot = this.progressReader.getSnapshot(name);
             if (snapshot !== null)
                 tex.restore(snapshot);
         }
 
-
+        this.dataReader = new DataReader(
+            config,
+            this.adminTexMap,
+            H,
+        );
         const orderbookDataCheckPoints = [...this.adminTexMap].map(
             ([marketName, adminTex]) => {
                 const afterOrderbookId = adminTex.getLatestDatabaseOrderbookId();
                 if (afterOrderbookId !== null)
                     return checkPointsFromDatabaseOrderbooks(
-                        this.dataReader.getDatabaseOrderbooks(
+                        this.dataReader.getDatabaseOrderbooksAfterOrderbookId(
                             marketName,
                             Number.parseInt(afterOrderbookId),
                         ),
@@ -90,18 +79,20 @@ export class Tecretary<H extends HLike<H>> {
                     );
                 else
                     return checkPointsFromDatabaseOrderbooks(
-                        this.dataReader.getDatabaseOrderbooks(marketName),
+                        this.dataReader.getDatabaseOrderbooksAfterTime(
+                            marketName,
+                            this.progressReader.getTime(),
+                        ),
                         adminTex,
                     );
             },
         );
-
         const tradesDataCheckPoints = [...this.adminTexMap].map(
             ([marketName, adminTex]) => {
                 const afterTradeId = adminTex.getLatestDatabaseTradeId();
                 if (afterTradeId !== null)
                     return checkPointsFromDatabaseTradeGroups(
-                        this.dataReader.getDatabaseTradeGroups(
+                        this.dataReader.getDatabaseTradeGroupsAfterTradeId(
                             marketName,
                             Number.parseInt(afterTradeId),
                         ),
@@ -109,12 +100,14 @@ export class Tecretary<H extends HLike<H>> {
                     );
                 else
                     return checkPointsFromDatabaseTradeGroups(
-                        this.dataReader.getDatabaseTradeGroups(marketName),
+                        this.dataReader.getDatabaseTradeGroupsAfterTime(
+                            marketName,
+                            this.progressReader.getTime(),
+                        ),
                         adminTex,
                     );
             },
         );
-
         this.dataCheckPoints = sortMergeAll<CheckPoint>(
             (a, b) => a.time - b.time,
         )(
@@ -127,13 +120,16 @@ export class Tecretary<H extends HLike<H>> {
             this.dataCheckPoints
         );
 
-        this.context = new Context<H>(
-            this.userTexes,
-            this.timeline,
-        );
-
+        const userTexes: UserTex<H>[] = config.markets.map(name => {
+            const tex = texMap.get(name);
+            assert(tex);
+            return tex.user;
+        });
         this.strategy = new Strategy(
-            this.context,
+            new Context<H>(
+                userTexes,
+                this.timeline,
+            )
         );
 
         this.pollerloop = new Pollerloop(
@@ -156,19 +152,19 @@ export class Tecretary<H extends HLike<H>> {
 
     private loop: Loop = async sleep => {
         for await (const v of this.timeline) {
-            const now = this.timeline.now();
-            if (now >= this.lastSnapshotTime + this.config.SNAPSHOT_PERIOD) {
-                this.lastSnapshotTime = now;
-                this.capture();
-            }
+            this.tryCapture();
             await sleep(0);
         }
     }
 
-    private capture(): void {
-        for (const [name, tex] of this.adminTexMap) {
-            const snapshot = tex.capture();
-            this.progressReader.setSnapshot(name, snapshot);
+    private tryCapture(): void {
+        const now = this.timeline.now();
+        if (now >= this.lastSnapshotTime + this.config.SNAPSHOT_PERIOD) {
+            this.lastSnapshotTime = now;
+            for (const [name, tex] of this.adminTexMap) {
+                const snapshot = tex.capture();
+                this.progressReader.setSnapshot(name, snapshot);
+            }
         }
     }
 }

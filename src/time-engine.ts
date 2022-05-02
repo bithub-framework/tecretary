@@ -4,6 +4,7 @@ import {
 	Callback,
 } from 'cancellable';
 import { Sortque, Removable } from 'sortque';
+import assert = require('assert');
 
 export { Callback }
 export interface CheckPoint {
@@ -25,13 +26,14 @@ export class TimeEngine implements TimeEngineLike, IterableIterator<Callback> {
 	private sortque: Sortque<CheckPoint>;
 
 	public constructor(
-		public time: number,
+		private time: number,
 		sortedInitialCheckPoints: Iterator<CheckPoint> = [][Symbol.iterator](),
 	) {
 		this.sortque = new Sortque(
 			sortedInitialCheckPoints,
 			(a, b) => a.time - b.time,
 		);
+		assert(this.sortque.getFront().time >= this.time);
 	}
 
 	public setTimeout(cb: Callback, ms: number): TimeoutLike {

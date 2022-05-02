@@ -13,20 +13,41 @@ export class TradeGroupReader<H extends HLike<H>> {
 		private H: HStatic<H>,
 	) { }
 
-	public getDatabaseTradeGroups(
+	public getDatabaseTradeGroupsAfterTradeId(
 		marketName: string,
-		afterTradeId?: number,
+		afterTradeId: number,
 	): IterableIterator<DatabaseTrade<H>[]> {
 		const adminTex = this.adminTexMap.get(marketName);
 		assert(adminTex);
 
-		const rawTrades = typeof afterTradeId !== 'undefined'
-			? this.getRawTradesAfterTradeId(
-				marketName,
-				afterTradeId,
-			) : this.getRawTrades(
-				marketName,
-			);
+		const rawTrades = this.getRawTradesAfterTradeId(
+			marketName,
+			afterTradeId,
+		);
+
+		const databaseTrades = this.databaseTradesFromRawTrades(
+			rawTrades,
+			adminTex,
+		);
+
+		const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(
+			databaseTrades,
+		);
+
+		return databaseTradeGroups;
+	}
+
+	public getDatabaseTradeGroupsAfterTime(
+		marketName: string,
+		afterTime: number,
+	): IterableIterator<DatabaseTrade<H>[]> {
+		const adminTex = this.adminTexMap.get(marketName);
+		assert(adminTex);
+
+		const rawTrades = this.getRawTradesAfterTime(
+			marketName,
+			afterTime,
+		);
 
 		const databaseTrades = this.databaseTradesFromRawTrades(
 			rawTrades,
@@ -73,8 +94,9 @@ export class TradeGroupReader<H extends HLike<H>> {
 		}
 	}
 
-	private getRawTrades(
+	private getRawTradesAfterTime(
 		marketName: string,
+		afterTime: number,
 	): IterableIterator<RawTrade> {
 		return this.db.prepare(`
             SELECT
@@ -86,9 +108,11 @@ export class TradeGroupReader<H extends HLike<H>> {
             FROM trades, markets
             WHERE trades.mid = markets.id
                 AND markets.name = ?
+				AND trades.time >= ?
             ORDER BY time
         ;`).iterate(
 			marketName,
+			afterTime,
 		);
 	}
 
