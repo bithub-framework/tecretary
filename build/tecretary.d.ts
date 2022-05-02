@@ -18,5 +18,6 @@ export declare class Tecretary<H extends HLike<H>> {
     private start;
     private stop;
     private loop;
+    private capture;
     private tryCapture;
 }

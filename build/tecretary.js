@@ -56,23 +56,30 @@ class Tecretary {
         this.pollerloop = new pollerloop_1.Pollerloop(this.loop, nodeTimeEngine);
     }
     async start() {
+        await this.progressReader.startable.start(this.startable.starp);
         await this.dataReader.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
         await this.pollerloop.startable.start(this.startable.starp);
     }
     async stop() {
         await this.strategy.startable.stop();
+        this.capture();
         await this.pollerloop.startable.stop();
         await this.dataReader.startable.stop();
+        await this.progressReader.startable.stop();
+    }
+    capture() {
+        this.lastSnapshotTime = this.timeline.now();
+        for (const [name, tex] of this.adminTexMap) {
+            const snapshot = tex.capture();
+            this.progressReader.setSnapshot(name, snapshot);
+        }
     }
     tryCapture() {
-        const now = this.timeline.now();
-        if (now >= this.lastSnapshotTime + this.config.SNAPSHOT_PERIOD) {
-            this.lastSnapshotTime = now;
-            for (const [name, tex] of this.adminTexMap) {
-                const snapshot = tex.capture();
-                this.progressReader.setSnapshot(name, snapshot);
-            }
+        if (this.timeline.now() >=
+            this.lastSnapshotTime +
+                this.config.SNAPSHOT_PERIOD) {
+            this.capture();
         }
     }
 }
