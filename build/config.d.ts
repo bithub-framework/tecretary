@@ -1,6 +1,8 @@
 export interface Config {
-    DB_FILE_PATH: string;
-    projectId: string;
+    DATA_DB_FILE_PATH: string;
+    PROJECTS_DB_FILE_PATH: string;
+    SNAPSHOT_PERIOD: number;
+    projectName: string;
     startTime: number;
     markets: string[];
 }

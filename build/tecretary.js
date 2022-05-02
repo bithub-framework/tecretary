@@ -13,28 +13,28 @@ const assert = require("assert");
 const nodeTimeEngine = new node_time_engine_1.NodeTimeEngine();
 class Tecretary {
     constructor(Strategy, config, texMap, H) {
+        this.config = config;
+        this.texMap = texMap;
         this.H = H;
+        this.lastSnapshotTime = Number.NEGATIVE_INFINITY;
         this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
-        // private async readInitialAssets(): Promise<InitialAssets | void> {
-        //     const res = await fetch(
-        //         `${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
-        //     if (res.ok) {
-        //         const assets = <Assets>JSON.parse(
-        //             JSON.stringify(<StringifiedAssets>await res.json()),
-        //             reviver,
-        //         );
-        //         return {
-        //             balance: assets.balance,
-        //             time: assets.time,
-        //         };
-        //     }
-        // }
         this.loop = async (sleep) => {
-            for await (const v of this.timeline)
+            for await (const v of this.timeline) {
+                const now = this.timeline.now();
+                if (now >= this.lastSnapshotTime + this.config.SNAPSHOT_PERIOD) {
+                    this.lastSnapshotTime = now;
+                    this.capture();
+                }
                 await sleep(0);
+            }
         };
         this.adminTexMap = new Map([...texMap].map(([name, tex]) => [name, tex.admin]));
-        this.reader = new database_reader_1.DatabaseReader(config.DB_FILE_PATH, this.adminTexMap, this.H);
+        this.reader = new database_reader_1.DatabaseReader(config, this.adminTexMap, this.H);
+        for (const [name, tex] of texMap) {
+            const snapshot = this.reader.getSnapshot(name);
+            if (snapshot !== null)
+                tex.restore(snapshot);
+        }
         this.userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
             assert(tex);
@@ -57,6 +57,12 @@ class Tecretary {
         await this.strategy.startable.stop();
         await this.pollerloop.startable.stop();
         await this.reader.startable.stop();
+    }
+    capture() {
+        for (const [name, tex] of this.texMap) {
+            const snapshot = tex.capture();
+            this.reader.setSnapshot(name, snapshot);
+        }
     }
 }
 exports.Tecretary = Tecretary;

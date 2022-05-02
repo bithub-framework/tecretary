@@ -6,37 +6,58 @@ import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 import { AdminTex } from 'texchange/build/texchange';
 import { OrderbookReader } from './orderbook-reader';
 import { TradeGroupReader } from './trade-group-reader';
+import { Config } from '../config';
+import { SnapshotReader } from './snapshot-reader';
+import { Snapshot } from 'texchange/build/texchange';
+
 
 
 export class DatabaseReader<H extends HLike<H>> {
-    private db: Database.Database;
+    private dataDb: Database.Database;
+    private projectsDb: Database.Database;
     public startable = new Startable(
         () => this.start(),
         () => this.stop(),
     );
     private orderbookReader: OrderbookReader<H>;
     private tradeGroupReader: TradeGroupReader<H>;
+    private snapshotReader: SnapshotReader;
 
     public constructor(
-        filePath: string,
+        config: Config,
         private adminTexMap: Map<string, AdminTex<H>>,
         private H: HStatic<H>,
     ) {
-        this.db = new Database(filePath, {
-            readonly: true,
-            fileMustExist: true,
-        });
+        this.dataDb = new Database(
+            config.DATA_DB_FILE_PATH,
+            {
+                readonly: true,
+                fileMustExist: true,
+            },
+        );
+
+        this.projectsDb = new Database(
+            config.PROJECTS_DB_FILE_PATH,
+            {
+                fileMustExist: true,
+            },
+        );
 
         this.orderbookReader = new OrderbookReader(
-            this.db,
+            this.dataDb,
             this.adminTexMap,
             this.H,
         );
 
         this.tradeGroupReader = new TradeGroupReader(
-            this.db,
+            this.dataDb,
             this.adminTexMap,
             this.H,
+        );
+
+        this.snapshotReader = new SnapshotReader(
+            this.projectsDb,
+            config,
         );
     }
 
@@ -60,9 +81,25 @@ export class DatabaseReader<H extends HLike<H>> {
         );
     }
 
+    public getSnapshot<PricingSnapshot>(
+        marketName: string,
+    ): Snapshot<PricingSnapshot> | null {
+        return this.snapshotReader.getSnapshot<PricingSnapshot>(marketName);
+    }
+
+    public setSnapshot<PricingSnapshot>(
+        marketName: string,
+        snapshot: Snapshot<PricingSnapshot>
+    ): void {
+        this.snapshotReader.setSnapshot(
+            marketName,
+            snapshot,
+        );
+    }
+
     private async start(): Promise<void> { }
 
     private async stop(): Promise<void> {
-        this.db.close();
+        this.dataDb.close();
     }
 }

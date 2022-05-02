@@ -34,6 +34,7 @@ export class Tecretary<H extends HLike<H>> {
     private userTexes: UserTex<H>[];
     private dataCheckPoints: Iterator<CheckPoint>;
     private pollerloop: Pollerloop;
+    private lastSnapshotTime = Number.NEGATIVE_INFINITY;
     public startable = new Startable(
         () => this.start(),
         () => this.stop(),
@@ -41,8 +42,8 @@ export class Tecretary<H extends HLike<H>> {
 
     public constructor(
         Strategy: StrategyStatic<H>,
-        config: Config,
-        texMap: Map<string, Texchange<H, unknown>>,
+        private config: Config,
+        private texMap: Map<string, Texchange<H, unknown>>,
         private H: HStatic<H>,
     ) {
         this.adminTexMap = new Map(
@@ -52,10 +53,16 @@ export class Tecretary<H extends HLike<H>> {
         );
 
         this.reader = new DatabaseReader(
-            config.DB_FILE_PATH,
+            config,
             this.adminTexMap,
             this.H,
-        )
+        );
+
+        for (const [name, tex] of texMap) {
+            const snapshot = this.reader.getSnapshot(name);
+            if (snapshot !== null)
+                tex.restore(snapshot);
+        }
 
         this.userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
@@ -116,23 +123,21 @@ export class Tecretary<H extends HLike<H>> {
         await this.reader.startable.stop();
     }
 
-    // private async readInitialAssets(): Promise<InitialAssets | void> {
-    //     const res = await fetch(
-    //         `${REDIRECTOR_URL}/secretariat/assets/latest?id=${this.config.projectId}`);
-    //     if (res.ok) {
-    //         const assets = <Assets>JSON.parse(
-    //             JSON.stringify(<StringifiedAssets>await res.json()),
-    //             reviver,
-    //         );
-    //         return {
-    //             balance: assets.balance,
-    //             time: assets.time,
-    //         };
-    //     }
-    // }
-
     private loop: Loop = async sleep => {
-        for await (const v of this.timeline)
+        for await (const v of this.timeline) {
+            const now = this.timeline.now();
+            if (now >= this.lastSnapshotTime + this.config.SNAPSHOT_PERIOD) {
+                this.lastSnapshotTime = now;
+                this.capture();
+            }
             await sleep(0);
+        }
+    }
+
+    private capture(): void {
+        for (const [name, tex] of this.texMap) {
+            const snapshot = tex.capture();
+            this.reader.setSnapshot(name, snapshot);
+        }
     }
 }

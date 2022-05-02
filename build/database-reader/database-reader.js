@@ -5,17 +5,22 @@ const startable_1 = require("startable");
 const Database = require("better-sqlite3");
 const orderbook_reader_1 = require("./orderbook-reader");
 const trade_group_reader_1 = require("./trade-group-reader");
+const snapshot_reader_1 = require("./snapshot-reader");
 class DatabaseReader {
-    constructor(filePath, adminTexMap, H) {
+    constructor(config, adminTexMap, H) {
         this.adminTexMap = adminTexMap;
         this.H = H;
         this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
-        this.db = new Database(filePath, {
+        this.dataDb = new Database(config.DATA_DB_FILE_PATH, {
             readonly: true,
             fileMustExist: true,
         });
-        this.orderbookReader = new orderbook_reader_1.OrderbookReader(this.db, this.adminTexMap, this.H);
-        this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.db, this.adminTexMap, this.H);
+        this.projectsDb = new Database(config.PROJECTS_DB_FILE_PATH, {
+            fileMustExist: true,
+        });
+        this.orderbookReader = new orderbook_reader_1.OrderbookReader(this.dataDb, this.adminTexMap, this.H);
+        this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.dataDb, this.adminTexMap, this.H);
+        this.snapshotReader = new snapshot_reader_1.SnapshotReader(this.projectsDb, config);
     }
     getDatabaseOrderbooks(marketName, afterOrderbookId) {
         return this.orderbookReader.getDatabaseOrderbooks(marketName, afterOrderbookId);
@@ -23,9 +28,15 @@ class DatabaseReader {
     getDatabaseTradeGroups(marketName, afterTradeId) {
         return this.tradeGroupReader.getDatabaseTradeGroups(marketName, afterTradeId);
     }
+    getSnapshot(marketName) {
+        return this.snapshotReader.getSnapshot(marketName);
+    }
+    setSnapshot(marketName, snapshot) {
+        this.snapshotReader.setSnapshot(marketName, snapshot);
+    }
     async start() { }
     async stop() {
-        this.db.close();
+        this.dataDb.close();
     }
 }
 exports.DatabaseReader = DatabaseReader;
