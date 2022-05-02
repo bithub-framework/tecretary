@@ -16,7 +16,7 @@ class Tecretary {
     constructor(Strategy, config, texMap, H) {
         this.config = config;
         this.lastSnapshotTime = Number.NEGATIVE_INFINITY;
-        this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
+        this.startable = new startable_1.Startable(() => this.start(), (err) => this.stop(err));
         this.loop = async (sleep) => {
             for await (const v of this.timeline) {
                 this.tryCapture();
@@ -61,8 +61,9 @@ class Tecretary {
         await this.strategy.startable.start(this.startable.starp);
         await this.pollerloop.startable.start(this.startable.starp);
     }
-    async stop() {
-        await this.strategy.startable.stop();
+    async stop(err) {
+        if (!err)
+            await this.strategy.startable.stop();
         this.capture();
         await this.pollerloop.startable.stop();
         await this.dataReader.startable.stop();

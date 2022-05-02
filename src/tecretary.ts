@@ -37,7 +37,7 @@ export class Tecretary<H extends HLike<H>> {
     private lastSnapshotTime = Number.NEGATIVE_INFINITY;
     public startable = new Startable(
         () => this.start(),
-        () => this.stop(),
+        (err?: Error) => this.stop(err),
     );
 
     public constructor(
@@ -145,8 +145,8 @@ export class Tecretary<H extends HLike<H>> {
         await this.pollerloop.startable.start(this.startable.starp);
     }
 
-    private async stop() {
-        await this.strategy.startable.stop();
+    private async stop(err?: Error) {
+        if (!err) await this.strategy.startable.stop();
         this.capture();
         await this.pollerloop.startable.stop();
         await this.dataReader.startable.stop();
