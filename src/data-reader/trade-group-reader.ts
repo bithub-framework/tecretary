@@ -9,7 +9,7 @@ import assert = require('assert');
 export class TradeGroupReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private adminTexMap: Map<string, AdminTex<H>>,
+		private adminTexMap: Map<string, AdminTex<H, unknown>>,
 		private H: HStatic<H>,
 	) { }
 
@@ -60,7 +60,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	private *databaseTradesFromRawTrades(
 		rawTrades: IterableIterator<RawTrade>,
-		adminTex: AdminTex<H>,
+		adminTex: AdminTex<H, unknown>,
 	): Generator<DatabaseTrade<H>, void> {
 		for (const rawTrade of rawTrades) {
 			yield {

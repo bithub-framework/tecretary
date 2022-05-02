@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tecretary = void 0;
 const startable_1 = require("startable");
-const database_reader_1 = require("./database-reader/database-reader");
+const data_reader_1 = require("./data-reader");
+const progress_reader_1 = require("./progress-reader");
 const context_1 = require("./context");
 const timeline_1 = require("./timeline");
 const check_points_1 = require("./check-points");
@@ -14,7 +15,6 @@ const nodeTimeEngine = new node_time_engine_1.NodeTimeEngine();
 class Tecretary {
     constructor(Strategy, config, texMap, H) {
         this.config = config;
-        this.texMap = texMap;
         this.H = H;
         this.lastSnapshotTime = Number.NEGATIVE_INFINITY;
         this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
@@ -29,39 +29,52 @@ class Tecretary {
             }
         };
         this.adminTexMap = new Map([...texMap].map(([name, tex]) => [name, tex.admin]));
-        this.reader = new database_reader_1.DatabaseReader(config, this.adminTexMap, this.H);
-        for (const [name, tex] of texMap) {
-            const snapshot = this.reader.getSnapshot(name);
-            if (snapshot !== null)
-                tex.restore(snapshot);
-        }
         this.userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
             assert(tex);
             return tex.user;
         });
-        const orderbookDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => (0, check_points_1.checkPointsFromDatabaseOrderbooks)(this.reader.getDatabaseOrderbooks(marketName), adminTex));
-        const tradesDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => (0, check_points_1.checkPointsFromDatabaseTradeGroups)(this.reader.getDatabaseTradeGroups(marketName), adminTex));
+        this.dataReader = new data_reader_1.DataReader(config, this.adminTexMap, this.H);
+        this.progressReader = new progress_reader_1.ProgressReader(config);
+        for (const [name, tex] of this.adminTexMap) {
+            const snapshot = this.progressReader.getSnapshot(name);
+            if (snapshot !== null)
+                tex.restore(snapshot);
+        }
+        const orderbookDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => {
+            const afterOrderbookId = adminTex.getLatestDatabaseOrderbookId();
+            if (afterOrderbookId !== null)
+                return (0, check_points_1.checkPointsFromDatabaseOrderbooks)(this.dataReader.getDatabaseOrderbooks(marketName, Number.parseInt(afterOrderbookId)), adminTex);
+            else
+                return (0, check_points_1.checkPointsFromDatabaseOrderbooks)(this.dataReader.getDatabaseOrderbooks(marketName), adminTex);
+        });
+        const tradesDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => {
+            const afterTradeId = adminTex.getLatestDatabaseTradeId();
+            if (afterTradeId !== null)
+                return (0, check_points_1.checkPointsFromDatabaseTradeGroups)(this.dataReader.getDatabaseTradeGroups(marketName, Number.parseInt(afterTradeId)), adminTex);
+            else
+                return (0, check_points_1.checkPointsFromDatabaseTradeGroups)(this.dataReader.getDatabaseTradeGroups(marketName), adminTex);
+        });
         this.dataCheckPoints = (0, merge_1.sortMergeAll)((a, b) => a.time - b.time)(...orderbookDataCheckPoints, ...tradesDataCheckPoints);
-        this.timeline = new timeline_1.Timeline(config.startTime, this.dataCheckPoints);
+        this.timeline = new timeline_1.Timeline(this.progressReader.getTime(), this.dataCheckPoints);
         this.context = new context_1.Context(this.userTexes, this.timeline);
         this.strategy = new Strategy(this.context);
         this.pollerloop = new pollerloop_1.Pollerloop(this.loop, nodeTimeEngine);
     }
     async start() {
-        await this.reader.startable.start(this.startable.starp);
+        await this.dataReader.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
         await this.pollerloop.startable.start(this.startable.starp);
     }
     async stop() {
         await this.strategy.startable.stop();
         await this.pollerloop.startable.stop();
-        await this.reader.startable.stop();
+        await this.dataReader.startable.stop();
     }
     capture() {
-        for (const [name, tex] of this.texMap) {
+        for (const [name, tex] of this.adminTexMap) {
             const snapshot = tex.capture();
-            this.reader.setSnapshot(name, snapshot);
+            this.progressReader.setSnapshot(name, snapshot);
         }
     }
 }

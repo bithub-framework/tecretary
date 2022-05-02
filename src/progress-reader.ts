@@ -1,32 +1,56 @@
 import Database = require('better-sqlite3');
-import { Config } from '../config';
-import { Snapshot } from 'texchange/build/texchange';
-import assert = require('assert');
+import { Config } from './config';
+import { Snapshot } from 'texchange/build/models';
+import { Startable } from 'startable';
 
 
 
-export class SnapshotReader {
+export class ProgressReader {
 	private projectId: number;
+	private time: number;
+	private db: Database.Database;
+	public startable = new Startable(
+		() => this.start(),
+		() => this.stop(),
+	);
 
 	public constructor(
-		private db: Database.Database,
 		private config: Config,
 	) {
-		this.db.prepare(`
-            INSERT OR IGNORE INTO projects
-            (name)
-            VALUES (?)
-        ;`).run(
-			config.projectName,
+		this.db = new Database(
+			config.PROJECTS_DB_FILE_PATH,
+			{
+				fileMustExist: true,
+			},
 		);
 
-		this.projectId = this.db.prepare(`
-            SELECT id
+		this.db.prepare(`
+            INSERT OR IGNORE INTO projects
+            (name, time)
+            VALUES (?, ?)
+        ;`).run(
+			config.projectName,
+			config.startTime,
+		);
+
+		const result: {
+			id: number;
+			time: number;
+		} = this.db.prepare(`
+            SELECT
+				id,
+				time
             FROM projects
             WHERE name = ?
         ;`).get(
 			this.config.projectName,
-		).id;
+		);
+		this.projectId = result.id
+		this.time = result.time;
+	}
+
+	public getTime(): number {
+		return this.time;
 	}
 
 	public getSnapshot<PricingSnapshot>(
@@ -52,7 +76,8 @@ export class SnapshotReader {
 		marketName: string,
 		snapshot: Snapshot<PricingSnapshot>
 	): void {
-		const result = this.db.prepare(`
+		const json = JSON.stringify(snapshot);
+		this.db.prepare(`
 			INSERT INTO snapshots
 			(pid, market_name, snapshot)
 			VALUES (?, ?, ?)
@@ -60,10 +85,16 @@ export class SnapshotReader {
 			DO UPDATE SET
 				snapshot = ?
         ;`).run(
-			this.config.projectName,
+			this.projectId,
 			marketName,
-			snapshot,
-			snapshot,
+			json,
+			json,
 		);
+	}
+
+	private async start(): Promise<void> { }
+
+	private async stop(): Promise<void> {
+		this.db.close();
 	}
 }

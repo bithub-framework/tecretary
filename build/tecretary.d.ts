@@ -5,9 +5,9 @@ import { HLike, HStatic } from 'interfaces';
 import { StrategyStatic } from 'interfaces/build/secretaries/strategy-like';
 export declare class Tecretary<H extends HLike<H>> {
     private config;
-    private texMap;
     private H;
-    private reader;
+    private dataReader;
+    private progressReader;
     private strategy;
     private timeline;
     private context;

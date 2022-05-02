@@ -13,7 +13,7 @@ import assert = require('assert');
 export class OrderbookReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private adminTexMap: Map<string, AdminTex<H>>,
+		private adminTexMap: Map<string, AdminTex<H, unknown>>,
 		private H: HStatic<H>,
 	) { }
 
@@ -61,7 +61,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: IterableIterator<RawBookOrder[]>,
-		adminTex: AdminTex<H>,
+		adminTex: AdminTex<H, unknown>,
 	): Generator<DatabaseOrderbook<H>, void> {
 		for (const group of groups) {
 			const asks: BookOrder<H>[] = group

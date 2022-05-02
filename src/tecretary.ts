@@ -1,5 +1,6 @@
 import { Startable } from 'startable';
-import { DatabaseReader } from './database-reader/database-reader';
+import { DataReader } from './data-reader';
+import { ProgressReader } from './progress-reader';
 import { Context } from './context';
 import { Timeline } from './timeline';
 import { Texchange } from 'texchange/build/texchange';
@@ -26,11 +27,12 @@ const nodeTimeEngine = new NodeTimeEngine();
 
 
 export class Tecretary<H extends HLike<H>> {
-    private reader: DatabaseReader<H>;
+    private dataReader: DataReader<H>;
+    private progressReader: ProgressReader;
     private strategy: StrategyLike;
     private timeline: Timeline;
     private context: Context<H>;
-    private adminTexMap: Map<string, AdminTex<H>>;
+    private adminTexMap: Map<string, AdminTex<H, unknown>>;
     private userTexes: UserTex<H>[];
     private dataCheckPoints: Iterator<CheckPoint>;
     private pollerloop: Pollerloop;
@@ -43,7 +45,7 @@ export class Tecretary<H extends HLike<H>> {
     public constructor(
         Strategy: StrategyStatic<H>,
         private config: Config,
-        private texMap: Map<string, Texchange<H, unknown>>,
+        texMap: Map<string, Texchange<H, unknown>>,
         private H: HStatic<H>,
     ) {
         this.adminTexMap = new Map(
@@ -52,36 +54,65 @@ export class Tecretary<H extends HLike<H>> {
             ),
         );
 
-        this.reader = new DatabaseReader(
-            config,
-            this.adminTexMap,
-            this.H,
-        );
-
-        for (const [name, tex] of texMap) {
-            const snapshot = this.reader.getSnapshot(name);
-            if (snapshot !== null)
-                tex.restore(snapshot);
-        }
-
         this.userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
             assert(tex);
             return tex.user;
         });
 
+        this.dataReader = new DataReader(
+            config,
+            this.adminTexMap,
+            this.H,
+        );
+
+        this.progressReader = new ProgressReader(
+            config,
+        );
+
+        for (const [name, tex] of this.adminTexMap) {
+            const snapshot = this.progressReader.getSnapshot(name);
+            if (snapshot !== null)
+                tex.restore(snapshot);
+        }
+
+
         const orderbookDataCheckPoints = [...this.adminTexMap].map(
-            ([marketName, adminTex]) => checkPointsFromDatabaseOrderbooks(
-                this.reader.getDatabaseOrderbooks(marketName),
-                adminTex,
-            ),
+            ([marketName, adminTex]) => {
+                const afterOrderbookId = adminTex.getLatestDatabaseOrderbookId();
+                if (afterOrderbookId !== null)
+                    return checkPointsFromDatabaseOrderbooks(
+                        this.dataReader.getDatabaseOrderbooks(
+                            marketName,
+                            Number.parseInt(afterOrderbookId),
+                        ),
+                        adminTex,
+                    );
+                else
+                    return checkPointsFromDatabaseOrderbooks(
+                        this.dataReader.getDatabaseOrderbooks(marketName),
+                        adminTex,
+                    );
+            },
         );
 
         const tradesDataCheckPoints = [...this.adminTexMap].map(
-            ([marketName, adminTex]) => checkPointsFromDatabaseTradeGroups(
-                this.reader.getDatabaseTradeGroups(marketName),
-                adminTex,
-            ),
+            ([marketName, adminTex]) => {
+                const afterTradeId = adminTex.getLatestDatabaseTradeId();
+                if (afterTradeId !== null)
+                    return checkPointsFromDatabaseTradeGroups(
+                        this.dataReader.getDatabaseTradeGroups(
+                            marketName,
+                            Number.parseInt(afterTradeId),
+                        ),
+                        adminTex,
+                    );
+                else
+                    return checkPointsFromDatabaseTradeGroups(
+                        this.dataReader.getDatabaseTradeGroups(marketName),
+                        adminTex,
+                    );
+            },
         );
 
         this.dataCheckPoints = sortMergeAll<CheckPoint>(
@@ -92,7 +123,7 @@ export class Tecretary<H extends HLike<H>> {
         );
 
         this.timeline = new Timeline(
-            config.startTime,
+            this.progressReader.getTime(),
             this.dataCheckPoints
         );
 
@@ -112,7 +143,7 @@ export class Tecretary<H extends HLike<H>> {
     }
 
     private async start() {
-        await this.reader.startable.start(this.startable.starp);
+        await this.dataReader.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
         await this.pollerloop.startable.start(this.startable.starp);
     }
@@ -120,7 +151,7 @@ export class Tecretary<H extends HLike<H>> {
     private async stop() {
         await this.strategy.startable.stop();
         await this.pollerloop.startable.stop();
-        await this.reader.startable.stop();
+        await this.dataReader.startable.stop();
     }
 
     private loop: Loop = async sleep => {
@@ -135,9 +166,9 @@ export class Tecretary<H extends HLike<H>> {
     }
 
     private capture(): void {
-        for (const [name, tex] of this.texMap) {
+        for (const [name, tex] of this.adminTexMap) {
             const snapshot = tex.capture();
-            this.reader.setSnapshot(name, snapshot);
+            this.progressReader.setSnapshot(name, snapshot);
         }
     }
 }
