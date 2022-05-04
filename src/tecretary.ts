@@ -2,7 +2,6 @@ import { Startable } from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
 import { Context } from './context';
-import { Timeline } from './timeline';
 import { Texchange } from 'texchange/build/texchange';
 import { AdminTex } from 'texchange/build/texchange';
 import { UserTex } from 'texchange/build/texchange';
@@ -19,7 +18,8 @@ import {
 } from './check-points';
 import { sortMergeAll } from './merge';
 import { Pollerloop, Loop } from 'pollerloop';
-import { CheckPoint } from './time-engine';
+import { Timeline, CheckPoint } from 'timeline';
+import { regularInverval } from './regular-interval';
 import { NodeTimeEngine } from 'node-time-engine';
 import assert = require('assert');
 const nodeTimeEngine = new NodeTimeEngine();
@@ -32,17 +32,14 @@ export class Tecretary<H extends HLike<H>> {
     private strategy: StrategyLike;
     private timeline: Timeline;
     private adminTexMap: Map<string, AdminTex<H, unknown>>;
-    private dataCheckPoints: Iterator<CheckPoint>;
-    private pollerloop: Pollerloop;
-    private lastSnapshotTime = Number.NEGATIVE_INFINITY;
     public startable = new Startable(
         () => this.start(),
-        (err?: Error) => this.stop(err),
+        () => this.stop(),
     );
 
     public constructor(
         Strategy: StrategyStatic<H>,
-        private config: Config,
+        config: Config,
         texMap: Map<string, Texchange<H, unknown>>,
         H: HStatic<H>,
     ) {
@@ -108,16 +105,25 @@ export class Tecretary<H extends HLike<H>> {
                     );
             },
         );
-        this.dataCheckPoints = sortMergeAll<CheckPoint>(
+
+        const captureCheckPoints = regularInverval(
+            this.progressReader.getTime(),
+            config.SNAPSHOT_PERIOD,
+            () => this.capture(),
+        );
+
+        const checkPoints = sortMergeAll<CheckPoint>(
             (a, b) => a.time - b.time,
         )(
             ...orderbookDataCheckPoints,
             ...tradesDataCheckPoints,
+            captureCheckPoints,
         );
 
         this.timeline = new Timeline(
             this.progressReader.getTime(),
-            this.dataCheckPoints
+            checkPoints,
+            nodeTimeEngine,
         );
 
         const userTexes: UserTex<H>[] = config.markets.map(name => {
@@ -131,50 +137,30 @@ export class Tecretary<H extends HLike<H>> {
                 this.timeline,
             )
         );
-
-        this.pollerloop = new Pollerloop(
-            this.loop,
-            nodeTimeEngine,
-        );
     }
 
     private async start() {
         await this.progressReader.startable.start(this.startable.starp)
         await this.dataReader.startable.start(this.startable.starp);
+        await this.timeline.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
-        await this.pollerloop.startable.start(this.startable.starp);
     }
 
-    private async stop(err?: Error) {
-        if (!err) await this.strategy.startable.stop();
-        this.capture();
-        await this.pollerloop.startable.stop();
-        await this.dataReader.startable.stop();
-        await this.progressReader.startable.stop();
-    }
-
-    private loop: Loop = async sleep => {
-        for await (const v of this.timeline) {
-            this.tryCapture();
-            await sleep(0);
+    private async stop() {
+        try {
+            await this.strategy.startable.stop();
+        } finally {
+            this.capture();
+            await this.timeline.startable.stop();
+            await this.dataReader.startable.stop();
+            await this.progressReader.startable.stop();
         }
     }
 
     private capture(): void {
-        this.lastSnapshotTime = this.timeline.now();
         for (const [name, tex] of this.adminTexMap) {
             const snapshot = tex.capture();
             this.progressReader.setSnapshot(name, snapshot);
-        }
-    }
-
-    private tryCapture(): void {
-        if (
-            this.timeline.now() >=
-            this.lastSnapshotTime +
-            this.config.SNAPSHOT_PERIOD
-        ) {
-            this.capture();
         }
     }
 }

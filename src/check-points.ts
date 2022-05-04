@@ -1,5 +1,5 @@
 import { HLike } from 'interfaces';
-import { CheckPoint } from './time-engine';
+import { CheckPoint } from 'timeline';
 import { AdminTex } from 'texchange/build/texchange';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
