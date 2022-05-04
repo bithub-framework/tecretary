@@ -9,8 +9,7 @@ import { Config } from './config';
 import { HLike, HStatic } from 'interfaces';
 import { StrategyLike, StrategyStatic } from 'interfaces/build/secretaries/strategy-like';
 import { CheckPointsMaker } from './check-points';
-import { sortMerge } from './merge';
-import { Timeline, CheckPoint } from 'timeline';
+import { Timeline } from 'timeline';
 import { NodeTimeEngine } from 'node-time-engine';
 import { Throttle } from './throttle';
 import assert = require('assert');
@@ -56,15 +55,9 @@ export class Tecretary<H extends HLike<H>> {
             H,
         );
 
-        const checkPointsMaker = new CheckPointsMaker(this.dataReader);
-        const sortMergeCheckPoints = sortMerge<CheckPoint>((a, b) => a.time - b.time);
-        const checkPoints = sortMergeCheckPoints(...
-            [...this.adminTexMap].map(([marketName, adminTex]) =>
-                sortMergeCheckPoints(
-                    checkPointsMaker.makeOrderbookCheckPoints(marketName, adminTex),
-                    checkPointsMaker.makeTradeGroupCheckPoints(marketName, adminTex)
-                ),
-            ),
+        const checkPointsMaker = new CheckPointsMaker(
+            this.dataReader,
+            this.adminTexMap,
         );
 
         const throttle = new Throttle(
@@ -78,7 +71,7 @@ export class Tecretary<H extends HLike<H>> {
 
         this.timeline = new Timeline(
             this.progressReader.getTime(),
-            checkPoints,
+            checkPointsMaker.make(),
             nodeTimeEngine,
             () => { },
             () => throttle.call(this.timeline.now()),

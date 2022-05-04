@@ -29,5 +29,5 @@ const sortMergeTwo = <T>(
 	}
 
 export const sortMerge = <T>(cmp: (a: T, b: T) => number) =>
-	(...iterators: Iterator<T>[]) =>
+	(...iterators: IterableIterator<T>[]) =>
 		iterators.reduce(sortMergeTwo(cmp));

@@ -6,7 +6,6 @@ const data_reader_1 = require("./data-reader");
 const progress_reader_1 = require("./progress-reader");
 const context_1 = require("./context");
 const check_points_1 = require("./check-points");
-const merge_1 = require("./merge");
 const timeline_1 = require("timeline");
 const node_time_engine_1 = require("node-time-engine");
 const throttle_1 = require("./throttle");
@@ -23,11 +22,9 @@ class Tecretary {
                 tex.restore(snapshot);
         }
         this.dataReader = new data_reader_1.DataReader(config, this.progressReader, H);
-        const checkPointsMaker = new check_points_1.CheckPointsMaker(this.dataReader);
-        const sortMergeCheckPoints = (0, merge_1.sortMerge)((a, b) => a.time - b.time);
-        const checkPoints = sortMergeCheckPoints(...[...this.adminTexMap].map(([marketName, adminTex]) => sortMergeCheckPoints(checkPointsMaker.makeOrderbookCheckPoints(marketName, adminTex), checkPointsMaker.makeTradeGroupCheckPoints(marketName, adminTex))));
+        const checkPointsMaker = new check_points_1.CheckPointsMaker(this.dataReader, this.adminTexMap);
         const throttle = new throttle_1.Throttle(this.progressReader.getTime(), config.SNAPSHOT_PERIOD, () => this.progressReader.capture(this.timeline.now(), this.adminTexMap));
-        this.timeline = new timeline_1.Timeline(this.progressReader.getTime(), checkPoints, nodeTimeEngine, () => { }, () => throttle.call(this.timeline.now()));
+        this.timeline = new timeline_1.Timeline(this.progressReader.getTime(), checkPointsMaker.make(), nodeTimeEngine, () => { }, () => throttle.call(this.timeline.now()));
         const userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
             assert(typeof tex !== 'undefined');
