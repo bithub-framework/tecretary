@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Throttle = void 0;
 class Throttle {
-    constructor(time, wait, cb) {
-        this.time = time;
+    constructor(wait, cb) {
         this.wait = wait;
         this.cb = cb;
+        this.time = Number.NEGATIVE_INFINITY;
     }
     call(now) {
         if (now >= this.time + this.wait) {

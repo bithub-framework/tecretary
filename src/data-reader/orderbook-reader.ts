@@ -1,4 +1,4 @@
-import { RawBookOrder } from '../raw-data';
+import { RawBookOrder } from './raw-data';
 import Database = require('better-sqlite3');
 import {
 	HStatic, HLike,

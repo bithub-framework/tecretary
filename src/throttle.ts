@@ -1,6 +1,7 @@
 export class Throttle {
+	private time = Number.NEGATIVE_INFINITY;
+
 	public constructor(
-		private time: number,
 		private wait: number,
 		private cb: () => void,
 	) { }

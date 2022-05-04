@@ -61,7 +61,6 @@ export class Tecretary<H extends HLike<H>> {
         );
 
         const throttle = new Throttle(
-            this.progressReader.getTime(),
             config.SNAPSHOT_PERIOD,
             () => this.progressReader.capture(
                 this.timeline.now(),

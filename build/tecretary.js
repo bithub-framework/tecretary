@@ -23,7 +23,7 @@ class Tecretary {
         }
         this.dataReader = new data_reader_1.DataReader(config, this.progressReader, H);
         const checkPointsMaker = new check_points_1.CheckPointsMaker(this.dataReader, this.adminTexMap);
-        const throttle = new throttle_1.Throttle(this.progressReader.getTime(), config.SNAPSHOT_PERIOD, () => this.progressReader.capture(this.timeline.now(), this.adminTexMap));
+        const throttle = new throttle_1.Throttle(config.SNAPSHOT_PERIOD, () => this.progressReader.capture(this.timeline.now(), this.adminTexMap));
         this.timeline = new timeline_1.Timeline(this.progressReader.getTime(), checkPointsMaker.make(), nodeTimeEngine, () => { }, () => throttle.call(this.timeline.now()));
         const userTexes = config.markets.map(name => {
             const tex = texMap.get(name);

@@ -1,4 +1,4 @@
-import { RawTrade } from '../raw-data';
+import { RawTrade } from './raw-data';
 import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'interfaces';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
