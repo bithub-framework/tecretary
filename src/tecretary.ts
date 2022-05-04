@@ -6,17 +6,10 @@ import { Texchange } from 'texchange/build/texchange';
 import { AdminTex } from 'texchange/build/texchange';
 import { UserTex } from 'texchange/build/texchange';
 import { Config } from './config';
-import {
-    HLike, HStatic,
-} from 'interfaces';
-import {
-    StrategyLike, StrategyStatic,
-} from 'interfaces/build/secretaries/strategy-like';
-import {
-    checkPointsFromDatabaseOrderbooks,
-    checkPointsFromDatabaseTradeGroups,
-} from './check-points';
-import { sortMergeAll } from './merge';
+import { HLike, HStatic } from 'interfaces';
+import { StrategyLike, StrategyStatic } from 'interfaces/build/secretaries/strategy-like';
+import { CheckPointsMaker } from './check-points';
+import { sortMerge } from './merge';
 import { Timeline, CheckPoint } from 'timeline';
 import { NodeTimeEngine } from 'node-time-engine';
 import { Throttle } from './throttle';
@@ -62,30 +55,16 @@ export class Tecretary<H extends HLike<H>> {
             this.progressReader,
             H,
         );
-        const orderbookDataCheckPoints = [...this.adminTexMap].map(
-            ([marketName, adminTex]) => checkPointsFromDatabaseOrderbooks(
-                this.dataReader.getDatabaseOrderbooks(
-                    marketName,
-                    adminTex,
-                ),
-                adminTex,
-            ),
-        );
-        const tradesDataCheckPoints = [...this.adminTexMap].map(
-            ([marketName, adminTex]) => checkPointsFromDatabaseTradeGroups(
-                this.dataReader.getDatabaseTradeGroups(
-                    marketName,
-                    adminTex,
-                ),
-                adminTex,
-            ),
-        );
 
-        const checkPoints = sortMergeAll<CheckPoint>(
-            (a, b) => a.time - b.time,
-        )(
-            ...orderbookDataCheckPoints,
-            ...tradesDataCheckPoints,
+        const checkPointsMaker = new CheckPointsMaker(this.dataReader);
+        const sortMergeCheckPoints = sortMerge<CheckPoint>((a, b) => a.time - b.time);
+        const checkPoints = sortMergeCheckPoints(...
+            [...this.adminTexMap].map(([marketName, adminTex]) =>
+                sortMergeCheckPoints(
+                    checkPointsMaker.makeOrderbookCheckPoints(marketName, adminTex),
+                    checkPointsMaker.makeTradeGroupCheckPoints(marketName, adminTex)
+                ),
+            ),
         );
 
         const throttle = new Throttle(
@@ -107,7 +86,7 @@ export class Tecretary<H extends HLike<H>> {
 
         const userTexes: UserTex<H>[] = config.markets.map(name => {
             const tex = texMap.get(name);
-            assert(tex);
+            assert(typeof tex !== 'undefined');
             return tex.user;
         });
         this.strategy = new Strategy(

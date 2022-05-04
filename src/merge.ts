@@ -1,4 +1,4 @@
-export const sortMerge = <T>(
+const sortMergeTwo = <T>(
 	cmp: (a: T, b: T) => number,
 ) => function* (
 	it1: Iterator<T>,
@@ -28,6 +28,6 @@ export const sortMerge = <T>(
 		}
 	}
 
-export const sortMergeAll = <T>(cmp: (a: T, b: T) => number) =>
+export const sortMerge = <T>(cmp: (a: T, b: T) => number) =>
 	(...iterators: Iterator<T>[]) =>
-		iterators.reduce(sortMerge(cmp));
+		iterators.reduce(sortMergeTwo(cmp));

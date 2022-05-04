@@ -23,14 +23,14 @@ class Tecretary {
                 tex.restore(snapshot);
         }
         this.dataReader = new data_reader_1.DataReader(config, this.progressReader, H);
-        const orderbookDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => (0, check_points_1.checkPointsFromDatabaseOrderbooks)(this.dataReader.getDatabaseOrderbooks(marketName, adminTex), adminTex));
-        const tradesDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => (0, check_points_1.checkPointsFromDatabaseTradeGroups)(this.dataReader.getDatabaseTradeGroups(marketName, adminTex), adminTex));
-        const checkPoints = (0, merge_1.sortMergeAll)((a, b) => a.time - b.time)(...orderbookDataCheckPoints, ...tradesDataCheckPoints);
+        const checkPointsMaker = new check_points_1.CheckPointsMaker(this.dataReader);
+        const sortMergeCheckPoints = (0, merge_1.sortMerge)((a, b) => a.time - b.time);
+        const checkPoints = sortMergeCheckPoints(...[...this.adminTexMap].map(([marketName, adminTex]) => sortMergeCheckPoints(checkPointsMaker.makeOrderbookCheckPoints(marketName, adminTex), checkPointsMaker.makeTradeGroupCheckPoints(marketName, adminTex))));
         const throttle = new throttle_1.Throttle(this.progressReader.getTime(), config.SNAPSHOT_PERIOD, () => this.progressReader.capture(this.timeline.now(), this.adminTexMap));
         this.timeline = new timeline_1.Timeline(this.progressReader.getTime(), checkPoints, nodeTimeEngine, () => { }, () => throttle.call(this.timeline.now()));
         const userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
-            assert(tex);
+            assert(typeof tex !== 'undefined');
             return tex.user;
         });
         this.strategy = new Strategy(new context_1.Context(userTexes, this.timeline));

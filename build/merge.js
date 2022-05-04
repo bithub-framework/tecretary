@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sortMergeAll = exports.sortMerge = void 0;
-const sortMerge = (cmp) => function* (it1, it2) {
+exports.sortMerge = void 0;
+const sortMergeTwo = (cmp) => function* (it1, it2) {
     try {
         let r1 = it1.next();
         let r2 = it2.next();
@@ -31,7 +31,6 @@ const sortMerge = (cmp) => function* (it1, it2) {
             it2.return();
     }
 };
+const sortMerge = (cmp) => (...iterators) => iterators.reduce(sortMergeTwo(cmp));
 exports.sortMerge = sortMerge;
-const sortMergeAll = (cmp) => (...iterators) => iterators.reduce((0, exports.sortMerge)(cmp));
-exports.sortMergeAll = sortMergeAll;
 //# sourceMappingURL=merge.js.map

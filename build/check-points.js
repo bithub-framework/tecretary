@@ -1,6 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkPointsFromDatabaseTradeGroups = exports.checkPointsFromDatabaseOrderbooks = void 0;
+exports.CheckPointsMaker = void 0;
+class CheckPointsMaker {
+    constructor(dataReader) {
+        this.dataReader = dataReader;
+    }
+    makeOrderbookCheckPoints(marketName, adminTex) {
+        return checkPointsFromDatabaseOrderbooks(this.dataReader.getDatabaseOrderbooks(marketName, adminTex), adminTex);
+    }
+    makeTradeGroupCheckPoints(marketName, adminTex) {
+        return checkPointsFromDatabaseTradeGroups(this.dataReader.getDatabaseTradeGroups(marketName, adminTex), adminTex);
+    }
+}
+exports.CheckPointsMaker = CheckPointsMaker;
 function* checkPointsFromDatabaseOrderbooks(orderbooks, adminTex) {
     for (const orderbook of orderbooks) {
         yield {
@@ -11,7 +23,6 @@ function* checkPointsFromDatabaseOrderbooks(orderbooks, adminTex) {
         };
     }
 }
-exports.checkPointsFromDatabaseOrderbooks = checkPointsFromDatabaseOrderbooks;
 function* checkPointsFromDatabaseTradeGroups(groups, adminTex) {
     for (const group of groups) {
         yield {
@@ -22,5 +33,4 @@ function* checkPointsFromDatabaseTradeGroups(groups, adminTex) {
         };
     }
 }
-exports.checkPointsFromDatabaseTradeGroups = checkPointsFromDatabaseTradeGroups;
 //# sourceMappingURL=check-points.js.map

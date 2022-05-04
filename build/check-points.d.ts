@@ -1,7 +1,10 @@
 import { HLike } from 'interfaces';
 import { CheckPoint } from 'timeline';
 import { AdminTex } from 'texchange/build/texchange';
-import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
-export declare function checkPointsFromDatabaseOrderbooks<H extends HLike<H>>(orderbooks: IterableIterator<DatabaseOrderbook<H>>, adminTex: AdminTex<H, unknown>): Generator<CheckPoint, void>;
-export declare function checkPointsFromDatabaseTradeGroups<H extends HLike<H>>(groups: IterableIterator<DatabaseTrade<H>[]>, adminTex: AdminTex<H, unknown>): Generator<CheckPoint, void>;
+import { DataReader } from './data-reader';
+export declare class CheckPointsMaker<H extends HLike<H>> {
+    private dataReader;
+    constructor(dataReader: DataReader<H>);
+    makeOrderbookCheckPoints(marketName: string, adminTex: AdminTex<H, any>): Generator<CheckPoint, void, unknown>;
+    makeTradeGroupCheckPoints(marketName: string, adminTex: AdminTex<H, any>): Generator<CheckPoint, void, unknown>;
+}
