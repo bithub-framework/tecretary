@@ -26,7 +26,7 @@ class Tecretary {
         const orderbookDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => (0, check_points_1.checkPointsFromDatabaseOrderbooks)(this.dataReader.getDatabaseOrderbooks(marketName, adminTex), adminTex));
         const tradesDataCheckPoints = [...this.adminTexMap].map(([marketName, adminTex]) => (0, check_points_1.checkPointsFromDatabaseTradeGroups)(this.dataReader.getDatabaseTradeGroups(marketName, adminTex), adminTex));
         const checkPoints = (0, merge_1.sortMergeAll)((a, b) => a.time - b.time)(...orderbookDataCheckPoints, ...tradesDataCheckPoints);
-        const throttle = new throttle_1.Throttle(this.progressReader.getTime(), config.SNAPSHOT_PERIOD, () => this.capture());
+        const throttle = new throttle_1.Throttle(this.progressReader.getTime(), config.SNAPSHOT_PERIOD, () => this.progressReader.capture(this.timeline.now(), this.adminTexMap));
         this.timeline = new timeline_1.Timeline(this.progressReader.getTime(), checkPoints, nodeTimeEngine, () => { }, () => throttle.call(this.timeline.now()));
         const userTexes = config.markets.map(name => {
             const tex = texMap.get(name);
@@ -46,17 +46,10 @@ class Tecretary {
             await this.strategy.startable.stop();
         }
         finally {
-            this.capture();
+            this.progressReader.capture(this.timeline.now(), this.adminTexMap);
             await this.timeline.startable.stop();
             await this.dataReader.startable.stop();
             await this.progressReader.startable.stop();
-        }
-    }
-    capture() {
-        this.progressReader.setTime(this.timeline.now());
-        for (const [name, tex] of this.adminTexMap) {
-            const snapshot = tex.capture();
-            this.progressReader.setSnapshot(name, snapshot);
         }
     }
 }

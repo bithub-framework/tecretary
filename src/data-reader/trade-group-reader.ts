@@ -13,7 +13,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTradeId(
 		marketName: string,
-		adminTex: AdminTex<H, unknown>,
+		adminTex: AdminTex<H, any>,
 		afterTradeId: number,
 	): IterableIterator<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTradeId(
@@ -35,7 +35,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTime(
 		marketName: string,
-		adminTex: AdminTex<H, unknown>,
+		adminTex: AdminTex<H, any>,
 		afterTime: number,
 	): IterableIterator<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTime(
@@ -75,7 +75,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	private *databaseTradesFromRawTrades(
 		rawTrades: IterableIterator<RawTrade>,
-		adminTex: AdminTex<H, unknown>,
+		adminTex: AdminTex<H, any>,
 	): Generator<DatabaseTrade<H>, void> {
 		for (const rawTrade of rawTrades) {
 			yield {

@@ -13,6 +13,15 @@ class ProgressReader {
         });
         this.lock();
     }
+    capture(time, adminTexMap) {
+        this.db.transaction(() => {
+            this.setTime(time);
+            for (const [name, tex] of adminTexMap) {
+                const snapshot = tex.capture();
+                this.setSnapshot(name, snapshot);
+            }
+        });
+    }
     lock() {
         this.db.transaction(() => {
             const running = this.db.prepare(`

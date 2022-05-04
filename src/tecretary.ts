@@ -30,7 +30,7 @@ export class Tecretary<H extends HLike<H>> {
     private dataReader: DataReader<H>;
     private strategy: StrategyLike;
     private timeline: Timeline;
-    private adminTexMap: Map<string, AdminTex<H, unknown>>;
+    private adminTexMap: Map<string, AdminTex<H, any>>;
     public startable = new Startable(
         () => this.start(),
         () => this.stop(),
@@ -39,7 +39,7 @@ export class Tecretary<H extends HLike<H>> {
     public constructor(
         Strategy: StrategyStatic<H>,
         config: Config,
-        texMap: Map<string, Texchange<H, unknown>>,
+        texMap: Map<string, Texchange<H, any>>,
         H: HStatic<H>,
     ) {
         this.adminTexMap = new Map(
@@ -91,7 +91,10 @@ export class Tecretary<H extends HLike<H>> {
         const throttle = new Throttle(
             this.progressReader.getTime(),
             config.SNAPSHOT_PERIOD,
-            () => this.capture(),
+            () => this.progressReader.capture(
+                this.timeline.now(),
+                this.adminTexMap,
+            ),
         );
 
         this.timeline = new Timeline(
@@ -126,18 +129,13 @@ export class Tecretary<H extends HLike<H>> {
         try {
             await this.strategy.startable.stop();
         } finally {
-            this.capture();
+            this.progressReader.capture(
+                this.timeline.now(),
+                this.adminTexMap,
+            );
             await this.timeline.startable.stop();
             await this.dataReader.startable.stop();
             await this.progressReader.startable.stop();
-        }
-    }
-
-    private capture(): void {
-        this.progressReader.setTime(this.timeline.now());
-        for (const [name, tex] of this.adminTexMap) {
-            const snapshot = tex.capture();
-            this.progressReader.setSnapshot(name, snapshot);
         }
     }
 }

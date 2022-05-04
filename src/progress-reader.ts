@@ -2,6 +2,8 @@ import Database = require('better-sqlite3');
 import { Config } from './config';
 import { Snapshot } from 'texchange/build/models';
 import { Startable } from 'startable';
+import { AdminTex } from 'texchange/build/texchange';
+import { HLike } from 'interfaces';
 import assert = require('assert');
 
 
@@ -23,6 +25,19 @@ export class ProgressReader {
 			},
 		);
 		this.lock();
+	}
+
+	public capture(
+		time: number,
+		adminTexMap: Map<string, AdminTex<any, any>>,
+	): void {
+		this.db.transaction(() => {
+			this.setTime(time);
+			for (const [name, tex] of adminTexMap) {
+				const snapshot = tex.capture();
+				this.setSnapshot(name, snapshot);
+			}
+		});
 	}
 
 	private lock(): void {
@@ -67,7 +82,7 @@ export class ProgressReader {
 		return this.config.startTime;
 	}
 
-	public setTime(time: number): void {
+	private setTime(time: number): void {
 		this.db.prepare(`
 			INSERT OR REPLACE INTO projects
 			(name, time)
@@ -96,7 +111,7 @@ export class ProgressReader {
 			return null;
 	}
 
-	public setSnapshot<PricingSnapshot>(
+	private setSnapshot<PricingSnapshot>(
 		marketName: string,
 		snapshot: Snapshot<PricingSnapshot>
 	): void {
