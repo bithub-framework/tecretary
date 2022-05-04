@@ -3,7 +3,6 @@ import { Snapshot } from 'texchange/build/models';
 import { Startable } from 'startable';
 export declare class ProgressReader {
     private config;
-    private projectId;
     private db;
     startable: Startable;
     constructor(config: Config);

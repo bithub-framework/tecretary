@@ -7,23 +7,19 @@ import {
 } from 'interfaces';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
 import { AdminTex } from 'texchange/build/texchange';
-import assert = require('assert');
 
 
 export class OrderbookReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private adminTexMap: Map<string, AdminTex<H, unknown>>,
 		private H: HStatic<H>,
 	) { }
 
 	public getDatabaseOrderbooksAfterOrderbookId(
 		marketName: string,
+		adminTex: AdminTex<H, unknown>,
 		afterOrderbookId: number,
 	): IterableIterator<DatabaseOrderbook<H>> {
-		const adminTex = this.adminTexMap.get(marketName);
-		assert(adminTex);
-
 		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
 			marketName,
 			afterOrderbookId,
@@ -43,11 +39,9 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterTime(
 		marketName: string,
+		adminTex: AdminTex<H, unknown>,
 		afterTime: number,
 	): IterableIterator<DatabaseOrderbook<H>> {
-		const adminTex = this.adminTexMap.get(marketName);
-		assert(adminTex);
-
 		const rawBookOrders = this.getRawBookOrdersAfterTime(
 			marketName,
 			afterTime,

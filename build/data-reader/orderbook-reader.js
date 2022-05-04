@@ -2,24 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderbookReader = void 0;
 const interfaces_1 = require("interfaces");
-const assert = require("assert");
 class OrderbookReader {
-    constructor(db, adminTexMap, H) {
+    constructor(db, H) {
         this.db = db;
-        this.adminTexMap = adminTexMap;
         this.H = H;
     }
-    getDatabaseOrderbooksAfterOrderbookId(marketName, afterOrderbookId) {
-        const adminTex = this.adminTexMap.get(marketName);
-        assert(adminTex);
+    getDatabaseOrderbooksAfterOrderbookId(marketName, adminTex, afterOrderbookId) {
         const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
         const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
         return datavaseOrderbooks;
     }
-    getDatabaseOrderbooksAfterTime(marketName, afterTime) {
-        const adminTex = this.adminTexMap.get(marketName);
-        assert(adminTex);
+    getDatabaseOrderbooksAfterTime(marketName, adminTex, afterTime) {
         const rawBookOrders = this.getRawBookOrdersAfterTime(marketName, afterTime);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
         const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);

@@ -17,10 +17,9 @@ import {
     checkPointsFromDatabaseTradeGroups,
 } from './check-points';
 import { sortMergeAll } from './merge';
-import { Pollerloop, Loop } from 'pollerloop';
 import { Timeline, CheckPoint } from 'timeline';
-import { regularInverval } from './regular-interval';
 import { NodeTimeEngine } from 'node-time-engine';
+import { Throttle } from './throttle';
 import assert = require('assert');
 const nodeTimeEngine = new NodeTimeEngine();
 
@@ -60,56 +59,26 @@ export class Tecretary<H extends HLike<H>> {
 
         this.dataReader = new DataReader(
             config,
-            this.adminTexMap,
+            this.progressReader,
             H,
         );
         const orderbookDataCheckPoints = [...this.adminTexMap].map(
-            ([marketName, adminTex]) => {
-                const afterOrderbookId = adminTex.getLatestDatabaseOrderbookId();
-                if (afterOrderbookId !== null)
-                    return checkPointsFromDatabaseOrderbooks(
-                        this.dataReader.getDatabaseOrderbooksAfterOrderbookId(
-                            marketName,
-                            Number.parseInt(afterOrderbookId),
-                        ),
-                        adminTex,
-                    );
-                else
-                    return checkPointsFromDatabaseOrderbooks(
-                        this.dataReader.getDatabaseOrderbooksAfterTime(
-                            marketName,
-                            this.progressReader.getTime(),
-                        ),
-                        adminTex,
-                    );
-            },
+            ([marketName, adminTex]) => checkPointsFromDatabaseOrderbooks(
+                this.dataReader.getDatabaseOrderbooks(
+                    marketName,
+                    adminTex,
+                ),
+                adminTex,
+            ),
         );
         const tradesDataCheckPoints = [...this.adminTexMap].map(
-            ([marketName, adminTex]) => {
-                const afterTradeId = adminTex.getLatestDatabaseTradeId();
-                if (afterTradeId !== null)
-                    return checkPointsFromDatabaseTradeGroups(
-                        this.dataReader.getDatabaseTradeGroupsAfterTradeId(
-                            marketName,
-                            Number.parseInt(afterTradeId),
-                        ),
-                        adminTex,
-                    );
-                else
-                    return checkPointsFromDatabaseTradeGroups(
-                        this.dataReader.getDatabaseTradeGroupsAfterTime(
-                            marketName,
-                            this.progressReader.getTime(),
-                        ),
-                        adminTex,
-                    );
-            },
-        );
-
-        const captureCheckPoints = regularInverval(
-            this.progressReader.getTime(),
-            config.SNAPSHOT_PERIOD,
-            () => this.capture(),
+            ([marketName, adminTex]) => checkPointsFromDatabaseTradeGroups(
+                this.dataReader.getDatabaseTradeGroups(
+                    marketName,
+                    adminTex,
+                ),
+                adminTex,
+            ),
         );
 
         const checkPoints = sortMergeAll<CheckPoint>(
@@ -117,13 +86,20 @@ export class Tecretary<H extends HLike<H>> {
         )(
             ...orderbookDataCheckPoints,
             ...tradesDataCheckPoints,
-            captureCheckPoints,
+        );
+
+        const throttle = new Throttle(
+            this.progressReader.getTime(),
+            config.SNAPSHOT_PERIOD,
+            () => this.capture(),
         );
 
         this.timeline = new Timeline(
             this.progressReader.getTime(),
             checkPoints,
             nodeTimeEngine,
+            () => { },
+            () => throttle.call(this.timeline.now()),
         );
 
         const userTexes: UserTex<H>[] = config.markets.map(name => {
@@ -158,6 +134,7 @@ export class Tecretary<H extends HLike<H>> {
     }
 
     private capture(): void {
+        this.progressReader.setTime(this.timeline.now());
         for (const [name, tex] of this.adminTexMap) {
             const snapshot = tex.capture();
             this.progressReader.setSnapshot(name, snapshot);

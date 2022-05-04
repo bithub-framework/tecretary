@@ -1,24 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TradeGroupReader = void 0;
-const assert = require("assert");
 class TradeGroupReader {
-    constructor(db, adminTexMap, H) {
+    constructor(db, H) {
         this.db = db;
-        this.adminTexMap = adminTexMap;
         this.H = H;
     }
-    getDatabaseTradeGroupsAfterTradeId(marketName, afterTradeId) {
-        const adminTex = this.adminTexMap.get(marketName);
-        assert(adminTex);
+    getDatabaseTradeGroupsAfterTradeId(marketName, adminTex, afterTradeId) {
         const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId);
         const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
-    getDatabaseTradeGroupsAfterTime(marketName, afterTime) {
-        const adminTex = this.adminTexMap.get(marketName);
-        assert(adminTex);
+    getDatabaseTradeGroupsAfterTime(marketName, adminTex, afterTime) {
         const rawTrades = this.getRawTradesAfterTime(marketName, afterTime);
         const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);

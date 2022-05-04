@@ -3,23 +3,19 @@ import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'interfaces';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 import { AdminTex } from 'texchange/build/texchange';
-import assert = require('assert');
 
 
 export class TradeGroupReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private adminTexMap: Map<string, AdminTex<H, unknown>>,
 		private H: HStatic<H>,
 	) { }
 
 	public getDatabaseTradeGroupsAfterTradeId(
 		marketName: string,
+		adminTex: AdminTex<H, unknown>,
 		afterTradeId: number,
 	): IterableIterator<DatabaseTrade<H>[]> {
-		const adminTex = this.adminTexMap.get(marketName);
-		assert(adminTex);
-
 		const rawTrades = this.getRawTradesAfterTradeId(
 			marketName,
 			afterTradeId,
@@ -39,11 +35,9 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTime(
 		marketName: string,
+		adminTex: AdminTex<H, unknown>,
 		afterTime: number,
 	): IterableIterator<DatabaseTrade<H>[]> {
-		const adminTex = this.adminTexMap.get(marketName);
-		assert(adminTex);
-
 		const rawTrades = this.getRawTradesAfterTime(
 			marketName,
 			afterTime,

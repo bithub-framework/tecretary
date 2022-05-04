@@ -11,61 +11,53 @@ class ProgressReader {
         this.db = new Database(config.PROJECTS_DB_FILE_PATH, {
             fileMustExist: true,
         });
-        this.db.prepare(`
-			INSERT OR IGNORE INTO projects
-			(name, time, running)
-			VALUES (?, ?, 0)
-		;`).run(config.projectName, config.startTime);
-        this.projectId = this.db.prepare(`
-			SELECT id
-			FROM projects
-			WHERE name = ?
-		;`).get(this.config.projectName).id;
-        this.db.transaction(() => this.lock());
+        this.lock();
     }
     lock() {
-        const running = this.db.prepare(`
-			SELECT running
-			FROM projects
-			WHERE id = ?
-		;`).get(this.projectId).running;
-        assert(running === 0);
-        this.db.prepare(`
-			UPDATE projects
-			SET running = 1
-			WHERE id = ?
-		;`).run(this.projectId);
+        this.db.transaction(() => {
+            const running = this.db.prepare(`
+				SELECT name
+				FROM running
+				WHERE name = ?
+			;`).get(this.config.projectName).running;
+            assert(typeof running !== 'undefined');
+            this.db.prepare(`
+				INSERT INTO running
+				(name)
+				VALUES (?)
+			;`).run(this.config.projectName);
+        });
     }
     unlock() {
         this.db.prepare(`
-			UPDATE projects
-			SET running = 0
-			WHERE id = ?
-		;`).run(this.projectId);
+			DELETE FROM running
+			WHERE name = ?
+		;`).run(this.config.projectName);
     }
     getTime() {
-        return this.db.prepare(`
+        const result = this.db.prepare(`
             SELECT
-				id,
 				time
             FROM projects
             WHERE name = ?
-        ;`).get(this.config.projectName).time;
+        ;`).get(this.config.projectName);
+        if (typeof result !== 'undefined')
+            return result.time;
+        return this.config.startTime;
     }
     setTime(time) {
         this.db.prepare(`
-            UPDATE projects
-			SET time = ?
-			WHERE id = ?
-        ;`).run(time, this.projectId);
+			INSERT OR REPLACE INTO projects
+			(name, time)
+			VALUES (?, ?)
+		;`).run(this.config.projectName, this.config.startTime);
     }
     getSnapshot(marketName) {
         const result = this.db.prepare(`
             SELECT snapshot
-            FROM projects, snapshots
-            WHERE projects.name = ?
-				AND projects.id = snapshots.pid
-                AND snapshots.market_name = ?
+            FROM snapshots
+            WHERE project_name = ?
+                AND market_name = ?
         ;`).get(this.config.projectName, marketName);
         if (typeof result !== 'undefined')
             return JSON.parse(result.snapshot);
@@ -75,13 +67,10 @@ class ProgressReader {
     setSnapshot(marketName, snapshot) {
         const json = JSON.stringify(snapshot);
         this.db.prepare(`
-			INSERT INTO snapshots
-			(pid, market_name, snapshot)
+			INSERT OR REPLACE INTO snapshots
+			(project_name, market_name, snapshot)
 			VALUES (?, ?, ?)
-			ON CONFLICT(pid, market_name)
-			DO UPDATE SET
-				snapshot = ?
-        ;`).run(this.projectId, marketName, json, json);
+        ;`).run(this.config.projectName, marketName, json);
     }
     async start() { }
     async stop() {
