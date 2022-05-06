@@ -6,10 +6,12 @@ import { Texchange } from 'texchange/build/texchange';
 import { AdminTex } from 'texchange/build/texchange';
 import { UserTex } from 'texchange/build/texchange';
 import { Config } from './config';
-import { HLike, HStatic } from 'interfaces';
-import { StrategyLike, StrategyStatic } from 'interfaces/build/secretaries/strategy-like';
+import {
+    HLike, HStatic,
+    StrategyLike, StrategyStatic,
+} from 'secretary-like';
 import { CheckPointsMaker } from './check-points';
-import { Timeline } from 'timeline';
+import { Timeline } from './timeline/timeline';
 import { NodeTimeEngine } from 'node-time-engine';
 import { Throttle } from './throttle';
 import assert = require('assert');

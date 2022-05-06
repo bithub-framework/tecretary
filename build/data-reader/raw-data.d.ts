@@ -1,4 +1,4 @@
-import { Side } from 'interfaces';
+import { Side } from 'secretary-like';
 export interface RawBookOrder {
     marketName: string;
     time: number;

@@ -9,7 +9,7 @@ import {
     TimelineLike,
     OpenOrder,
     Amendment,
-} from 'interfaces';
+} from 'secretary-like';
 import { Latency } from 'texchange/build/facades.d/latency';
 import { AccountLatency } from 'texchange/build/facades.d/latency/account'
 import { MarketLatency } from 'texchange/build/facades.d/latency/market';

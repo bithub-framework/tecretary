@@ -1,5 +1,5 @@
 import Database = require('better-sqlite3');
-import { HStatic, HLike } from 'interfaces';
+import { HStatic, HLike } from 'secretary-like';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 import { AdminTex } from 'texchange/build/texchange';
 export declare class TradeGroupReader<H extends HLike<H>> {

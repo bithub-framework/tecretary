@@ -3,7 +3,6 @@ import { Config } from './config';
 import { Snapshot } from 'texchange/build/models';
 import { Startable } from 'startable';
 import { AdminTex } from 'texchange/build/texchange';
-import { HLike } from 'interfaces';
 import assert = require('assert');
 
 

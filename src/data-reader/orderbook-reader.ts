@@ -4,7 +4,7 @@ import {
 	HStatic, HLike,
 	Side,
 	BookOrder,
-} from 'interfaces';
+} from 'secretary-like';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
 import { AdminTex } from 'texchange/build/texchange';
 

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderbookReader = void 0;
-const interfaces_1 = require("interfaces");
+const secretary_like_1 = require("secretary-like");
 class OrderbookReader {
     constructor(db, H) {
         this.db = db;
@@ -34,14 +34,14 @@ class OrderbookReader {
     *databaseOrderbooksFromRawBookOrderGroups(groups, adminTex) {
         for (const group of groups) {
             const asks = group
-                .filter(order => order.side === interfaces_1.Side.ASK)
+                .filter(order => order.side === secretary_like_1.Side.ASK)
                 .map(order => ({
                 price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
                 quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
                 side: order.side,
             }));
             const bids = group
-                .filter(order => order.side === interfaces_1.Side.BID)
+                .filter(order => order.side === secretary_like_1.Side.BID)
                 .map(order => ({
                 price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
                 quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
@@ -50,8 +50,8 @@ class OrderbookReader {
             yield {
                 id: group[0].id.toString(),
                 time: group[0].time,
-                [interfaces_1.Side.ASK]: asks,
-                [interfaces_1.Side.BID]: bids,
+                [secretary_like_1.Side.ASK]: asks,
+                [secretary_like_1.Side.BID]: bids,
             };
         }
     }

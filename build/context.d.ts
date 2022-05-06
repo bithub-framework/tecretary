@@ -1,4 +1,4 @@
-import { MarketLike, ContextLike, HLike, TimelineLike } from 'interfaces';
+import { MarketLike, ContextLike, HLike, TimelineLike } from 'secretary-like';
 import { Latency } from 'texchange/build/facades.d/latency';
 export declare class Context<H extends HLike<H>> implements ContextLike<H> {
     timeline: TimelineLike;

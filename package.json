@@ -12,16 +12,19 @@
     "author": "Zim",
     "dependencies": {
         "@types/better-sqlite3": "^7.5.0",
-        "@types/node": "^16.11.28",
         "better-sqlite3": "^7.5.1",
-        "interfaces": "github:bithub-framework/interfaces",
+        "cancellable": "github:zimtsui/cancellable",
+        "coroutine-locks": "github:zimtsui/coroutine-locks",
         "manual-promise": "github:zimtsui/manual-promise",
         "node-time-engine": "github:zimtsui/node-time-engine",
+        "pollerloop": "github:zimtsui/pollerloop",
         "sortque": "github:zimtsui/sortque",
-        "startable": "github:zimtsui/startable",
-        "timeline": "github:zimtsui/timeline"
+        "time-engine-like": "github:zimtsui/time-engine-like"
     },
     "peerDependencies": {
+        "@types/node": "^16.11.33",
+        "secretary-like": "github:bithub-framework/secretary-like",
+        "startable": "github:zimtsui/startable",
         "texchange": "github:bithub-framework/texchange"
     }
 }

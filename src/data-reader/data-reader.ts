@@ -1,6 +1,6 @@
 import { Startable } from 'startable';
 import Database = require('better-sqlite3');
-import { HStatic, HLike } from 'interfaces';
+import { HStatic, HLike } from 'secretary-like';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 import { AdminTex } from 'texchange/build/texchange';
