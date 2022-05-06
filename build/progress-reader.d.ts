@@ -14,6 +14,7 @@ export declare class ProgressReader {
     private setTime;
     getSnapshot(marketName: string): Models.Snapshot | null;
     private setSnapshot;
+    log(content: string, time: number): void;
     private start;
     private stop;
 }

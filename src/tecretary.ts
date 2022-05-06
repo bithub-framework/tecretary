@@ -87,7 +87,8 @@ export class Tecretary<H extends HLike<H>> {
             new Context<H>(
                 userTexes,
                 this.timeline,
-            )
+                this.progressReader,
+            ),
         );
     }
 

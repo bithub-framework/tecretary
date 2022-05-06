@@ -13,6 +13,7 @@ import {
 import { Latency } from 'texchange/build/facades.d/latency';
 import { AccountLatency } from 'texchange/build/facades.d/latency/account'
 import { MarketLatency } from 'texchange/build/facades.d/latency/market';
+import { ProgressReader } from './progress-reader';
 
 
 
@@ -22,6 +23,7 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
     constructor(
         userTexes: Latency<H>[],
         public timeline: TimelineLike,
+        private progressReader: ProgressReader,
     ) {
         for (let i = 0; i < userTexes.length; i++) {
             this[i] = new ContextMarket(
@@ -31,17 +33,12 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
         }
     }
 
-    public async submit(key: string, json: string): Promise<void> { }
-
-    // public async submitAssets(assets: Assets) {
-    //     const res = await this.escape(fetch(
-    //         `${REDIRECTOR_URL}/secretariat/assets?id=${this.config.projectId}`, {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify(assets),
-    //     }));
-    //     assert(res.ok);
-    // }
+    public submit(content: string): void {
+        this.progressReader.log(
+            content,
+            this.timeline.now(),
+        );
+    }
 }
 
 

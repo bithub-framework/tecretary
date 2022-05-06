@@ -3,6 +3,7 @@ import { Config } from './config';
 import { Models } from 'texchange/build/models';
 import { Startable } from 'startable';
 import { AdminTex } from 'texchange/build/texchange';
+import { TimelineLike } from 'secretary-like';
 import assert = require('assert');
 
 
@@ -123,6 +124,21 @@ export class ProgressReader {
 			this.config.projectName,
 			marketName,
 			json,
+		);
+	}
+
+	public log(
+		content: string,
+		time: number,
+	): void {
+		this.db.prepare(`
+			INSERT INTO logs
+			(project_name, time, content)
+			VALUES (?, ?, ?)
+		;`).run(
+			this.config.projectName,
+			time,
+			content,
 		);
 	}
 

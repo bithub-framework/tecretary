@@ -30,7 +30,7 @@ class Tecretary {
             assert(typeof tex !== 'undefined');
             return tex.user;
         });
-        this.strategy = new Strategy(new context_1.Context(userTexes, this.timeline));
+        this.strategy = new Strategy(new context_1.Context(userTexes, this.timeline, this.progressReader));
     }
     async start() {
         await this.progressReader.startable.start(this.startable.starp);

@@ -2,13 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Context = void 0;
 class Context {
-    constructor(userTexes, timeline) {
+    constructor(userTexes, timeline, progressReader) {
         this.timeline = timeline;
+        this.progressReader = progressReader;
         for (let i = 0; i < userTexes.length; i++) {
             this[i] = new ContextMarket(userTexes[i].market, userTexes[i].account);
         }
     }
-    async submit(key, json) { }
+    submit(content) {
+        this.progressReader.log(content, this.timeline.now());
+    }
 }
 exports.Context = Context;
 class ContextMarket {

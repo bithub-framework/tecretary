@@ -81,6 +81,13 @@ class ProgressReader {
 			VALUES (?, ?, ?)
         ;`).run(this.config.projectName, marketName, json);
     }
+    log(content, time) {
+        this.db.prepare(`
+			INSERT INTO logs
+			(project_name, time, content)
+			VALUES (?, ?, ?)
+		;`).run(this.config.projectName, time, content);
+    }
     async start() { }
     async stop() {
         this.unlock();
