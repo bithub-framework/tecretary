@@ -5,8 +5,8 @@ import { DataReader } from '../data-reader';
 export declare class CheckPointsMaker<H extends HLike<H>> {
     private dataReader;
     private adminTexMap;
-    constructor(dataReader: DataReader<H>, adminTexMap: Map<string, AdminTex<H, any>>);
+    constructor(dataReader: DataReader<H>, adminTexMap: Map<string, AdminTex<H>>);
     make(): IterableIterator<CheckPoint>;
-    makeOrderbookCheckPoints(marketName: string, adminTex: AdminTex<H, any>): Generator<CheckPoint, void, unknown>;
-    makeTradeGroupCheckPoints(marketName: string, adminTex: AdminTex<H, any>): Generator<CheckPoint, void, unknown>;
+    makeOrderbookCheckPoints(marketName: string, adminTex: AdminTex<H>): Generator<CheckPoint, void, unknown>;
+    makeTradeGroupCheckPoints(marketName: string, adminTex: AdminTex<H>): Generator<CheckPoint, void, unknown>;
 }

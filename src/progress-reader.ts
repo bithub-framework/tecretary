@@ -1,6 +1,6 @@
 import Database = require('better-sqlite3');
 import { Config } from './config';
-import { Snapshot } from 'texchange/build/models';
+import { Models } from 'texchange/build/models';
 import { Startable } from 'startable';
 import { AdminTex } from 'texchange/build/texchange';
 import assert = require('assert');
@@ -28,7 +28,7 @@ export class ProgressReader {
 
 	public capture(
 		time: number,
-		adminTexMap: Map<string, AdminTex<any, any>>,
+		adminTexMap: Map<string, AdminTex<any>>,
 	): void {
 		this.db.transaction(() => {
 			this.setTime(time);
@@ -92,9 +92,9 @@ export class ProgressReader {
 		);
 	}
 
-	public getSnapshot<PricingSnapshot>(
+	public getSnapshot(
 		marketName: string,
-	): Snapshot<PricingSnapshot> | null {
+	): Models.Snapshot | null {
 		const result = this.db.prepare(`
             SELECT snapshot
             FROM snapshots
@@ -110,9 +110,9 @@ export class ProgressReader {
 			return null;
 	}
 
-	private setSnapshot<PricingSnapshot>(
+	private setSnapshot(
 		marketName: string,
-		snapshot: Snapshot<PricingSnapshot>
+		snapshot: Models.Snapshot,
 	): void {
 		const json = JSON.stringify(snapshot);
 		this.db.prepare(`

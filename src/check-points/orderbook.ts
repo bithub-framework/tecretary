@@ -6,7 +6,7 @@ import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook
 
 export function* checkPointsFromDatabaseOrderbooks<H extends HLike<H>>(
 	orderbooks: IterableIterator<DatabaseOrderbook<H>>,
-	adminTex: AdminTex<H, unknown>,
+	adminTex: AdminTex<H>,
 ): Generator<CheckPoint, void> {
 	for (const orderbook of orderbooks) {
 		yield {

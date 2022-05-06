@@ -17,7 +17,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterOrderbookId(
 		marketName: string,
-		adminTex: AdminTex<H, any>,
+		adminTex: AdminTex<H>,
 		afterOrderbookId: number,
 	): IterableIterator<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
@@ -39,7 +39,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterTime(
 		marketName: string,
-		adminTex: AdminTex<H, any>,
+		adminTex: AdminTex<H>,
 		afterTime: number,
 	): IterableIterator<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterTime(
@@ -76,7 +76,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: IterableIterator<RawBookOrder[]>,
-		adminTex: AdminTex<H, any>,
+		adminTex: AdminTex<H>,
 	): Generator<DatabaseOrderbook<H>, void> {
 		for (const group of groups) {
 			const asks: BookOrder<H>[] = group

@@ -12,7 +12,7 @@ const sortMergeCheckPoints = sortMerge<CheckPoint>((a, b) => a.time - b.time);
 export class CheckPointsMaker<H extends HLike<H>> {
 	public constructor(
 		private dataReader: DataReader<H>,
-		private adminTexMap: Map<string, AdminTex<H, any>>,
+		private adminTexMap: Map<string, AdminTex<H>>,
 	) { }
 
 	public make(): IterableIterator<CheckPoint> {
@@ -27,7 +27,7 @@ export class CheckPointsMaker<H extends HLike<H>> {
 
 	public makeOrderbookCheckPoints(
 		marketName: string,
-		adminTex: AdminTex<H, any>,
+		adminTex: AdminTex<H>,
 	) {
 		return checkPointsFromDatabaseOrderbooks(
 			this.dataReader.getDatabaseOrderbooks(
@@ -40,7 +40,7 @@ export class CheckPointsMaker<H extends HLike<H>> {
 
 	public makeTradeGroupCheckPoints(
 		marketName: string,
-		adminTex: AdminTex<H, any>,
+		adminTex: AdminTex<H>,
 	) {
 		return checkPointsFromDatabaseTradeGroups(
 			this.dataReader.getDatabaseTradeGroups(

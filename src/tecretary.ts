@@ -24,7 +24,7 @@ export class Tecretary<H extends HLike<H>> {
     private dataReader: DataReader<H>;
     private strategy: StrategyLike;
     private timeline: Timeline;
-    private adminTexMap: Map<string, AdminTex<H, any>>;
+    private adminTexMap: Map<string, AdminTex<H>>;
     public startable = new Startable(
         () => this.start(),
         () => this.stop(),
@@ -33,7 +33,7 @@ export class Tecretary<H extends HLike<H>> {
     public constructor(
         Strategy: StrategyStatic<H>,
         config: Config,
-        texMap: Map<string, Texchange<H, any>>,
+        texMap: Map<string, Texchange<H>>,
         H: HStatic<H>,
     ) {
         this.adminTexMap = new Map(

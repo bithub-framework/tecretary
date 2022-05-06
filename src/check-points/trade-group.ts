@@ -7,7 +7,7 @@ import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 
 export function* checkPointsFromDatabaseTradeGroups<H extends HLike<H>>(
 	groups: IterableIterator<DatabaseTrade<H>[]>,
-	adminTex: AdminTex<H, unknown>,
+	adminTex: AdminTex<H>,
 ): Generator<CheckPoint, void> {
 	for (const group of groups) {
 		yield {
@@ -15,6 +15,6 @@ export function* checkPointsFromDatabaseTradeGroups<H extends HLike<H>>(
 				adminTex.updateTrades(group);
 			},
 			time: group[0].time,
-		}
+		};
 	}
 }

@@ -9,7 +9,7 @@ export declare class Tecretary<H extends HLike<H>> {
     private timeline;
     private adminTexMap;
     startable: Startable;
-    constructor(Strategy: StrategyStatic<H>, config: Config, texMap: Map<string, Texchange<H, any>>, H: HStatic<H>);
+    constructor(Strategy: StrategyStatic<H>, config: Config, texMap: Map<string, Texchange<H>>, H: HStatic<H>);
     private start;
     private stop;
 }

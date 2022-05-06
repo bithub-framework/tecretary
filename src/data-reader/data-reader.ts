@@ -46,7 +46,7 @@ export class DataReader<H extends HLike<H>> {
 
     public getDatabaseOrderbooks(
         marketName: string,
-        adminTex: AdminTex<H, unknown>,
+        adminTex: AdminTex<H>,
     ): IterableIterator<DatabaseOrderbook<H>> {
         const afterOrderbookId = adminTex.getLatestDatabaseOrderbookId();
         if (afterOrderbookId !== null)
@@ -65,7 +65,7 @@ export class DataReader<H extends HLike<H>> {
 
     public getDatabaseTradeGroups(
         marketName: string,
-        adminTex: AdminTex<H, unknown>,
+        adminTex: AdminTex<H>,
     ): IterableIterator<DatabaseTrade<H>[]> {
         const afterTradeId = adminTex.getLatestDatabaseTradeId();
         if (afterTradeId !== null)

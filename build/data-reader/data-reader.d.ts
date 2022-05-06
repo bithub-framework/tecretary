@@ -12,8 +12,8 @@ export declare class DataReader<H extends HLike<H>> {
     private orderbookReader;
     private tradeGroupReader;
     constructor(config: Config, progressReader: ProgressReader, H: HStatic<H>);
-    getDatabaseOrderbooks(marketName: string, adminTex: AdminTex<H, unknown>): IterableIterator<DatabaseOrderbook<H>>;
-    getDatabaseTradeGroups(marketName: string, adminTex: AdminTex<H, unknown>): IterableIterator<DatabaseTrade<H>[]>;
+    getDatabaseOrderbooks(marketName: string, adminTex: AdminTex<H>): IterableIterator<DatabaseOrderbook<H>>;
+    getDatabaseTradeGroups(marketName: string, adminTex: AdminTex<H>): IterableIterator<DatabaseTrade<H>[]>;
     private start;
     private stop;
 }
