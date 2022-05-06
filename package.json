@@ -22,7 +22,7 @@
         "time-engine-like": "github:zimtsui/time-engine-like"
     },
     "peerDependencies": {
-        "@types/node": "^16.11.33",
+        "@types/node": ">=16",
         "secretary-like": "github:bithub-framework/secretary-like",
         "startable": "github:zimtsui/startable",
         "texchange": "github:bithub-framework/texchange"
