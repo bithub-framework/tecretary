@@ -10,9 +10,10 @@ export declare class Timeline implements TimelineLike {
     private lock;
     private poller;
     startable: Startable;
-    constructor(startTime: number, sortedInitialCheckPoints: Iterator<CheckPoint>, pollerEngine: TimeEngineLike, prehook?: () => void, posthook?: () => void);
+    constructor(startTime: number, pollerEngine: TimeEngineLike, prehook?: () => void, posthook?: () => void);
     private start;
     private stop;
+    pushSortedCheckPoints(sorted: Iterator<CheckPoint>): void;
     private loop;
     now(): number;
     sleep(ms: number): Cancellable;

@@ -19,14 +19,12 @@ export class Timeline implements TimelineLike {
 
 	public constructor(
 		startTime: number,
-		sortedInitialCheckPoints: Iterator<CheckPoint>,
 		pollerEngine: TimeEngineLike,
 		private prehook: () => void = () => { },
 		private posthook: () => void = () => { },
 	) {
 		this.engine = new TimeEngine(
 			startTime,
-			sortedInitialCheckPoints,
 		);
 
 		this.poller = new Pollerloop(
@@ -43,6 +41,12 @@ export class Timeline implements TimelineLike {
 		const p = this.poller.startable.stop();
 		this.lock.throw(new LoopStopped('Loop stopped.'));
 		await p;
+	}
+
+	public pushSortedCheckPoints(
+		sorted: Iterator<CheckPoint>,
+	): void {
+		this.engine.pushSortedCheckPoints(sorted);
 	}
 
 	private async loop(sleep: Sleep) {

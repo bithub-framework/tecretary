@@ -2,7 +2,10 @@ import {
 	TimeEngineLike,
 	TimeoutLike,
 } from 'time-engine-like';
-import { Sortque, Removable } from 'sortque';
+import {
+	Sortque, Pointer,
+	NoEnoughElem,
+} from 'sortque';
 import assert = require('assert');
 
 
@@ -13,7 +16,7 @@ export interface CheckPoint {
 
 class Timeout implements TimeoutLike {
 	public constructor(
-		private pointer: Removable<CheckPoint>,
+		private pointer: Pointer<CheckPoint>,
 	) { }
 
 	public clear(): void {
@@ -26,13 +29,21 @@ export class TimeEngine implements TimeEngineLike, IterableIterator<() => void> 
 
 	public constructor(
 		private time: number,
-		sortedInitialCheckPoints: Iterator<CheckPoint> = [][Symbol.iterator](),
 	) {
 		this.sortque = new Sortque(
-			sortedInitialCheckPoints,
-			(a, b) => a.time - b.time,
+			(x1, x2) => x1.time < x2.time,
 		);
-		assert(this.sortque.getFront().time >= this.time);
+	}
+
+	public pushSortedCheckPoints(
+		sorted: Iterator<CheckPoint>,
+	): void {
+		this.sortque.pushSorted(sorted);
+		try {
+			assert(this.sortque.getFront().time >= this.time);
+		} catch (err) {
+			assert(err instanceof NoEnoughElem);
+		}
 	}
 
 	public setTimeout(

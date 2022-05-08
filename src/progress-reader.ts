@@ -3,7 +3,8 @@ import { Config } from './config';
 import { Models } from 'texchange/build/models';
 import { Startable } from 'startable';
 import { AdminTex } from 'texchange/build/texchange';
-import { TimelineLike } from 'secretary-like';
+import { inject } from 'injektor';
+import { TYPES } from './injection/types';
 import assert = require('assert');
 
 
@@ -16,6 +17,7 @@ export class ProgressReader {
 	);
 
 	public constructor(
+		@inject(TYPES.Config)
 		private config: Config,
 	) {
 		this.db = new Database(

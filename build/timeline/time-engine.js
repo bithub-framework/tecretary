@@ -12,10 +12,18 @@ class Timeout {
     }
 }
 class TimeEngine {
-    constructor(time, sortedInitialCheckPoints = [][Symbol.iterator]()) {
+    constructor(time) {
         this.time = time;
-        this.sortque = new sortque_1.Sortque(sortedInitialCheckPoints, (a, b) => a.time - b.time);
-        assert(this.sortque.getFront().time >= this.time);
+        this.sortque = new sortque_1.Sortque((x1, x2) => x1.time < x2.time);
+    }
+    pushSortedCheckPoints(sorted) {
+        this.sortque.pushSorted(sorted);
+        try {
+            assert(this.sortque.getFront().time >= this.time);
+        }
+        catch (err) {
+            assert(err instanceof sortque_1.NoEnoughElem);
+        }
     }
     setTimeout(cb, ms) {
         const pointer = this.sortque.push({

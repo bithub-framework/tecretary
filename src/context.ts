@@ -10,10 +10,12 @@ import {
     OpenOrder,
     Amendment,
 } from 'secretary-like';
-import { Latency } from 'texchange/build/facades.d/latency';
+import { UserTex } from 'texchange/build/texchange';
 import { AccountLatency } from 'texchange/build/facades.d/latency/account'
 import { MarketLatency } from 'texchange/build/facades.d/latency/market';
 import { ProgressReader } from './progress-reader';
+import { inject } from 'injektor';
+import { TYPES } from './injection/types';
 
 
 
@@ -21,8 +23,11 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
     [marketId: number]: MarketLike<H>;
 
     constructor(
-        userTexes: Latency<H>[],
+        @inject(TYPES.UserTexes)
+        userTexes: UserTex<H>[],
+        @inject(TYPES.TimelineLike)
         public timeline: TimelineLike,
+        @inject(TYPES.ProgressReader)
         private progressReader: ProgressReader,
     ) {
         for (let i = 0; i < userTexes.length; i++) {

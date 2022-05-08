@@ -6,7 +6,8 @@ export interface CheckPoint {
 export declare class TimeEngine implements TimeEngineLike, IterableIterator<() => void> {
     private time;
     private sortque;
-    constructor(time: number, sortedInitialCheckPoints?: Iterator<CheckPoint>);
+    constructor(time: number);
+    pushSortedCheckPoints(sorted: Iterator<CheckPoint>): void;
     setTimeout(cb: () => void, ms: number): TimeoutLike;
     [Symbol.iterator](): this;
     next(): IteratorResult<() => void>;
