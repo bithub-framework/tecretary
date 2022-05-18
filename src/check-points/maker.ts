@@ -7,30 +7,19 @@ import { checkPointsFromDatabaseTradeGroups } from './trade-group';
 import { sortMerge } from '../merge';
 
 
-const sortMergeCheckPoints = sortMerge<CheckPoint>((a, b) => a.time - b.time);
 
-export class CheckPointsMaker<H extends HLike<H>> {
-	public constructor(
-		private dataReader: DataReader<H>,
-		private adminTexMap: Map<string, AdminTex<H>>,
-	) { }
+export function makeCheckPoints<H extends HLike<H>>(
+	dataReader: DataReader<H>,
+	adminTexMap: Map<string, AdminTex<H>>,
+): IterableIterator<CheckPoint> {
+	const sortMergeCheckPoints = sortMerge<CheckPoint>((a, b) => a.time - b.time);
 
-	public make(): IterableIterator<CheckPoint> {
-		return sortMergeCheckPoints(...
-			(<IterableIterator<CheckPoint>[]>[]).concat(...
-				[...this.adminTexMap].map(([marketName, adminTex]) => [
-					this.makeOrderbookCheckPoints(marketName, adminTex),
-					this.makeTradeGroupCheckPoints(marketName, adminTex)
-				]),
-			));
-	}
-
-	public makeOrderbookCheckPoints(
+	function makeOrderbookCheckPoints(
 		marketName: string,
 		adminTex: AdminTex<H>,
 	) {
 		return checkPointsFromDatabaseOrderbooks(
-			this.dataReader.getDatabaseOrderbooks(
+			dataReader.getDatabaseOrderbooks(
 				marketName,
 				adminTex,
 			),
@@ -38,16 +27,24 @@ export class CheckPointsMaker<H extends HLike<H>> {
 		);
 	}
 
-	public makeTradeGroupCheckPoints(
+	function makeTradeGroupCheckPoints(
 		marketName: string,
 		adminTex: AdminTex<H>,
 	) {
 		return checkPointsFromDatabaseTradeGroups(
-			this.dataReader.getDatabaseTradeGroups(
+			dataReader.getDatabaseTradeGroups(
 				marketName,
 				adminTex,
 			),
 			adminTex,
 		);
 	}
+
+	return sortMergeCheckPoints(...
+		(<IterableIterator<CheckPoint>[]>[]).concat(...
+			[...adminTexMap].map(([marketName, adminTex]) => [
+				makeOrderbookCheckPoints(marketName, adminTex),
+				makeTradeGroupCheckPoints(marketName, adminTex)
+			]),
+		));
 }

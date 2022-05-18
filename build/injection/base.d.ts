@@ -1,6 +1,6 @@
 import { BaseContainer } from 'injektor';
 import { TYPES } from './types';
-import { HLike } from 'secretary-like';
+import { HLike, StrategyLike } from 'secretary-like';
 import { Config } from '../config';
 import { ProgressReader } from '../progress-reader';
 import { Timeline } from '../timeline/timeline';
@@ -17,5 +17,6 @@ export declare abstract class Container<H extends HLike<H>> extends BaseContaine
     abstract [TYPES.TexMap]: () => Map<string, Texchange<H>>;
     [TYPES.UserTexes]: () => UserTex<H>[];
     [TYPES.Context]: () => Context<H>;
+    abstract [TYPES.StrategyLike]: () => StrategyLike;
     [TYPES.Tecretary]: () => Tecretary<H>;
 }

@@ -4,7 +4,7 @@ import {
 } from 'time-engine-like';
 import {
 	Sortque, Pointer,
-	NoEnoughElem,
+	NoEnoughElements,
 } from 'sortque';
 import assert = require('assert');
 
@@ -31,7 +31,7 @@ export class TimeEngine implements TimeEngineLike, IterableIterator<() => void> 
 		private time: number,
 	) {
 		this.sortque = new Sortque(
-			(x1, x2) => x1.time < x2.time,
+			(x1, x2) => x1.time - x2.time,
 		);
 	}
 
@@ -42,7 +42,7 @@ export class TimeEngine implements TimeEngineLike, IterableIterator<() => void> 
 		try {
 			assert(this.sortque.getFront().time >= this.time);
 		} catch (err) {
-			assert(err instanceof NoEnoughElem);
+			assert(err instanceof NoEnoughElements);
 		}
 	}
 
@@ -61,7 +61,7 @@ export class TimeEngine implements TimeEngineLike, IterableIterator<() => void> 
 		return this;
 	}
 
-	public next(): IteratorResult<() => void> {
+	public next(): IteratorResult<() => void, void> {
 		try {
 			const checkPoint = this.sortque.shift();
 			this.time = checkPoint.time;

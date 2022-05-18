@@ -10,6 +10,6 @@ export declare class TimeEngine implements TimeEngineLike, IterableIterator<() =
     pushSortedCheckPoints(sorted: Iterator<CheckPoint>): void;
     setTimeout(cb: () => void, ms: number): TimeoutLike;
     [Symbol.iterator](): this;
-    next(): IteratorResult<() => void>;
+    next(): IteratorResult<() => void, void>;
     now(): number;
 }

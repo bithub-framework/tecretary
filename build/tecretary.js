@@ -16,40 +16,22 @@ const check_points_1 = require("./check-points");
 const injektor_1 = require("injektor");
 const types_1 = require("./injection/types");
 let Tecretary = class Tecretary {
-    constructor(config, progressReader, timeline, texMap, context, strategy, H) {
+    constructor(config, progressReader, timeline, texMap, strategy, H) {
         this.config = config;
         this.progressReader = progressReader;
         this.timeline = timeline;
         this.texMap = texMap;
-        this.context = context;
         this.strategy = strategy;
         this.H = H;
         this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
-        this.adminTexMap = new Map([...texMap].map(([name, tex]) => [name, tex.admin]));
+        this.adminTexMap = new Map([...this.texMap].map(([name, tex]) => [name, tex.admin]));
         for (const [name, tex] of this.adminTexMap) {
             const snapshot = this.progressReader.getSnapshot(name);
             if (snapshot !== null)
                 tex.restore(snapshot);
         }
         this.dataReader = new data_reader_1.DataReader(this.config, this.progressReader, this.H);
-        // this.timeline = new Timeline(
-        //     this.progressReader.getTime(),
-        //     nodeTimeEngine,
-        // );
-        this.checkPointsMaker = new check_points_1.CheckPointsMaker(this.dataReader, this.adminTexMap);
-        this.timeline.pushSortedCheckPoints(this.checkPointsMaker.make());
-        // const userTexes: UserTex<H>[] = config.markets.map(name => {
-        //     const tex = texMap.get(name);
-        //     assert(typeof tex !== 'undefined');
-        //     return tex.user;
-        // });
-        // this.strategy = new Strategy(
-        //     new Context<H>(
-        //         userTexes,
-        //         this.timeline,
-        //         this.progressReader,
-        //     ),
-        // );
+        this.timeline.pushSortedCheckPoints((0, check_points_1.makeCheckPoints)(this.dataReader, this.adminTexMap));
     }
     async start() {
         await this.progressReader.startable.start(this.startable.starp);
@@ -74,9 +56,8 @@ Tecretary = __decorate([
     __param(1, (0, injektor_1.inject)(types_1.TYPES.ProgressReader)),
     __param(2, (0, injektor_1.inject)(types_1.TYPES.Timeline)),
     __param(3, (0, injektor_1.inject)(types_1.TYPES.TexMap)),
-    __param(4, (0, injektor_1.inject)(types_1.TYPES.Context)),
-    __param(5, (0, injektor_1.inject)(types_1.TYPES.StrategyLike)),
-    __param(6, (0, injektor_1.inject)(types_1.TYPES.HStatic))
+    __param(4, (0, injektor_1.inject)(types_1.TYPES.StrategyLike)),
+    __param(5, (0, injektor_1.inject)(types_1.TYPES.HStatic))
 ], Tecretary);
 exports.Tecretary = Tecretary;
 //# sourceMappingURL=tecretary.js.map

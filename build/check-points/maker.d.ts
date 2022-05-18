@@ -2,11 +2,4 @@ import { HLike } from 'secretary-like';
 import { CheckPoint } from '../timeline/time-engine';
 import { AdminTex } from 'texchange/build/texchange';
 import { DataReader } from '../data-reader';
-export declare class CheckPointsMaker<H extends HLike<H>> {
-    private dataReader;
-    private adminTexMap;
-    constructor(dataReader: DataReader<H>, adminTexMap: Map<string, AdminTex<H>>);
-    make(): IterableIterator<CheckPoint>;
-    makeOrderbookCheckPoints(marketName: string, adminTex: AdminTex<H>): Generator<CheckPoint, void, unknown>;
-    makeTradeGroupCheckPoints(marketName: string, adminTex: AdminTex<H>): Generator<CheckPoint, void, unknown>;
-}
+export declare function makeCheckPoints<H extends HLike<H>>(dataReader: DataReader<H>, adminTexMap: Map<string, AdminTex<H>>): IterableIterator<CheckPoint>;

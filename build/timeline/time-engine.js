@@ -14,7 +14,7 @@ class Timeout {
 class TimeEngine {
     constructor(time) {
         this.time = time;
-        this.sortque = new sortque_1.Sortque((x1, x2) => x1.time < x2.time);
+        this.sortque = new sortque_1.Sortque((x1, x2) => x1.time - x2.time);
     }
     pushSortedCheckPoints(sorted) {
         this.sortque.pushSorted(sorted);
@@ -22,7 +22,7 @@ class TimeEngine {
             assert(this.sortque.getFront().time >= this.time);
         }
         catch (err) {
-            assert(err instanceof sortque_1.NoEnoughElem);
+            assert(err instanceof sortque_1.NoEnoughElements);
         }
     }
     setTimeout(cb, ms) {

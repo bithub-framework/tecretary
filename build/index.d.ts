@@ -1,2 +1,2 @@
-export * from './tecretary';
 export * from './config';
+export * from './context';

@@ -1,7 +1,6 @@
 import { Startable } from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
-// import { Context } from './context';
 import { Texchange } from 'texchange/build/texchange';
 import { AdminTex } from 'texchange/build/texchange';
 import { Config } from './config';
@@ -9,9 +8,8 @@ import {
     HLike, HStatic,
     StrategyLike,
 } from 'secretary-like';
-import { CheckPointsMaker } from './check-points';
+import { makeCheckPoints } from './check-points';
 import { Timeline } from './timeline/timeline';
-import { Throttle } from './throttle';
 import { inject } from 'injektor';
 import { TYPES } from './injection/types';
 
@@ -20,7 +18,6 @@ import { TYPES } from './injection/types';
 export class Tecretary<H extends HLike<H>> {
     private dataReader: DataReader<H>;
     private adminTexMap: Map<string, AdminTex<H>>;
-    private checkPointsMaker: CheckPointsMaker<H>;
     public startable = new Startable(
         () => this.start(),
         () => this.stop(),
@@ -35,8 +32,6 @@ export class Tecretary<H extends HLike<H>> {
         private timeline: Timeline,
         @inject(TYPES.TexMap)
         private texMap: Map<string, Texchange<H>>,
-        // @inject(TYPES.Context)
-        // private context: Context<H>,
         @inject(TYPES.StrategyLike)
         private strategy: StrategyLike,
         @inject(TYPES.HStatic)
@@ -59,12 +54,11 @@ export class Tecretary<H extends HLike<H>> {
             this.H,
         );
 
-        this.checkPointsMaker = new CheckPointsMaker(
-            this.dataReader,
-            this.adminTexMap,
-        );
         this.timeline.pushSortedCheckPoints(
-            this.checkPointsMaker.make(),
+            makeCheckPoints<H>(
+                this.dataReader,
+                this.adminTexMap,
+            ),
         );
     }
 
