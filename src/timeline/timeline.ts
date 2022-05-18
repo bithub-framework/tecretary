@@ -20,8 +20,6 @@ export class Timeline implements TimelineLike {
 	public constructor(
 		startTime: number,
 		pollerEngine: TimeEngineLike,
-		private prehook: () => void = () => { },
-		private posthook: () => void = () => { },
 	) {
 		this.engine = new TimeEngine(
 			startTime,
@@ -53,12 +51,10 @@ export class Timeline implements TimelineLike {
 		await this.lock.wrlock();
 		await sleep(0);
 		for (const cb of this.engine) {
-			this.prehook();
 			cb();
 			this.lock.unlock();
 			await this.lock.wrlock();
 			await sleep(0);
-			this.posthook();
 		}
 	}
 

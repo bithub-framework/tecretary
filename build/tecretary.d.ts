@@ -13,8 +13,10 @@ export declare class Tecretary<H extends HLike<H>> {
     private H;
     private dataReader;
     private adminTexMap;
+    private period;
     startable: Startable;
     constructor(config: Config, progressReader: ProgressReader, timeline: Timeline, texMap: Map<string, Texchange<H>>, strategy: StrategyLike, H: HStatic<H>);
+    private capture;
     private start;
     private stop;
 }

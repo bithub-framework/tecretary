@@ -7,9 +7,7 @@ const cancellable_1 = require("cancellable");
 const pollerloop_1 = require("pollerloop");
 const startable_1 = require("startable");
 class Timeline {
-    constructor(startTime, pollerEngine, prehook = () => { }, posthook = () => { }) {
-        this.prehook = prehook;
-        this.posthook = posthook;
+    constructor(startTime, pollerEngine) {
         this.lock = new coroutine_locks_1.Rwlock();
         this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
         this.engine = new time_engine_1.TimeEngine(startTime);
@@ -30,12 +28,10 @@ class Timeline {
         await this.lock.wrlock();
         await sleep(0);
         for (const cb of this.engine) {
-            this.prehook();
             cb();
             this.lock.unlock();
             await this.lock.wrlock();
             await sleep(0);
-            this.posthook();
         }
     }
     now() {

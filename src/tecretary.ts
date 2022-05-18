@@ -1,4 +1,4 @@
-import { Startable } from 'startable';
+import { Startable, ReadyState } from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
 import { Texchange } from 'texchange/build/texchange';
@@ -12,12 +12,18 @@ import { makeCheckPoints } from './check-points';
 import { Timeline } from './timeline/timeline';
 import { inject } from 'injektor';
 import { TYPES } from './injection/types';
+import { Period } from './period';
 
 
 
 export class Tecretary<H extends HLike<H>> {
     private dataReader: DataReader<H>;
     private adminTexMap: Map<string, AdminTex<H>>;
+    private period = new Period(
+        this.timeline,
+        this.config.SNAPSHOT_PERIOD,
+        () => this.capture(),
+    );
     public startable = new Startable(
         () => this.start(),
         () => this.stop(),
@@ -62,21 +68,29 @@ export class Tecretary<H extends HLike<H>> {
         );
     }
 
+    private capture(): void {
+        this.progressReader.capture(
+            this.timeline.now(),
+            this.adminTexMap,
+        );
+    }
+
     private async start() {
         await this.progressReader.startable.start(this.startable.starp)
         await this.dataReader.startable.start(this.startable.starp);
         await this.timeline.startable.start(this.startable.starp);
+        await this.period.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
     }
 
     private async stop() {
         try {
-            await this.strategy.startable.stop();
+            if (this.timeline.startable.getReadyState() === ReadyState.STARTED)
+                await this.strategy.startable.stop();
         } finally {
-            this.progressReader.capture(
-                this.timeline.now(),
-                this.adminTexMap,
-            );
+            this.capture();
+            if (this.timeline.startable.getReadyState() === ReadyState.STARTED)
+                await this.period.startable.stop();
             await this.timeline.startable.stop();
             await this.dataReader.startable.stop();
             await this.progressReader.startable.stop();
