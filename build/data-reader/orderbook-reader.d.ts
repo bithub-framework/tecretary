@@ -6,8 +6,8 @@ export declare class OrderbookReader<H extends HLike<H>> {
     private db;
     private H;
     constructor(db: Database.Database, H: HStatic<H>);
-    getDatabaseOrderbooksAfterOrderbookId(marketName: string, adminTex: AdminTex<H>, afterOrderbookId: number): IterableIterator<DatabaseOrderbook<H>>;
-    getDatabaseOrderbooksAfterTime(marketName: string, adminTex: AdminTex<H>, afterTime: number): IterableIterator<DatabaseOrderbook<H>>;
+    getDatabaseOrderbooksAfterId(marketName: string, adminTex: AdminTex<H>, afterOrderbookId: number): Iterable<DatabaseOrderbook<H>>;
+    getDatabaseOrderbooksAfterTime(marketName: string, adminTex: AdminTex<H>, afterTime: number): Iterable<DatabaseOrderbook<H>>;
     private rawBookOrderGroupsFromRawBookOrders;
     private databaseOrderbooksFromRawBookOrderGroups;
     private getRawBookOrdersAfterTime;

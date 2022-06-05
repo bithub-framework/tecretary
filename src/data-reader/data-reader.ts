@@ -1,12 +1,11 @@
 import { Startable } from 'startable';
 import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'secretary-like';
-import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
+import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
+import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
 import { AdminTex } from 'texchange/build/texchange';
 import { OrderbookReader } from './orderbook-reader';
 import { TradeGroupReader } from './trade-group-reader';
-import { ProgressReader } from '../progress-reader';
 import { Config } from '../config';
 
 
@@ -22,7 +21,6 @@ export class DataReader<H extends HLike<H>> {
 
     public constructor(
         config: Config,
-        private progressReader: ProgressReader,
         H: HStatic<H>,
     ) {
         this.db = new Database(
@@ -44,42 +42,52 @@ export class DataReader<H extends HLike<H>> {
         );
     }
 
-    public getDatabaseOrderbooks(
+    public getDatabaseOrderbooksAfterId(
         marketName: string,
         adminTex: AdminTex<H>,
-    ): IterableIterator<DatabaseOrderbook<H>> {
-        const afterOrderbookId = adminTex.getLatestDatabaseOrderbookId();
-        if (afterOrderbookId !== null)
-            return this.orderbookReader.getDatabaseOrderbooksAfterOrderbookId(
-                marketName,
-                adminTex,
-                Number.parseInt(afterOrderbookId),
-            );
-        else
-            return this.orderbookReader.getDatabaseOrderbooksAfterTime(
-                marketName,
-                adminTex,
-                this.progressReader.getTime(),
-            );
+        id: DatabaseOrderbookId,
+    ): Iterable<DatabaseOrderbook<H>> {
+        return this.orderbookReader.getDatabaseOrderbooksAfterId(
+            marketName,
+            adminTex,
+            Number.parseInt(id),
+        );
     }
 
-    public getDatabaseTradeGroups(
+    public getDatabaseOrderbooksAfterTime(
         marketName: string,
         adminTex: AdminTex<H>,
-    ): IterableIterator<DatabaseTrade<H>[]> {
-        const afterTradeId = adminTex.getLatestDatabaseTradeId();
-        if (afterTradeId !== null)
-            return this.tradeGroupReader.getDatabaseTradeGroupsAfterTradeId(
-                marketName,
-                adminTex,
-                Number.parseInt(afterTradeId),
-            );
-        else
-            return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
-                marketName,
-                adminTex,
-                this.progressReader.getTime(),
-            );
+        time: number,
+    ): Iterable<DatabaseOrderbook<H>> {
+        return this.orderbookReader.getDatabaseOrderbooksAfterTime(
+            marketName,
+            adminTex,
+            time,
+        );
+    }
+
+    public getDatabaseTradeGroupsAfterId(
+        marketName: string,
+        adminTex: AdminTex<H>,
+        id: DatabaseTradeId,
+    ): Iterable<DatabaseTrade<H>[]> {
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(
+            marketName,
+            adminTex,
+            Number.parseInt(id),
+        );
+    }
+
+    public getDatabaseTradeGroupsAfterTime(
+        marketName: string,
+        adminTex: AdminTex<H>,
+        time: number,
+    ): Iterable<DatabaseTrade<H>[]> {
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
+            marketName,
+            adminTex,
+            time,
+        );
     }
 
     private async start(): Promise<void> { }

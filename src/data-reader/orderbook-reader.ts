@@ -15,11 +15,11 @@ export class OrderbookReader<H extends HLike<H>> {
 		private H: HStatic<H>,
 	) { }
 
-	public getDatabaseOrderbooksAfterOrderbookId(
+	public getDatabaseOrderbooksAfterId(
 		marketName: string,
 		adminTex: AdminTex<H>,
 		afterOrderbookId: number,
-	): IterableIterator<DatabaseOrderbook<H>> {
+	): Iterable<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
 			marketName,
 			afterOrderbookId,
@@ -41,7 +41,7 @@ export class OrderbookReader<H extends HLike<H>> {
 		marketName: string,
 		adminTex: AdminTex<H>,
 		afterTime: number,
-	): IterableIterator<DatabaseOrderbook<H>> {
+	): Iterable<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterTime(
 			marketName,
 			afterTime,
@@ -51,17 +51,17 @@ export class OrderbookReader<H extends HLike<H>> {
 			rawBookOrders,
 		);
 
-		const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
+		const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
 			rawBookOrderGroups,
 			adminTex,
 		);
 
-		return datavaseOrderbooks;
+		return databaseOrderbooks;
 	}
 
 	private *rawBookOrderGroupsFromRawBookOrders(
-		rawBookOrders: IterableIterator<RawBookOrder>,
-	): Generator<RawBookOrder[], void> {
+		rawBookOrders: Iterable<RawBookOrder>,
+	): Iterable<RawBookOrder[]> {
 		let $group: RawBookOrder[] = [];
 		for (const rawBookOrder of rawBookOrders) {
 			if ($group.length > 0 && rawBookOrder.id !== $group[0].id) {
@@ -75,9 +75,9 @@ export class OrderbookReader<H extends HLike<H>> {
 	}
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
-		groups: IterableIterator<RawBookOrder[]>,
+		groups: Iterable<RawBookOrder[]>,
 		adminTex: AdminTex<H>,
-	): Generator<DatabaseOrderbook<H>, void> {
+	): Iterable<DatabaseOrderbook<H>> {
 		for (const group of groups) {
 			const asks: BookOrder<H>[] = group
 				.filter(order => order.side === Side.ASK)
@@ -105,7 +105,7 @@ export class OrderbookReader<H extends HLike<H>> {
 	private getRawBookOrdersAfterTime(
 		marketName: string,
 		afterTime: number,
-	): IterableIterator<RawBookOrder> {
+	): Iterable<RawBookOrder> {
 		return this.db.prepare(`
             SELECT
                 markets.name AS marketName
@@ -129,7 +129,7 @@ export class OrderbookReader<H extends HLike<H>> {
 	private getRawBookOrdersAfterOrderbookId(
 		marketName: string,
 		afterOrderbookId: number,
-	): IterableIterator<RawBookOrder> {
+	): Iterable<RawBookOrder> {
 		const afterTime: number = this.db.prepare(`
             SELECT time
             FROM orderbooks, markets

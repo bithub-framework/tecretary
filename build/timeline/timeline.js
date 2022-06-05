@@ -6,11 +6,11 @@ const time_engine_1 = require("./time-engine");
 const cancellable_1 = require("cancellable");
 const pollerloop_1 = require("pollerloop");
 const startable_1 = require("startable");
-class Timeline {
+class Timeline extends time_engine_1.TimeEngine {
     constructor(startTime, pollerEngine) {
+        super(startTime);
         this.lock = new coroutine_locks_1.Rwlock();
         this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
-        this.engine = new time_engine_1.TimeEngine(startTime);
         this.poller = new pollerloop_1.Pollerloop(sleep => this.loop(sleep), pollerEngine);
     }
     async start() {
@@ -21,24 +21,18 @@ class Timeline {
         this.lock.throw(new pollerloop_1.LoopStopped('Loop stopped.'));
         await p;
     }
-    pushSortedCheckPoints(sorted) {
-        this.engine.pushSortedCheckPoints(sorted);
-    }
     async loop(sleep) {
         await this.lock.wrlock();
         await sleep(0);
-        for (const cb of this.engine) {
+        for (const cb of this) {
             cb();
             this.lock.unlock();
             await this.lock.wrlock();
             await sleep(0);
         }
     }
-    now() {
-        return this.engine.now();
-    }
     sleep(ms) {
-        return new cancellable_1.Cancellable(ms, this.engine);
+        return new cancellable_1.Cancellable(ms, this);
     }
     async escape(p) {
         await this.lock.rdlock();

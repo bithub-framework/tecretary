@@ -1,19 +1,19 @@
 import { Startable } from 'startable';
 import { HStatic, HLike } from 'secretary-like';
-import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
+import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
+import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
 import { AdminTex } from 'texchange/build/texchange';
-import { ProgressReader } from '../progress-reader';
 import { Config } from '../config';
 export declare class DataReader<H extends HLike<H>> {
-    private progressReader;
     private db;
     startable: Startable;
     private orderbookReader;
     private tradeGroupReader;
-    constructor(config: Config, progressReader: ProgressReader, H: HStatic<H>);
-    getDatabaseOrderbooks(marketName: string, adminTex: AdminTex<H>): IterableIterator<DatabaseOrderbook<H>>;
-    getDatabaseTradeGroups(marketName: string, adminTex: AdminTex<H>): IterableIterator<DatabaseTrade<H>[]>;
+    constructor(config: Config, H: HStatic<H>);
+    getDatabaseOrderbooksAfterId(marketName: string, adminTex: AdminTex<H>, id: DatabaseOrderbookId): Iterable<DatabaseOrderbook<H>>;
+    getDatabaseOrderbooksAfterTime(marketName: string, adminTex: AdminTex<H>, time: number): Iterable<DatabaseOrderbook<H>>;
+    getDatabaseTradeGroupsAfterId(marketName: string, adminTex: AdminTex<H>, id: DatabaseTradeId): Iterable<DatabaseTrade<H>[]>;
+    getDatabaseTradeGroupsAfterTime(marketName: string, adminTex: AdminTex<H>, time: number): Iterable<DatabaseTrade<H>[]>;
     private start;
     private stop;
 }

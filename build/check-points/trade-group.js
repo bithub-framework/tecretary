@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkPointsFromDatabaseTradeGroups = void 0;
-function* checkPointsFromDatabaseTradeGroups(groups, adminTex) {
+exports.makeTradeGroupCheckPoints = void 0;
+function* makeTradeGroupCheckPoints(groups, adminTex) {
     for (const group of groups) {
         yield {
             cb: () => {
@@ -11,5 +11,5 @@ function* checkPointsFromDatabaseTradeGroups(groups, adminTex) {
         };
     }
 }
-exports.checkPointsFromDatabaseTradeGroups = checkPointsFromDatabaseTradeGroups;
+exports.makeTradeGroupCheckPoints = makeTradeGroupCheckPoints;
 //# sourceMappingURL=trade-group.js.map

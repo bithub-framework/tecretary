@@ -11,11 +11,11 @@ export class TradeGroupReader<H extends HLike<H>> {
 		private H: HStatic<H>,
 	) { }
 
-	public getDatabaseTradeGroupsAfterTradeId(
+	public getDatabaseTradeGroupsAfterId(
 		marketName: string,
 		adminTex: AdminTex<H>,
 		afterTradeId: number,
-	): IterableIterator<DatabaseTrade<H>[]> {
+	): Iterable<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTradeId(
 			marketName,
 			afterTradeId,
@@ -37,7 +37,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 		marketName: string,
 		adminTex: AdminTex<H>,
 		afterTime: number,
-	): IterableIterator<DatabaseTrade<H>[]> {
+	): Iterable<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTime(
 			marketName,
 			afterTime,
@@ -56,8 +56,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 	}
 
 	private *databaseTradeGroupsFromDatabaseTrades(
-		trades: IterableIterator<DatabaseTrade<H>>,
-	): Generator<DatabaseTrade<H>[], void> {
+		trades: Iterable<DatabaseTrade<H>>,
+	): Iterable<DatabaseTrade<H>[]> {
 		let $group: DatabaseTrade<H>[] = [];
 		for (const trade of trades) {
 			if (
@@ -74,9 +74,9 @@ export class TradeGroupReader<H extends HLike<H>> {
 	}
 
 	private *databaseTradesFromRawTrades(
-		rawTrades: IterableIterator<RawTrade>,
+		rawTrades: Iterable<RawTrade>,
 		adminTex: AdminTex<H>,
-	): Generator<DatabaseTrade<H>, void> {
+	): Iterable<DatabaseTrade<H>> {
 		for (const rawTrade of rawTrades) {
 			yield {
 				price: new this.H(rawTrade.price).round(adminTex.config.market.PRICE_DP),
@@ -91,7 +91,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 	private getRawTradesAfterTime(
 		marketName: string,
 		afterTime: number,
-	): IterableIterator<RawTrade> {
+	): Iterable<RawTrade> {
 		return this.db.prepare(`
             SELECT
                 name AS marketName,
@@ -113,7 +113,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 	private getRawTradesAfterTradeId(
 		marketName: string,
 		afterTradeId: number,
-	): IterableIterator<RawTrade> {
+	): Iterable<RawTrade> {
 		const afterTime: number = this.db.prepare(`
             SELECT time
             FROM trades, markets

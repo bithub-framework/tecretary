@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkPointsFromDatabaseOrderbooks = void 0;
-function* checkPointsFromDatabaseOrderbooks(orderbooks, adminTex) {
+exports.makeOrderbookCheckPoints = void 0;
+function* makeOrderbookCheckPoints(orderbooks, adminTex) {
     for (const orderbook of orderbooks) {
         yield {
             cb: () => {
@@ -11,5 +11,5 @@ function* checkPointsFromDatabaseOrderbooks(orderbooks, adminTex) {
         };
     }
 }
-exports.checkPointsFromDatabaseOrderbooks = checkPointsFromDatabaseOrderbooks;
+exports.makeOrderbookCheckPoints = makeOrderbookCheckPoints;
 //# sourceMappingURL=orderbook.js.map

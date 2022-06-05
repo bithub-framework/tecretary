@@ -4,10 +4,10 @@ import { AdminTex } from 'texchange/build/texchange';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
 
 
-export function* checkPointsFromDatabaseOrderbooks<H extends HLike<H>>(
-	orderbooks: IterableIterator<DatabaseOrderbook<H>>,
+export function* makeOrderbookCheckPoints<H extends HLike<H>>(
+	orderbooks: Iterable<DatabaseOrderbook<H>>,
 	adminTex: AdminTex<H>,
-): Generator<CheckPoint, void> {
+): Iterable<CheckPoint> {
 	for (const orderbook of orderbooks) {
 		yield {
 			cb: () => {

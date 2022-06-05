@@ -1,5 +1,5 @@
 import { Rwlock } from 'coroutine-locks';
-import { TimeEngine, CheckPoint } from './time-engine';
+import { TimeEngine } from './time-engine';
 import { Cancellable } from 'cancellable';
 import { TimeEngineLike } from 'time-engine-like';
 import { Pollerloop, Sleep, LoopStopped } from 'pollerloop';
@@ -8,8 +8,7 @@ import { Startable } from 'startable';
 
 
 
-export class Timeline implements TimelineLike {
-	private engine: TimeEngine;
+export class Timeline extends TimeEngine implements TimelineLike {
 	private lock = new Rwlock();
 	private poller: Pollerloop;
 	public startable = new Startable(
@@ -21,9 +20,7 @@ export class Timeline implements TimelineLike {
 		startTime: number,
 		pollerEngine: TimeEngineLike,
 	) {
-		this.engine = new TimeEngine(
-			startTime,
-		);
+		super(startTime);
 
 		this.poller = new Pollerloop(
 			sleep => this.loop(sleep),
@@ -41,16 +38,10 @@ export class Timeline implements TimelineLike {
 		await p;
 	}
 
-	public pushSortedCheckPoints(
-		sorted: Iterator<CheckPoint>,
-	): void {
-		this.engine.pushSortedCheckPoints(sorted);
-	}
-
 	private async loop(sleep: Sleep) {
 		await this.lock.wrlock();
 		await sleep(0);
-		for (const cb of this.engine) {
+		for (const cb of this) {
 			cb();
 			this.lock.unlock();
 			await this.lock.wrlock();
@@ -58,14 +49,10 @@ export class Timeline implements TimelineLike {
 		}
 	}
 
-	public now(): number {
-		return this.engine.now();
-	}
-
 	public sleep(ms: number): Cancellable {
 		return new Cancellable(
 			ms,
-			this.engine,
+			this,
 		);
 	}
 

@@ -7,7 +7,7 @@ class OrderbookReader {
         this.db = db;
         this.H = H;
     }
-    getDatabaseOrderbooksAfterOrderbookId(marketName, adminTex, afterOrderbookId) {
+    getDatabaseOrderbooksAfterId(marketName, adminTex, afterOrderbookId) {
         const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
         const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
@@ -16,8 +16,8 @@ class OrderbookReader {
     getDatabaseOrderbooksAfterTime(marketName, adminTex, afterTime) {
         const rawBookOrders = this.getRawBookOrdersAfterTime(marketName, afterTime);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
-        const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
-        return datavaseOrderbooks;
+        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
+        return databaseOrderbooks;
     }
     *rawBookOrderGroupsFromRawBookOrders(rawBookOrders) {
         let $group = [];

@@ -8,22 +8,22 @@ import {
     HLike, HStatic,
     StrategyLike,
 } from 'secretary-like';
-import { makeCheckPoints } from './check-points';
+import {
+    makePeriodicCheckPoints,
+    makeOrderbookCheckPoints,
+    makeTradeGroupCheckPoints,
+} from './check-points';
 import { Timeline } from './timeline/timeline';
 import { inject } from 'injektor';
 import { TYPES } from './injection/types';
-import { Period } from './period';
+import { Shifterator } from 'shiftable';
+import assert = require('assert');
 
 
 
 export class Tecretary<H extends HLike<H>> {
     private dataReader: DataReader<H>;
     private adminTexMap: Map<string, AdminTex<H>>;
-    private period = new Period(
-        this.timeline,
-        this.config.SNAPSHOT_PERIOD,
-        () => this.capture(),
-    );
     public startable = new Startable(
         () => this.start(),
         () => this.stop(),
@@ -56,14 +56,44 @@ export class Tecretary<H extends HLike<H>> {
 
         this.dataReader = new DataReader(
             this.config,
-            this.progressReader,
             this.H,
         );
 
-        this.timeline.pushSortedCheckPoints(
-            makeCheckPoints<H>(
-                this.dataReader,
-                this.adminTexMap,
+        for (const [marketName, adminTex] of this.adminTexMap) {
+            const bookId = adminTex.getLatestDatabaseOrderbookId();
+            const orderbooks = bookId !== null
+                ? this.dataReader.getDatabaseOrderbooksAfterId(marketName, adminTex, bookId)
+                : this.dataReader.getDatabaseOrderbooksAfterTime(marketName, adminTex, this.progressReader.getTime());
+            this.timeline.merge(
+                Shifterator.fromIterable(
+                    makeOrderbookCheckPoints<H>(
+                        orderbooks,
+                        adminTex,
+                    ),
+                ),
+            );
+
+            const tradeId = adminTex.getLatestDatabaseTradeId();
+            const tradeGroups = tradeId !== null
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(marketName, adminTex, tradeId)
+                : this.dataReader.getDatabaseTradeGroupsAfterTime(marketName, adminTex, this.progressReader.getTime());
+            this.timeline.merge(
+                Shifterator.fromIterable(
+                    makeTradeGroupCheckPoints<H>(
+                        tradeGroups,
+                        adminTex,
+                    ),
+                ),
+            );
+        }
+
+        this.timeline.affiliate(
+            Shifterator.fromIterable(
+                makePeriodicCheckPoints(
+                    this.timeline.now(),
+                    this.config.SNAPSHOT_PERIOD,
+                    () => this.capture(),
+                ),
             ),
         );
     }
@@ -79,18 +109,15 @@ export class Tecretary<H extends HLike<H>> {
         await this.progressReader.startable.start(this.startable.starp)
         await this.dataReader.startable.start(this.startable.starp);
         await this.timeline.startable.start(this.startable.starp);
-        await this.period.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
     }
 
     private async stop() {
         try {
-            if (this.timeline.startable.getReadyState() === ReadyState.STARTED)
-                await this.strategy.startable.stop();
+            assert(this.timeline.startable.getReadyState() === ReadyState.STARTED);
+            await this.strategy.startable.stop();
         } finally {
             this.capture();
-            if (this.timeline.startable.getReadyState() === ReadyState.STARTED)
-                await this.period.startable.stop();
             await this.timeline.startable.stop();
             await this.dataReader.startable.stop();
             await this.progressReader.startable.stop();

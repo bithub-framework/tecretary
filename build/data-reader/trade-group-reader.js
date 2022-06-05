@@ -6,7 +6,7 @@ class TradeGroupReader {
         this.db = db;
         this.H = H;
     }
-    getDatabaseTradeGroupsAfterTradeId(marketName, adminTex, afterTradeId) {
+    getDatabaseTradeGroupsAfterId(marketName, adminTex, afterTradeId) {
         const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId);
         const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
