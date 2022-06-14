@@ -16,25 +16,23 @@ import assert = require('assert');
 
 export abstract class Container<H extends HLike<H>> extends BaseContainer {
 
-	public abstract [TYPES.Config]: () => Config;
+	public abstract [TYPES.config]: () => Config;
 
-	public [TYPES.ProgressReader] = this.rcs<ProgressReader>(ProgressReader);
+	public [TYPES.progressReader] = this.rcs<ProgressReader>(ProgressReader);
 
-	public [TYPES.Timeline] = this.rfs<Timeline>(() => {
-		const progressReader = this[TYPES.ProgressReader]();
+	public [TYPES.timeline] = this.rfs<Timeline>(() => {
+		const progressReader = this[TYPES.progressReader]();
 		return new Timeline(
 			progressReader.getTime(),
 			new NodeTimeEngine(),
 		);
 	});
 
-	public [TYPES.TimelineLike] = () => this[TYPES.Timeline]();
+	public abstract [TYPES.texchangeMap]: () => Map<string, Texchange<H>>;
 
-	public abstract [TYPES.TexchangeMap]: () => Map<string, Texchange<H>>;
+	public [TYPES.context] = this.rcs<Context<H>>(Context);
 
-	public [TYPES.Context] = this.rcs<Context<H>>(Context);
+	public abstract [TYPES.strategy]: () => StrategyLike;
 
-	public abstract [TYPES.StrategyLike]: () => StrategyLike;
-
-	public [TYPES.Tecretary] = this.rcs<Tecretary<H>>(Tecretary);
+	public [TYPES.tecretary] = this.rcs<Tecretary<H>>(Tecretary);
 }

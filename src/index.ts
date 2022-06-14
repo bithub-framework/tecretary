@@ -1,2 +1,2 @@
-export * from './config';
-export * from './context';
+export { Container as BaseContainer } from './injection/container';
+export { TYPES } from './injection/types';

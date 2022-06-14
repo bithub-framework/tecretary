@@ -69,13 +69,13 @@ let Tecretary = class Tecretary {
     }
 };
 Tecretary = __decorate([
-    __param(0, (0, injektor_1.inject)(types_1.TYPES.Config)),
-    __param(1, (0, injektor_1.inject)(types_1.TYPES.ProgressReader)),
-    __param(2, (0, injektor_1.inject)(types_1.TYPES.Timeline)),
-    __param(3, (0, injektor_1.inject)(types_1.TYPES.TexchangeMap)),
-    __param(4, (0, injektor_1.inject)(types_1.TYPES.StrategyLike)),
-    __param(5, (0, injektor_1.inject)(types_1.TYPES.HStatic)),
-    __param(6, (0, injektor_1.inject)(types_1.TYPES.DataReader))
+    __param(0, (0, injektor_1.inject)(types_1.TYPES.config)),
+    __param(1, (0, injektor_1.inject)(types_1.TYPES.progressReader)),
+    __param(2, (0, injektor_1.inject)(types_1.TYPES.timeline)),
+    __param(3, (0, injektor_1.inject)(types_1.TYPES.texchangeMap)),
+    __param(4, (0, injektor_1.inject)(types_1.TYPES.strategy)),
+    __param(5, (0, injektor_1.inject)(types_1.TYPES.hStatic)),
+    __param(6, (0, injektor_1.inject)(types_1.TYPES.dataReader))
 ], Tecretary);
 exports.Tecretary = Tecretary;
 //# sourceMappingURL=tecretary.js.map

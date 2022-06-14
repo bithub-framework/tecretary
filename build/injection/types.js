@@ -4,18 +4,16 @@ exports.TYPES = void 0;
 class TYPES {
 }
 exports.TYPES = TYPES;
-TYPES.Config = Symbol();
-TYPES.ProgressReader = Symbol();
+TYPES.config = Symbol();
+TYPES.progressReader = Symbol();
 TYPES.progressFilePath = Symbol();
-TYPES.DataReader = Symbol();
+TYPES.dataReader = Symbol();
 TYPES.dataFilePath = Symbol();
 TYPES.startTime = Symbol();
-TYPES.pollerEngine = Symbol();
-TYPES.TexchangeMap = Symbol();
-TYPES.Timeline = Symbol();
-TYPES.TimelineLike = Symbol();
-TYPES.Context = Symbol();
-TYPES.StrategyLike = Symbol();
-TYPES.HStatic = Symbol();
-TYPES.Tecretary = Symbol();
+TYPES.texchangeMap = Symbol();
+TYPES.timeline = Symbol();
+TYPES.context = Symbol();
+TYPES.strategy = Symbol();
+TYPES.hStatic = Symbol();
+TYPES.tecretary = Symbol();
 //# sourceMappingURL=types.js.map

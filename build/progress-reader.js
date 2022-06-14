@@ -107,7 +107,7 @@ let ProgressReader = class ProgressReader {
     }
 };
 ProgressReader = __decorate([
-    __param(0, (0, injektor_1.inject)(types_1.TYPES.Config)),
+    __param(0, (0, injektor_1.inject)(types_1.TYPES.config)),
     __param(1, (0, injektor_1.inject)(types_1.TYPES.progressFilePath)),
     __param(2, (0, injektor_1.inject)(types_1.TYPES.startTime))
 ], ProgressReader);

@@ -17,7 +17,7 @@ export class ProgressReader {
 	);
 
 	public constructor(
-		@inject(TYPES.Config)
+		@inject(TYPES.config)
 		private config: Config,
 		@inject(TYPES.progressFilePath)
 		filePath: string,

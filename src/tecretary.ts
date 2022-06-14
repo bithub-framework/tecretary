@@ -29,19 +29,19 @@ export class Tecretary<H extends HLike<H>> {
     );
 
     public constructor(
-        @inject(TYPES.Config)
+        @inject(TYPES.config)
         private config: Config,
-        @inject(TYPES.ProgressReader)
+        @inject(TYPES.progressReader)
         private progressReader: ProgressReader,
-        @inject(TYPES.Timeline)
+        @inject(TYPES.timeline)
         private timeline: Timeline,
-        @inject(TYPES.TexchangeMap)
+        @inject(TYPES.texchangeMap)
         private texchangeMap: Map<string, Texchange<H>>,
-        @inject(TYPES.StrategyLike)
+        @inject(TYPES.strategy)
         private strategy: StrategyLike,
-        @inject(TYPES.HStatic)
+        @inject(TYPES.hStatic)
         private H: HStatic<H>,
-        @inject(TYPES.DataReader)
+        @inject(TYPES.dataReader)
         private dataReader: DataReader<H>,
     ) {
         this.adminFacadeMap = new Map(

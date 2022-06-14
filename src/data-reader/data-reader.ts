@@ -24,7 +24,7 @@ export class DataReader<H extends HLike<H>> {
     public constructor(
         @inject(TYPES.dataFilePath)
         filePath: string,
-        @inject(TYPES.HStatic)
+        @inject(TYPES.hStatic)
         H: HStatic<H>,
     ) {
         this.db = new Database(

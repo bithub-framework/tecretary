@@ -31,10 +31,10 @@ let Context = class Context {
     }
 };
 Context = __decorate([
-    __param(0, (0, injektor_1.inject)(types_1.TYPES.Config)),
-    __param(1, (0, injektor_1.inject)(types_1.TYPES.TexchangeMap)),
-    __param(2, (0, injektor_1.inject)(types_1.TYPES.TimelineLike)),
-    __param(3, (0, injektor_1.inject)(types_1.TYPES.ProgressReader))
+    __param(0, (0, injektor_1.inject)(types_1.TYPES.config)),
+    __param(1, (0, injektor_1.inject)(types_1.TYPES.texchangeMap)),
+    __param(2, (0, injektor_1.inject)(types_1.TYPES.timeline)),
+    __param(3, (0, injektor_1.inject)(types_1.TYPES.progressReader))
 ], Context);
 exports.Context = Context;
 class ContextMarket {

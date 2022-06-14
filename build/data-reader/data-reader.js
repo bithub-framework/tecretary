@@ -45,7 +45,7 @@ let DataReader = class DataReader {
 };
 DataReader = __decorate([
     __param(0, (0, injektor_1.inject)(types_1.TYPES.dataFilePath)),
-    __param(1, (0, injektor_1.inject)(types_1.TYPES.HStatic))
+    __param(1, (0, injektor_1.inject)(types_1.TYPES.hStatic))
 ], DataReader);
 exports.DataReader = DataReader;
 //# sourceMappingURL=data-reader.js.map

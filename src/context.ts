@@ -26,13 +26,13 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
     [marketId: number]: MarketLike<H>;
 
     constructor(
-        @inject(TYPES.Config)
+        @inject(TYPES.config)
         config: Config,
-        @inject(TYPES.TexchangeMap)
+        @inject(TYPES.texchangeMap)
         texchangeMap: Map<string, Texchange<H>>,
-        @inject(TYPES.TimelineLike)
+        @inject(TYPES.timeline)
         public timeline: TimelineLike,
-        @inject(TYPES.ProgressReader)
+        @inject(TYPES.progressReader)
         private progressReader: ProgressReader,
     ) {
         const texchanges: Texchange<H>[] = config.marketNames.map(name => {

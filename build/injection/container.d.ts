@@ -8,12 +8,11 @@ import { Context } from '../context';
 import { Texchange } from 'texchange/build/texchange/texchange';
 import { Tecretary } from '../tecretary';
 export declare abstract class Container<H extends HLike<H>> extends BaseContainer {
-    abstract [TYPES.Config]: () => Config;
-    [TYPES.ProgressReader]: () => ProgressReader;
-    [TYPES.Timeline]: () => Timeline;
-    [TYPES.TimelineLike]: () => Timeline;
-    abstract [TYPES.TexchangeMap]: () => Map<string, Texchange<H>>;
-    [TYPES.Context]: () => Context<H>;
-    abstract [TYPES.StrategyLike]: () => StrategyLike;
-    [TYPES.Tecretary]: () => Tecretary<H>;
+    abstract [TYPES.config]: () => Config;
+    [TYPES.progressReader]: () => ProgressReader;
+    [TYPES.timeline]: () => Timeline;
+    abstract [TYPES.texchangeMap]: () => Map<string, Texchange<H>>;
+    [TYPES.context]: () => Context<H>;
+    abstract [TYPES.strategy]: () => StrategyLike;
+    [TYPES.tecretary]: () => Tecretary<H>;
 }
