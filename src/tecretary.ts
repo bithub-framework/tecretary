@@ -1,8 +1,8 @@
 import { Startable, ReadyState } from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
-import { Texchange } from 'texchange/build/texchange';
-import { AdminTex } from 'texchange/build/texchange';
+import { Texchange } from 'texchange/build/texchange/texchange';
+import { AdminFacade } from 'texchange/build/facades.d/admin';
 import { Config } from './config';
 import {
     HLike, HStatic,
@@ -14,7 +14,7 @@ import {
     makeTradeGroupCheckPoints,
 } from './check-points';
 import { Timeline } from './timeline/timeline';
-import { inject } from 'injektor';
+import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { Shifterator } from 'shiftable';
 import assert = require('assert');
@@ -22,9 +22,8 @@ import assert = require('assert');
 
 
 export class Tecretary<H extends HLike<H>> {
-    private dataReader: DataReader<H>;
-    private adminTexMap: Map<string, AdminTex<H>>;
-    public startable = new Startable(
+    private adminFacadeMap: Map<string, AdminFacade<H>>;
+    public startable = Startable.create(
         () => this.start(),
         () => this.stop(),
     );
@@ -36,30 +35,27 @@ export class Tecretary<H extends HLike<H>> {
         private progressReader: ProgressReader,
         @inject(TYPES.Timeline)
         private timeline: Timeline,
-        @inject(TYPES.TexMap)
-        private texMap: Map<string, Texchange<H>>,
+        @inject(TYPES.TexchangeMap)
+        private texchangeMap: Map<string, Texchange<H>>,
         @inject(TYPES.StrategyLike)
         private strategy: StrategyLike,
         @inject(TYPES.HStatic)
         private H: HStatic<H>,
+        @inject(TYPES.DataReader)
+        private dataReader: DataReader<H>,
     ) {
-        this.adminTexMap = new Map(
-            [...this.texMap].map(
-                ([name, tex]) => [name, tex.admin],
+        this.adminFacadeMap = new Map(
+            [...this.texchangeMap].map(
+                ([name, texchange]) => [name, texchange.getAdminFacade()],
             ),
         );
 
-        for (const [name, tex] of this.adminTexMap) {
+        for (const [name, tex] of this.adminFacadeMap) {
             const snapshot = this.progressReader.getSnapshot(name);
             if (snapshot !== null) tex.restore(snapshot);
         }
 
-        this.dataReader = new DataReader(
-            this.config,
-            this.H,
-        );
-
-        for (const [marketName, adminTex] of this.adminTexMap) {
+        for (const [marketName, adminTex] of this.adminFacadeMap) {
             const bookId = adminTex.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
                 ? this.dataReader.getDatabaseOrderbooksAfterId(marketName, adminTex, bookId)
@@ -91,7 +87,7 @@ export class Tecretary<H extends HLike<H>> {
             Shifterator.fromIterable(
                 makePeriodicCheckPoints(
                     this.timeline.now(),
-                    this.config.SNAPSHOT_PERIOD,
+                    this.config.snapshotPeriod,
                     () => this.capture(),
                 ),
             ),
@@ -101,7 +97,7 @@ export class Tecretary<H extends HLike<H>> {
     private capture(): void {
         this.progressReader.capture(
             this.timeline.now(),
-            this.adminTexMap,
+            this.adminFacadeMap,
         );
     }
 

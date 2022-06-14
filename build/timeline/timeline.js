@@ -7,10 +7,10 @@ const cancellable_1 = require("cancellable");
 const pollerloop_1 = require("pollerloop");
 const startable_1 = require("startable");
 class Timeline extends time_engine_1.TimeEngine {
-    constructor(startTime, pollerEngine) {
-        super(startTime);
+    constructor(time, pollerEngine) {
+        super(time);
         this.lock = new coroutine_locks_1.Rwlock();
-        this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
+        this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
         this.poller = new pollerloop_1.Pollerloop(sleep => this.loop(sleep), pollerEngine);
     }
     async start() {

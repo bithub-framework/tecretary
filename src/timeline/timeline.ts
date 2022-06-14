@@ -7,20 +7,19 @@ import { TimelineLike } from 'secretary-like';
 import { Startable } from 'startable';
 
 
-
 export class Timeline extends TimeEngine implements TimelineLike {
 	private lock = new Rwlock();
 	private poller: Pollerloop;
-	public startable = new Startable(
+	public startable = Startable.create(
 		() => this.start(),
 		() => this.stop(),
 	);
 
 	public constructor(
-		startTime: number,
+		time: number,
 		pollerEngine: TimeEngineLike,
 	) {
-		super(startTime);
+		super(time);
 
 		this.poller = new Pollerloop(
 			sleep => this.loop(sleep),

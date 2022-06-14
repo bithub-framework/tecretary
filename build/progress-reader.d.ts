@@ -1,13 +1,13 @@
 import { Config } from './config';
-import { Models } from 'texchange/build/models';
-import { Startable } from 'startable';
-import { AdminTex } from 'texchange/build/texchange';
+import { Models } from 'texchange/build/texchange/models';
+import { AdminFacade } from 'texchange/build/facades.d/admin';
 export declare class ProgressReader {
     private config;
+    private startTime;
     private db;
-    startable: Startable;
-    constructor(config: Config);
-    capture(time: number, adminTexMap: Map<string, AdminTex<any>>): void;
+    startable: import("startable/build/startable").Startable;
+    constructor(config: Config, filePath: string, startTime: number);
+    capture(time: number, adminTexMap: Map<string, AdminFacade<any>>): void;
     private lock;
     private unlock;
     getTime(): number;

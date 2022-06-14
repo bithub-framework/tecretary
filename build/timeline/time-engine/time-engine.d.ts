@@ -1,10 +1,10 @@
 import { TimeEngineLike, TimeoutLike } from 'time-engine-like';
-import { PointerLike } from '@zimtsui/binary-heap';
+import { Node } from '@zimtsui/binary-heap';
 import { Shiftable } from 'shiftable';
 import { CheckPoint } from './check-point';
 export declare class Timeout implements TimeoutLike {
-    private pointer;
-    constructor(pointer: PointerLike<CheckPoint>);
+    private node;
+    constructor(node: Node<CheckPoint>);
     clear(): void;
 }
 export declare class TimeEngine implements TimeEngineLike, Iterable<() => void> {

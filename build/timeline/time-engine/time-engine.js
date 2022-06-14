@@ -4,12 +4,14 @@ exports.TimeEngine = exports.Timeout = void 0;
 const binary_heap_1 = require("@zimtsui/binary-heap");
 const shiftable_1 = require("shiftable");
 const cmp_1 = require("./cmp");
+class ShiftableHeap extends binary_heap_1.Heap {
+}
 class Timeout {
-    constructor(pointer) {
-        this.pointer = pointer;
+    constructor(node) {
+        this.node = node;
     }
     clear() {
-        this.pointer.remove();
+        this.node.remove();
     }
 }
 exports.Timeout = Timeout;

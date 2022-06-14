@@ -1,9 +1,9 @@
 import Database = require('better-sqlite3');
 import { Config } from './config';
-import { Models } from 'texchange/build/models';
+import { Models } from 'texchange/build/texchange/models';
 import { Startable } from 'startable';
-import { AdminTex } from 'texchange/build/texchange';
-import { inject } from 'injektor';
+import { AdminFacade } from 'texchange/build/facades.d/admin';
+import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import assert = require('assert');
 
@@ -11,7 +11,7 @@ import assert = require('assert');
 
 export class ProgressReader {
 	private db: Database.Database;
-	public startable = new Startable(
+	public startable = Startable.create(
 		() => this.start(),
 		() => this.stop(),
 	);
@@ -19,9 +19,13 @@ export class ProgressReader {
 	public constructor(
 		@inject(TYPES.Config)
 		private config: Config,
+		@inject(TYPES.progressFilePath)
+		filePath: string,
+		@inject(TYPES.startTime)
+		private startTime: number,
 	) {
 		this.db = new Database(
-			config.PROJECTS_DB_FILE_PATH,
+			filePath,
 			{
 				fileMustExist: true,
 			},
@@ -31,7 +35,7 @@ export class ProgressReader {
 
 	public capture(
 		time: number,
-		adminTexMap: Map<string, AdminTex<any>>,
+		adminTexMap: Map<string, AdminFacade<any>>,
 	): void {
 		this.db.transaction(() => {
 			this.setTime(time);
@@ -81,7 +85,7 @@ export class ProgressReader {
 			this.config.projectName,
 		);
 		if (typeof result !== 'undefined') return result.time;
-		return this.config.startTime;
+		return this.startTime;
 	}
 
 	private setTime(time: number): void {
@@ -91,7 +95,7 @@ export class ProgressReader {
 			VALUES (?, ?)
 		;`).run(
 			this.config.projectName,
-			this.config.startTime,
+			time,
 		);
 	}
 

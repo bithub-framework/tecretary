@@ -10,11 +10,14 @@ import {
     OpenOrder,
     Amendment,
 } from 'secretary-like';
-import { UserTex } from 'texchange/build/texchange';
-import { AccountLatency } from 'texchange/build/facades.d/latency/account'
-import { MarketLatency } from 'texchange/build/facades.d/latency/market';
+import { UserMarketFacade } from 'texchange/build/facades.d/user-market';
+import { UserAccountFacade } from 'texchange/build/facades.d/user-account';
+import { Texchange } from 'texchange/build/texchange/texchange';
 import { ProgressReader } from './progress-reader';
-import { inject } from 'injektor';
+import { Config } from './config';
+import assert = require('assert');
+
+import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 
 
@@ -23,17 +26,25 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
     [marketId: number]: MarketLike<H>;
 
     constructor(
-        @inject(TYPES.UserTexes)
-        userTexes: UserTex<H>[],
+        @inject(TYPES.Config)
+        config: Config,
+        @inject(TYPES.TexchangeMap)
+        texchangeMap: Map<string, Texchange<H>>,
         @inject(TYPES.TimelineLike)
         public timeline: TimelineLike,
         @inject(TYPES.ProgressReader)
         private progressReader: ProgressReader,
     ) {
-        for (let i = 0; i < userTexes.length; i++) {
+        const texchanges: Texchange<H>[] = config.marketNames.map(name => {
+            const texchange = texchangeMap.get(name);
+            assert(typeof texchange !== 'undefined');
+            return texchange;
+        });
+
+        for (let i = 0; i < texchanges.length; i++) {
             this[i] = new ContextMarket(
-                userTexes[i].market,
-                userTexes[i].account,
+                texchanges[i].getUserMarketFacade(),
+                texchanges[i].getUserAccountFacade(),
             );
         }
     }
@@ -53,8 +64,8 @@ class ContextMarket<H extends HLike<H>> implements MarketLike<H> {
     public events = this.market.events;
 
     constructor(
-        private market: MarketLatency<H>,
-        account: AccountLatency<H>,
+        private market: UserMarketFacade<H>,
+        account: UserAccountFacade<H>,
     ) {
         this[0] = new ContextAccout(account);
     }
@@ -74,7 +85,7 @@ class ContextAccout<H extends HLike<H>> implements AccountLike<H> {
     public events = this.account.events;
 
     constructor(
-        private account: AccountLatency<H>,
+        private account: UserAccountFacade<H>,
     ) { }
 
     public async makeOrders($orders: LimitOrder<H>[]): Promise<(OpenOrder<H> | Error)[]> {

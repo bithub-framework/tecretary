@@ -1,13 +1,13 @@
 import { HLike } from 'secretary-like';
 import { CheckPoint } from '../timeline/time-engine';
-import { AdminTex } from 'texchange/build/texchange';
+import { AdminFacade } from 'texchange/build/facades.d/admin';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 
 
 
 export function* makeTradeGroupCheckPoints<H extends HLike<H>>(
 	groups: Iterable<DatabaseTrade<H>[]>,
-	adminTex: AdminTex<H>,
+	adminTex: AdminFacade<H>,
 ): Iterable<CheckPoint> {
 	for (const group of groups) {
 		yield {

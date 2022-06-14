@@ -2,7 +2,7 @@ import {
 	TimeEngineLike,
 	TimeoutLike,
 } from 'time-engine-like';
-import { Heap, PointerLike } from '@zimtsui/binary-heap';
+import { Heap, Node } from '@zimtsui/binary-heap';
 import {
 	Affiliation,
 	Merged,
@@ -10,18 +10,17 @@ import {
 } from 'shiftable';
 import { CheckPoint } from './check-point';
 import { cmp } from './cmp';
-import assert = require('assert');
 
 
-interface ShiftableHeap<T> extends Heap<T>, Shiftable<T> { }
+abstract class ShiftableHeap<T> extends Heap<T> implements Shiftable<T> { }
 
 export class Timeout implements TimeoutLike {
 	public constructor(
-		private pointer: PointerLike<CheckPoint>,
+		private node: Node<CheckPoint>,
 	) { }
 
 	public clear(): void {
-		this.pointer.remove();
+		this.node.remove();
 	}
 }
 

@@ -4,6 +4,9 @@
     "description": "",
     "main": "./build/index.js",
     "types": "./build/index.d.ts",
+    "engines": {
+        "node": ">=16"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc -b ./src/tsconfig.json",
@@ -12,7 +15,8 @@
     "author": "Zim",
     "dependencies": {
         "@types/better-sqlite3": "^7.5.0",
-        "@zimtsui/binary-heap": "^0.0.3",
+        "@types/node": "^16.11.39",
+        "@zimtsui/binary-heap": "^0.0.5",
         "better-sqlite3": "^7.5.1",
         "cancellable": "github:zimtsui/cancellable",
         "coroutine-locks": "github:zimtsui/coroutine-locks",
@@ -23,8 +27,7 @@
         "time-engine-like": "github:zimtsui/time-engine-like"
     },
     "peerDependencies": {
-        "@types/node": ">=16",
-        "injektor": "github:zimtsui/injektor",
+        "@zimtsui/injektor": "^0.0.4",
         "secretary-like": "github:bithub-framework/secretary-like",
         "startable": "github:zimtsui/startable",
         "texchange": "github:bithub-framework/texchange"

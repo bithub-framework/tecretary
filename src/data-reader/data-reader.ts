@@ -3,16 +3,18 @@ import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'secretary-like';
 import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
-import { AdminTex } from 'texchange/build/texchange';
+import { AdminFacade } from 'texchange/build/facades.d/admin';
 import { OrderbookReader } from './orderbook-reader';
 import { TradeGroupReader } from './trade-group-reader';
-import { Config } from '../config';
+
+import { TYPES } from '../injection/types';
+import { inject } from '@zimtsui/injektor';
 
 
 
 export class DataReader<H extends HLike<H>> {
     private db: Database.Database;
-    public startable = new Startable(
+    public startable = Startable.create(
         () => this.start(),
         () => this.stop(),
     );
@@ -20,11 +22,13 @@ export class DataReader<H extends HLike<H>> {
     private tradeGroupReader: TradeGroupReader<H>;
 
     public constructor(
-        config: Config,
+        @inject(TYPES.dataFilePath)
+        filePath: string,
+        @inject(TYPES.HStatic)
         H: HStatic<H>,
     ) {
         this.db = new Database(
-            config.DATA_DB_FILE_PATH,
+            filePath,
             {
                 readonly: true,
                 fileMustExist: true,
@@ -44,7 +48,7 @@ export class DataReader<H extends HLike<H>> {
 
     public getDatabaseOrderbooksAfterId(
         marketName: string,
-        adminTex: AdminTex<H>,
+        adminTex: AdminFacade<H>,
         id: DatabaseOrderbookId,
     ): Iterable<DatabaseOrderbook<H>> {
         return this.orderbookReader.getDatabaseOrderbooksAfterId(
@@ -56,7 +60,7 @@ export class DataReader<H extends HLike<H>> {
 
     public getDatabaseOrderbooksAfterTime(
         marketName: string,
-        adminTex: AdminTex<H>,
+        adminTex: AdminFacade<H>,
         time: number,
     ): Iterable<DatabaseOrderbook<H>> {
         return this.orderbookReader.getDatabaseOrderbooksAfterTime(
@@ -68,7 +72,7 @@ export class DataReader<H extends HLike<H>> {
 
     public getDatabaseTradeGroupsAfterId(
         marketName: string,
-        adminTex: AdminTex<H>,
+        adminTex: AdminFacade<H>,
         id: DatabaseTradeId,
     ): Iterable<DatabaseTrade<H>[]> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(
@@ -80,7 +84,7 @@ export class DataReader<H extends HLike<H>> {
 
     public getDatabaseTradeGroupsAfterTime(
         marketName: string,
-        adminTex: AdminTex<H>,
+        adminTex: AdminFacade<H>,
         time: number,
     ): Iterable<DatabaseTrade<H>[]> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(

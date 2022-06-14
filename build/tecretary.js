@@ -11,29 +11,28 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tecretary = void 0;
 const startable_1 = require("startable");
-const data_reader_1 = require("./data-reader");
 const check_points_1 = require("./check-points");
-const injektor_1 = require("injektor");
+const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 const shiftable_1 = require("shiftable");
 const assert = require("assert");
 let Tecretary = class Tecretary {
-    constructor(config, progressReader, timeline, texMap, strategy, H) {
+    constructor(config, progressReader, timeline, texchangeMap, strategy, H, dataReader) {
         this.config = config;
         this.progressReader = progressReader;
         this.timeline = timeline;
-        this.texMap = texMap;
+        this.texchangeMap = texchangeMap;
         this.strategy = strategy;
         this.H = H;
-        this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
-        this.adminTexMap = new Map([...this.texMap].map(([name, tex]) => [name, tex.admin]));
-        for (const [name, tex] of this.adminTexMap) {
+        this.dataReader = dataReader;
+        this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
+        this.adminFacadeMap = new Map([...this.texchangeMap].map(([name, texchange]) => [name, texchange.getAdminFacade()]));
+        for (const [name, tex] of this.adminFacadeMap) {
             const snapshot = this.progressReader.getSnapshot(name);
             if (snapshot !== null)
                 tex.restore(snapshot);
         }
-        this.dataReader = new data_reader_1.DataReader(this.config, this.H);
-        for (const [marketName, adminTex] of this.adminTexMap) {
+        for (const [marketName, adminTex] of this.adminFacadeMap) {
             const bookId = adminTex.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
                 ? this.dataReader.getDatabaseOrderbooksAfterId(marketName, adminTex, bookId)
@@ -45,10 +44,10 @@ let Tecretary = class Tecretary {
                 : this.dataReader.getDatabaseTradeGroupsAfterTime(marketName, adminTex, this.progressReader.getTime());
             this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, check_points_1.makeTradeGroupCheckPoints)(tradeGroups, adminTex)));
         }
-        this.timeline.affiliate(shiftable_1.Shifterator.fromIterable((0, check_points_1.makePeriodicCheckPoints)(this.timeline.now(), this.config.SNAPSHOT_PERIOD, () => this.capture())));
+        this.timeline.affiliate(shiftable_1.Shifterator.fromIterable((0, check_points_1.makePeriodicCheckPoints)(this.timeline.now(), this.config.snapshotPeriod, () => this.capture())));
     }
     capture() {
-        this.progressReader.capture(this.timeline.now(), this.adminTexMap);
+        this.progressReader.capture(this.timeline.now(), this.adminFacadeMap);
     }
     async start() {
         await this.progressReader.startable.start(this.startable.starp);
@@ -73,9 +72,10 @@ Tecretary = __decorate([
     __param(0, (0, injektor_1.inject)(types_1.TYPES.Config)),
     __param(1, (0, injektor_1.inject)(types_1.TYPES.ProgressReader)),
     __param(2, (0, injektor_1.inject)(types_1.TYPES.Timeline)),
-    __param(3, (0, injektor_1.inject)(types_1.TYPES.TexMap)),
+    __param(3, (0, injektor_1.inject)(types_1.TYPES.TexchangeMap)),
     __param(4, (0, injektor_1.inject)(types_1.TYPES.StrategyLike)),
-    __param(5, (0, injektor_1.inject)(types_1.TYPES.HStatic))
+    __param(5, (0, injektor_1.inject)(types_1.TYPES.HStatic)),
+    __param(6, (0, injektor_1.inject)(types_1.TYPES.DataReader))
 ], Tecretary);
 exports.Tecretary = Tecretary;
 //# sourceMappingURL=tecretary.js.map

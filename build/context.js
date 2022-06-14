@@ -10,14 +10,20 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Context = void 0;
-const injektor_1 = require("injektor");
+const assert = require("assert");
+const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 let Context = class Context {
-    constructor(userTexes, timeline, progressReader) {
+    constructor(config, texchangeMap, timeline, progressReader) {
         this.timeline = timeline;
         this.progressReader = progressReader;
-        for (let i = 0; i < userTexes.length; i++) {
-            this[i] = new ContextMarket(userTexes[i].market, userTexes[i].account);
+        const texchanges = config.marketNames.map(name => {
+            const texchange = texchangeMap.get(name);
+            assert(typeof texchange !== 'undefined');
+            return texchange;
+        });
+        for (let i = 0; i < texchanges.length; i++) {
+            this[i] = new ContextMarket(texchanges[i].getUserMarketFacade(), texchanges[i].getUserAccountFacade());
         }
     }
     submit(content) {
@@ -25,9 +31,10 @@ let Context = class Context {
     }
 };
 Context = __decorate([
-    __param(0, (0, injektor_1.inject)(types_1.TYPES.UserTexes)),
-    __param(1, (0, injektor_1.inject)(types_1.TYPES.TimelineLike)),
-    __param(2, (0, injektor_1.inject)(types_1.TYPES.ProgressReader))
+    __param(0, (0, injektor_1.inject)(types_1.TYPES.Config)),
+    __param(1, (0, injektor_1.inject)(types_1.TYPES.TexchangeMap)),
+    __param(2, (0, injektor_1.inject)(types_1.TYPES.TimelineLike)),
+    __param(3, (0, injektor_1.inject)(types_1.TYPES.ProgressReader))
 ], Context);
 exports.Context = Context;
 class ContextMarket {

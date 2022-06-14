@@ -6,7 +6,7 @@ import {
 	BookOrder,
 } from 'secretary-like';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { AdminTex } from 'texchange/build/texchange';
+import { AdminFacade } from 'texchange/build/facades.d/admin';
 
 
 export class OrderbookReader<H extends HLike<H>> {
@@ -17,7 +17,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterId(
 		marketName: string,
-		adminTex: AdminTex<H>,
+		adminTex: AdminFacade<H>,
 		afterOrderbookId: number,
 	): Iterable<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
@@ -39,7 +39,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterTime(
 		marketName: string,
-		adminTex: AdminTex<H>,
+		adminTex: AdminFacade<H>,
 		afterTime: number,
 	): Iterable<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterTime(
@@ -76,7 +76,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: Iterable<RawBookOrder[]>,
-		adminTex: AdminTex<H>,
+		adminTex: AdminFacade<H>,
 	): Iterable<DatabaseOrderbook<H>> {
 		for (const group of groups) {
 			const asks: BookOrder<H>[] = group

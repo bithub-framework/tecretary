@@ -2,7 +2,7 @@ import { RawTrade } from './raw-data';
 import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'secretary-like';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
-import { AdminTex } from 'texchange/build/texchange';
+import { AdminFacade } from 'texchange/build/facades.d/admin';
 
 
 export class TradeGroupReader<H extends HLike<H>> {
@@ -13,7 +13,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterId(
 		marketName: string,
-		adminTex: AdminTex<H>,
+		adminTex: AdminFacade<H>,
 		afterTradeId: number,
 	): Iterable<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTradeId(
@@ -35,7 +35,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTime(
 		marketName: string,
-		adminTex: AdminTex<H>,
+		adminTex: AdminFacade<H>,
 		afterTime: number,
 	): Iterable<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTime(
@@ -75,7 +75,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	private *databaseTradesFromRawTrades(
 		rawTrades: Iterable<RawTrade>,
-		adminTex: AdminTex<H>,
+		adminTex: AdminFacade<H>,
 	): Iterable<DatabaseTrade<H>> {
 		for (const rawTrade of rawTrades) {
 			yield {

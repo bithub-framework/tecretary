@@ -12,14 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProgressReader = void 0;
 const Database = require("better-sqlite3");
 const startable_1 = require("startable");
-const injektor_1 = require("injektor");
+const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 const assert = require("assert");
 let ProgressReader = class ProgressReader {
-    constructor(config) {
+    constructor(config, filePath, startTime) {
         this.config = config;
-        this.startable = new startable_1.Startable(() => this.start(), () => this.stop());
-        this.db = new Database(config.PROJECTS_DB_FILE_PATH, {
+        this.startTime = startTime;
+        this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
+        this.db = new Database(filePath, {
             fileMustExist: true,
         });
         this.lock();
@@ -63,14 +64,14 @@ let ProgressReader = class ProgressReader {
         ;`).get(this.config.projectName);
         if (typeof result !== 'undefined')
             return result.time;
-        return this.config.startTime;
+        return this.startTime;
     }
     setTime(time) {
         this.db.prepare(`
 			INSERT OR REPLACE INTO projects
 			(name, time)
 			VALUES (?, ?)
-		;`).run(this.config.projectName, this.config.startTime);
+		;`).run(this.config.projectName, time);
     }
     getSnapshot(marketName) {
         const result = this.db.prepare(`
@@ -106,7 +107,9 @@ let ProgressReader = class ProgressReader {
     }
 };
 ProgressReader = __decorate([
-    __param(0, (0, injektor_1.inject)(types_1.TYPES.Config))
+    __param(0, (0, injektor_1.inject)(types_1.TYPES.Config)),
+    __param(1, (0, injektor_1.inject)(types_1.TYPES.progressFilePath)),
+    __param(2, (0, injektor_1.inject)(types_1.TYPES.startTime))
 ], ProgressReader);
 exports.ProgressReader = ProgressReader;
 //# sourceMappingURL=progress-reader.js.map

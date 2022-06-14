@@ -1,14 +1,19 @@
-export namespace TYPES {
-	export const Config = Symbol();
-	export const ProgressReader = Symbol();
+export class TYPES {
+	public static readonly Config = Symbol();
+	public static readonly ProgressReader = Symbol();
+	public static readonly progressFilePath = Symbol();
+	public static readonly DataReader = Symbol();
+	public static readonly dataFilePath = Symbol();
 
-	export const TexMap = Symbol();
-	export const UserTexes = Symbol();
-	export const Timeline = Symbol();
-	export const TimelineLike = Symbol();
-	export const Context = Symbol();
-	export const StrategyLike = Symbol();
+	public static readonly startTime = Symbol();
+	public static readonly pollerEngine = Symbol();
 
-	export const HStatic = Symbol();
-	export const Tecretary = Symbol();
+	public static readonly TexchangeMap = Symbol();
+	public static readonly Timeline = Symbol();
+	public static readonly TimelineLike = Symbol();
+	public static readonly Context = Symbol();
+	public static readonly StrategyLike = Symbol();
+
+	public static readonly HStatic = Symbol();
+	public static readonly Tecretary = Symbol();
 }
