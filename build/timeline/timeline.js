@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Timeline = void 0;
-const coroutine_locks_1 = require("coroutine-locks");
+const coroutine_locks_1 = require("@zimtsui/coroutine-locks");
 const time_engine_1 = require("./time-engine");
 const cancellable_1 = require("cancellable");
 const pollerloop_1 = require("pollerloop");

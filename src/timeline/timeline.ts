@@ -1,4 +1,4 @@
-import { Rwlock } from 'coroutine-locks';
+import { Rwlock } from '@zimtsui/coroutine-locks';
 import { TimeEngine } from './time-engine';
 import { Cancellable } from 'cancellable';
 import { TimeEngineLike } from 'time-engine-like';
