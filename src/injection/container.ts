@@ -5,12 +5,9 @@ import { HLike, StrategyLike } from 'secretary-like';
 import { Config } from '../config';
 import { ProgressReader } from '../progress-reader';
 import { Timeline } from '../timeline/timeline';
-import { Context } from '../context';
+import { Context } from '../context/context';
 import { Texchange } from 'texchange/build/texchange/texchange';
-import { UserMarketFacade } from 'texchange/build/facades.d/user-market';
-import { UserAccountFacade } from 'texchange/build/facades.d/user-account';
 import { Tecretary } from '../tecretary';
-import assert = require('assert');
 
 
 

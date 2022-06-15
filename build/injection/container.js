@@ -7,7 +7,7 @@ const types_1 = require("./types");
 const node_time_engine_1 = require("node-time-engine");
 const progress_reader_1 = require("../progress-reader");
 const timeline_1 = require("../timeline/timeline");
-const context_1 = require("../context");
+const context_1 = require("../context/context");
 const tecretary_1 = require("../tecretary");
 class Container extends injektor_1.BaseContainer {
     constructor() {
