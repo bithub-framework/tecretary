@@ -27,7 +27,13 @@ let Tecretary = class Tecretary {
         this.strategy = strategy;
         this.H = H;
         this.dataReader = dataReader;
-        this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
+        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
+        this.start = this.startable.start;
+        this.stop = this.startable.stop;
+        this.assart = this.startable.assart;
+        this.starp = this.startable.starp;
+        this.getReadyState = this.startable.getReadyState;
+        this.skipStart = this.startable.skipStart;
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
             const snapshot = this.progressReader.getSnapshot(name);
@@ -49,13 +55,13 @@ let Tecretary = class Tecretary {
     capture() {
         this.progressReader.capture(this.timeline.now(), this.texchangeMap);
     }
-    async start() {
+    async rawStart() {
         await this.progressReader.startable.start(this.startable.starp);
         await this.dataReader.startable.start(this.startable.starp);
         await this.timeline.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
     }
-    async stop() {
+    async rawStop() {
         try {
             assert(this.timeline.startable.getReadyState() === "STARTED" /* STARTED */);
             await this.strategy.startable.stop();

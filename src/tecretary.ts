@@ -1,4 +1,8 @@
-import { Startable, ReadyState } from 'startable';
+import {
+    Startable,
+    ReadyState,
+    StartableLike,
+} from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
 import { Texchange } from 'texchange/build/texchange/texchange';
@@ -18,11 +22,18 @@ import assert = require('assert');
 
 
 
-export class Tecretary<H extends HLike<H>> {
+export class Tecretary<H extends HLike<H>> implements StartableLike {
     public startable = Startable.create(
-        () => this.start(),
-        () => this.stop(),
+        () => this.rawStart(),
+        () => this.rawStop(),
     );
+    public start = this.startable.start;
+    public stop = this.startable.stop;
+    public assart = this.startable.assart;
+    public starp = this.startable.starp;
+    public getReadyState = this.startable.getReadyState;
+    public skipStart = this.startable.skipStart;
+
 
     public constructor(
         @inject(TYPES.config)
@@ -91,14 +102,14 @@ export class Tecretary<H extends HLike<H>> {
         );
     }
 
-    private async start() {
+    private async rawStart() {
         await this.progressReader.startable.start(this.startable.starp)
         await this.dataReader.startable.start(this.startable.starp);
         await this.timeline.startable.start(this.startable.starp);
         await this.strategy.startable.start(this.startable.starp);
     }
 
-    private async stop() {
+    private async rawStop() {
         try {
             assert(this.timeline.startable.getReadyState() === ReadyState.STARTED);
             await this.strategy.startable.stop();

@@ -1,10 +1,11 @@
+import { ReadyState, StartableLike } from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
 import { Texchange } from 'texchange/build/texchange/texchange';
 import { Config } from './config';
 import { HLike, HStatic, StrategyLike } from 'secretary-like';
 import { Timeline } from './timeline/timeline';
-export declare class Tecretary<H extends HLike<H>> {
+export declare class Tecretary<H extends HLike<H>> implements StartableLike {
     private config;
     private progressReader;
     private timeline;
@@ -13,8 +14,14 @@ export declare class Tecretary<H extends HLike<H>> {
     private H;
     private dataReader;
     startable: import("startable/build/startable").Startable;
+    start: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
+    stop: (err?: Error | undefined) => Promise<void>;
+    assart: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
+    starp: (err?: Error | undefined) => Promise<void>;
+    getReadyState: () => ReadyState;
+    skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     constructor(config: Config, progressReader: ProgressReader<H>, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, H: HStatic<H>, dataReader: DataReader<H>);
     private capture;
-    private start;
-    private stop;
+    private rawStart;
+    private rawStop;
 }
