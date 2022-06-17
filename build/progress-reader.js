@@ -19,7 +19,13 @@ let ProgressReader = class ProgressReader {
     constructor(config, filePath, startTime) {
         this.config = config;
         this.startTime = startTime;
-        this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
+        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.RawStop());
+        this.start = this.startable.start;
+        this.stop = this.startable.stop;
+        this.assart = this.startable.assart;
+        this.starp = this.startable.starp;
+        this.getReadyState = this.startable.getReadyState;
+        this.skipStart = this.startable.skipStart;
         this.db = new Database(filePath, {
             fileMustExist: true,
         });
@@ -101,8 +107,8 @@ let ProgressReader = class ProgressReader {
 			VALUES (?, ?, ?)
 		;`).run(this.config.projectName, time, content);
     }
-    async start() { }
-    async stop() {
+    async rawStart() { }
+    async RawStop() {
         this.unlock();
         this.db.close();
     }

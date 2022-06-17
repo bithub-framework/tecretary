@@ -4,16 +4,23 @@ import { Cancellable } from 'cancellable';
 import { TimeEngineLike } from 'time-engine-like';
 import { Pollerloop, Sleep, LoopStopped } from 'pollerloop';
 import { TimelineLike } from 'secretary-like';
-import { Startable } from 'startable';
+import { Startable, StartableLike } from 'startable';
 
 
-export class Timeline extends TimeEngine implements TimelineLike {
+export class Timeline extends TimeEngine implements TimelineLike, StartableLike {
+	private startable = Startable.create(
+		() => this.rawStart(),
+		() => this.rawStop(),
+	);
+	public start = this.startable.start;
+	public stop = this.startable.stop;
+	public assart = this.startable.assart;
+	public starp = this.startable.starp;
+	public getReadyState = this.startable.getReadyState;
+	public skipStart = this.startable.skipStart;
+
 	private lock = new Rwlock();
 	private poller: Pollerloop;
-	public startable = Startable.create(
-		() => this.start(),
-		() => this.stop(),
-	);
 
 	public constructor(
 		time: number,
@@ -27,11 +34,11 @@ export class Timeline extends TimeEngine implements TimelineLike {
 		);
 	}
 
-	private async start(): Promise<void> {
+	private async rawStart(): Promise<void> {
 		await this.poller.startable.start(this.startable.starp)
 	}
 
-	private async stop(): Promise<void> {
+	private async rawStop(): Promise<void> {
 		const p = this.poller.startable.stop();
 		this.lock.throw(new LoopStopped('Loop stopped.'));
 		await p;

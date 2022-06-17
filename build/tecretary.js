@@ -56,21 +56,21 @@ let Tecretary = class Tecretary {
         this.progressReader.capture(this.timeline.now(), this.texchangeMap);
     }
     async rawStart() {
-        await this.progressReader.startable.start(this.startable.starp);
-        await this.dataReader.startable.start(this.startable.starp);
-        await this.timeline.startable.start(this.startable.starp);
-        await this.strategy.startable.start(this.startable.starp);
+        await this.progressReader.start(this.starp);
+        await this.dataReader.start(this.starp);
+        await this.timeline.start(this.starp);
+        await this.strategy.start(this.starp);
     }
     async rawStop() {
         try {
-            assert(this.timeline.startable.getReadyState() === "STARTED" /* STARTED */);
-            await this.strategy.startable.stop();
+            assert(this.timeline.getReadyState() === "STARTED" /* STARTED */);
+            await this.strategy.stop();
         }
         finally {
             this.capture();
-            await this.timeline.startable.stop();
-            await this.dataReader.startable.stop();
-            await this.progressReader.startable.stop();
+            await this.timeline.stop();
+            await this.dataReader.stop();
+            await this.progressReader.stop();
         }
     }
 };

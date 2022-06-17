@@ -13,7 +13,7 @@ export declare class Tecretary<H extends HLike<H>> implements StartableLike {
     private strategy;
     private H;
     private dataReader;
-    startable: import("startable/build/startable").Startable;
+    private startable;
     start: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
     stop: (err?: Error | undefined) => Promise<void>;
     assart: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;

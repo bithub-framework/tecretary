@@ -9,14 +9,20 @@ const startable_1 = require("startable");
 class Timeline extends time_engine_1.TimeEngine {
     constructor(time, pollerEngine) {
         super(time);
+        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
+        this.start = this.startable.start;
+        this.stop = this.startable.stop;
+        this.assart = this.startable.assart;
+        this.starp = this.startable.starp;
+        this.getReadyState = this.startable.getReadyState;
+        this.skipStart = this.startable.skipStart;
         this.lock = new coroutine_locks_1.Rwlock();
-        this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
         this.poller = new pollerloop_1.Pollerloop(sleep => this.loop(sleep), pollerEngine);
     }
-    async start() {
+    async rawStart() {
         await this.poller.startable.start(this.startable.starp);
     }
-    async stop() {
+    async rawStop() {
         const p = this.poller.startable.stop();
         this.lock.throw(new pollerloop_1.LoopStopped('Loop stopped.'));
         await p;

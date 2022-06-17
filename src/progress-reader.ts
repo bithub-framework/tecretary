@@ -1,8 +1,7 @@
 import Database = require('better-sqlite3');
 import { Config } from './config';
 import { Models } from 'texchange/build/texchange/models';
-import { Startable } from 'startable';
-import { AdminFacade } from 'texchange/build/facades.d/admin';
+import { Startable, StartableLike } from 'startable';
 import { Texchange } from 'texchange/build/texchange/texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
@@ -11,12 +10,18 @@ import assert = require('assert');
 
 
 
-export class ProgressReader<H extends HLike<H>> {
+export class ProgressReader<H extends HLike<H>> implements StartableLike {
 	private db: Database.Database;
-	public startable = Startable.create(
-		() => this.start(),
-		() => this.stop(),
+	private startable = Startable.create(
+		() => this.rawStart(),
+		() => this.RawStop(),
 	);
+	public start = this.startable.start;
+	public stop = this.startable.stop;
+	public assart = this.startable.assart;
+	public starp = this.startable.starp;
+	public getReadyState = this.startable.getReadyState;
+	public skipStart = this.startable.skipStart;
 
 	public constructor(
 		@inject(TYPES.config)
@@ -151,9 +156,9 @@ export class ProgressReader<H extends HLike<H>> {
 		);
 	}
 
-	private async start(): Promise<void> { }
+	private async rawStart(): Promise<void> { }
 
-	private async stop(): Promise<void> {
+	private async RawStop(): Promise<void> {
 		this.unlock();
 		this.db.close();
 	}

@@ -18,7 +18,13 @@ const types_1 = require("../injection/types");
 const injektor_1 = require("@zimtsui/injektor");
 let DataReader = class DataReader {
     constructor(filePath, H) {
-        this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
+        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
+        this.start = this.startable.start;
+        this.stop = this.startable.stop;
+        this.assart = this.startable.assart;
+        this.starp = this.startable.starp;
+        this.getReadyState = this.startable.getReadyState;
+        this.skipStart = this.startable.skipStart;
         this.db = new Database(filePath, {
             readonly: true,
             fileMustExist: true,
@@ -38,8 +44,8 @@ let DataReader = class DataReader {
     getDatabaseTradeGroupsAfterTime(marketName, adminTex, time) {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(marketName, adminTex, time);
     }
-    async start() { }
-    async stop() {
+    async rawStart() { }
+    async rawStop() {
         this.db.close();
     }
 };
