@@ -41,13 +41,13 @@ let Tecretary = class Tecretary {
                 facade.restore(snapshot);
             const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(name, facade, bookId)
-                : this.dataReader.getDatabaseOrderbooksAfterTime(name, facade, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseOrderbooksAfterId(name, texchange, bookId)
+                : this.dataReader.getDatabaseOrderbooksAfterTime(name, texchange, this.progressReader.getTime());
             this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, orderbook_1.makeOrderbookCheckPoints)(orderbooks, texchange)));
             const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, facade, tradeId)
-                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, facade, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, texchange, tradeId)
+                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, texchange, this.progressReader.getTime());
             this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, trade_group_1.makeTradeGroupCheckPoints)(tradeGroups, texchange)));
         }
         this.timeline.affiliate(shiftable_1.Shifterator.fromIterable((0, periodic_1.makePeriodicCheckPoints)(this.timeline.now(), this.config.snapshotPeriod, () => this.capture())));

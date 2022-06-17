@@ -59,8 +59,8 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 
             const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(name, facade, bookId)
-                : this.dataReader.getDatabaseOrderbooksAfterTime(name, facade, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseOrderbooksAfterId(name, texchange, bookId)
+                : this.dataReader.getDatabaseOrderbooksAfterTime(name, texchange, this.progressReader.getTime());
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeOrderbookCheckPoints<H>(
@@ -72,8 +72,8 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 
             const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, facade, tradeId)
-                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, facade, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, texchange, tradeId)
+                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, texchange, this.progressReader.getTime());
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeTradeGroupCheckPoints<H>(

@@ -2,7 +2,8 @@ import { RawTrade } from './raw-data';
 import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'secretary-like';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
-import { AdminFacade } from 'texchange/build/facades.d/admin';
+import { Texchange } from 'texchange/build/texchange/texchange';
+
 
 
 export class TradeGroupReader<H extends HLike<H>> {
@@ -13,7 +14,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterId(
 		marketName: string,
-		adminTex: AdminFacade<H>,
+		texchange: Texchange<H>,
 		afterTradeId: number,
 	): Iterable<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTradeId(
@@ -23,7 +24,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 		const databaseTrades = this.databaseTradesFromRawTrades(
 			rawTrades,
-			adminTex,
+			texchange,
 		);
 
 		const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(
@@ -35,7 +36,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTime(
 		marketName: string,
-		adminTex: AdminFacade<H>,
+		texchange: Texchange<H>,
 		afterTime: number,
 	): Iterable<DatabaseTrade<H>[]> {
 		const rawTrades = this.getRawTradesAfterTime(
@@ -45,7 +46,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 		const databaseTrades = this.databaseTradesFromRawTrades(
 			rawTrades,
-			adminTex,
+			texchange,
 		);
 
 		const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(
@@ -75,12 +76,13 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	private *databaseTradesFromRawTrades(
 		rawTrades: Iterable<RawTrade>,
-		adminTex: AdminFacade<H>,
+		texchange: Texchange<H>,
 	): Iterable<DatabaseTrade<H>> {
+		const facade = texchange.getAdminFacade();
 		for (const rawTrade of rawTrades) {
 			yield {
-				price: new this.H(rawTrade.price).round(adminTex.config.market.PRICE_DP),
-				quantity: new this.H(rawTrade.quantity).round(adminTex.config.market.QUANTITY_DP),
+				price: new this.H(rawTrade.price).round(facade.config.market.PRICE_DP),
+				quantity: new this.H(rawTrade.quantity).round(facade.config.market.QUANTITY_DP),
 				side: rawTrade.side,
 				id: rawTrade.id.toString(),
 				time: rawTrade.time,

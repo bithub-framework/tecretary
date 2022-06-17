@@ -6,7 +6,8 @@ import {
 	BookOrder,
 } from 'secretary-like';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { AdminFacade } from 'texchange/build/facades.d/admin';
+import { Texchange } from 'texchange/build/texchange/texchange';
+
 
 
 export class OrderbookReader<H extends HLike<H>> {
@@ -17,7 +18,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterId(
 		marketName: string,
-		adminTex: AdminFacade<H>,
+		texchange: Texchange<H>,
 		afterOrderbookId: number,
 	): Iterable<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
@@ -29,17 +30,17 @@ export class OrderbookReader<H extends HLike<H>> {
 			rawBookOrders,
 		);
 
-		const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
+		const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
 			rawBookOrderGroups,
-			adminTex,
+			texchange,
 		);
 
-		return datavaseOrderbooks;
+		return databaseOrderbooks;
 	}
 
 	public getDatabaseOrderbooksAfterTime(
 		marketName: string,
-		adminTex: AdminFacade<H>,
+		texchange: Texchange<H>,
 		afterTime: number,
 	): Iterable<DatabaseOrderbook<H>> {
 		const rawBookOrders = this.getRawBookOrdersAfterTime(
@@ -53,7 +54,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 		const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
 			rawBookOrderGroups,
-			adminTex,
+			texchange,
 		);
 
 		return databaseOrderbooks;
@@ -76,21 +77,22 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: Iterable<RawBookOrder[]>,
-		adminTex: AdminFacade<H>,
+		texchange: Texchange<H>,
 	): Iterable<DatabaseOrderbook<H>> {
+		const facade = texchange.getAdminFacade();
 		for (const group of groups) {
 			const asks: BookOrder<H>[] = group
 				.filter(order => order.side === Side.ASK)
 				.map(order => ({
-					price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
-					quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
+					price: new this.H(order.price).round(facade.config.market.PRICE_DP),
+					quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
 					side: order.side,
 				}));
 			const bids = group
 				.filter(order => order.side === Side.BID)
 				.map(order => ({
-					price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
-					quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
+					price: new this.H(order.price).round(facade.config.market.PRICE_DP),
+					quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
 					side: order.side,
 				}));
 			yield {

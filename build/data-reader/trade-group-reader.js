@@ -6,15 +6,15 @@ class TradeGroupReader {
         this.db = db;
         this.H = H;
     }
-    getDatabaseTradeGroupsAfterId(marketName, adminTex, afterTradeId) {
+    getDatabaseTradeGroupsAfterId(marketName, texchange, afterTradeId) {
         const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId);
-        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
+        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, texchange);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
-    getDatabaseTradeGroupsAfterTime(marketName, adminTex, afterTime) {
+    getDatabaseTradeGroupsAfterTime(marketName, texchange, afterTime) {
         const rawTrades = this.getRawTradesAfterTime(marketName, afterTime);
-        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, adminTex);
+        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, texchange);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
@@ -31,11 +31,12 @@ class TradeGroupReader {
         if ($group.length > 0)
             yield $group;
     }
-    *databaseTradesFromRawTrades(rawTrades, adminTex) {
+    *databaseTradesFromRawTrades(rawTrades, texchange) {
+        const facade = texchange.getAdminFacade();
         for (const rawTrade of rawTrades) {
             yield {
-                price: new this.H(rawTrade.price).round(adminTex.config.market.PRICE_DP),
-                quantity: new this.H(rawTrade.quantity).round(adminTex.config.market.QUANTITY_DP),
+                price: new this.H(rawTrade.price).round(facade.config.market.PRICE_DP),
+                quantity: new this.H(rawTrade.quantity).round(facade.config.market.QUANTITY_DP),
                 side: rawTrade.side,
                 id: rawTrade.id.toString(),
                 time: rawTrade.time,

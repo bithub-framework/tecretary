@@ -2,7 +2,7 @@ import { StartableLike } from 'startable';
 import { HStatic, HLike } from 'secretary-like';
 import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
-import { AdminFacade } from 'texchange/build/facades.d/admin';
+import { Texchange } from 'texchange/build/texchange/texchange';
 export declare class DataReader<H extends HLike<H>> implements StartableLike {
     private db;
     private orderbookReader;
@@ -15,10 +15,10 @@ export declare class DataReader<H extends HLike<H>> implements StartableLike {
     getReadyState: () => import("startable").ReadyState;
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     constructor(filePath: string, H: HStatic<H>);
-    getDatabaseOrderbooksAfterId(marketName: string, adminTex: AdminFacade<H>, id: DatabaseOrderbookId): Iterable<DatabaseOrderbook<H>>;
-    getDatabaseOrderbooksAfterTime(marketName: string, adminTex: AdminFacade<H>, time: number): Iterable<DatabaseOrderbook<H>>;
-    getDatabaseTradeGroupsAfterId(marketName: string, adminTex: AdminFacade<H>, id: DatabaseTradeId): Iterable<DatabaseTrade<H>[]>;
-    getDatabaseTradeGroupsAfterTime(marketName: string, adminTex: AdminFacade<H>, time: number): Iterable<DatabaseTrade<H>[]>;
+    getDatabaseOrderbooksAfterId(marketName: string, texchange: Texchange<H>, id: DatabaseOrderbookId): Iterable<DatabaseOrderbook<H>>;
+    getDatabaseOrderbooksAfterTime(marketName: string, texchange: Texchange<H>, time: number): Iterable<DatabaseOrderbook<H>>;
+    getDatabaseTradeGroupsAfterId(marketName: string, texchange: Texchange<H>, id: DatabaseTradeId): Iterable<DatabaseTrade<H>[]>;
+    getDatabaseTradeGroupsAfterTime(marketName: string, texchange: Texchange<H>, time: number): Iterable<DatabaseTrade<H>[]>;
     private rawStart;
     private rawStop;
 }

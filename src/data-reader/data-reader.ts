@@ -3,7 +3,7 @@ import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'secretary-like';
 import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
-import { AdminFacade } from 'texchange/build/facades.d/admin';
+import { Texchange } from 'texchange/build/texchange/texchange';
 import { OrderbookReader } from './orderbook-reader';
 import { TradeGroupReader } from './trade-group-reader';
 
@@ -56,48 +56,48 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
 
     public getDatabaseOrderbooksAfterId(
         marketName: string,
-        adminTex: AdminFacade<H>,
+        texchange: Texchange<H>,
         id: DatabaseOrderbookId,
     ): Iterable<DatabaseOrderbook<H>> {
         return this.orderbookReader.getDatabaseOrderbooksAfterId(
             marketName,
-            adminTex,
+            texchange,
             Number.parseInt(id),
         );
     }
 
     public getDatabaseOrderbooksAfterTime(
         marketName: string,
-        adminTex: AdminFacade<H>,
+        texchange: Texchange<H>,
         time: number,
     ): Iterable<DatabaseOrderbook<H>> {
         return this.orderbookReader.getDatabaseOrderbooksAfterTime(
             marketName,
-            adminTex,
+            texchange,
             time,
         );
     }
 
     public getDatabaseTradeGroupsAfterId(
         marketName: string,
-        adminTex: AdminFacade<H>,
+        texchange: Texchange<H>,
         id: DatabaseTradeId,
     ): Iterable<DatabaseTrade<H>[]> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(
             marketName,
-            adminTex,
+            texchange,
             Number.parseInt(id),
         );
     }
 
     public getDatabaseTradeGroupsAfterTime(
         marketName: string,
-        adminTex: AdminFacade<H>,
+        texchange: Texchange<H>,
         time: number,
     ): Iterable<DatabaseTrade<H>[]> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
             marketName,
-            adminTex,
+            texchange,
             time,
         );
     }

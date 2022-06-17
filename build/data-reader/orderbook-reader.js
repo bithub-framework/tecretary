@@ -7,16 +7,16 @@ class OrderbookReader {
         this.db = db;
         this.H = H;
     }
-    getDatabaseOrderbooksAfterId(marketName, adminTex, afterOrderbookId) {
+    getDatabaseOrderbooksAfterId(marketName, texchange, afterOrderbookId) {
         const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
-        const datavaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
-        return datavaseOrderbooks;
+        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, texchange);
+        return databaseOrderbooks;
     }
-    getDatabaseOrderbooksAfterTime(marketName, adminTex, afterTime) {
+    getDatabaseOrderbooksAfterTime(marketName, texchange, afterTime) {
         const rawBookOrders = this.getRawBookOrdersAfterTime(marketName, afterTime);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
-        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, adminTex);
+        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, texchange);
         return databaseOrderbooks;
     }
     *rawBookOrderGroupsFromRawBookOrders(rawBookOrders) {
@@ -31,20 +31,21 @@ class OrderbookReader {
         if ($group.length > 0)
             yield $group;
     }
-    *databaseOrderbooksFromRawBookOrderGroups(groups, adminTex) {
+    *databaseOrderbooksFromRawBookOrderGroups(groups, texchange) {
+        const facade = texchange.getAdminFacade();
         for (const group of groups) {
             const asks = group
                 .filter(order => order.side === secretary_like_1.Side.ASK)
                 .map(order => ({
-                price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
-                quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
+                price: new this.H(order.price).round(facade.config.market.PRICE_DP),
+                quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
                 side: order.side,
             }));
             const bids = group
                 .filter(order => order.side === secretary_like_1.Side.BID)
                 .map(order => ({
-                price: new this.H(order.price).round(adminTex.config.market.PRICE_DP),
-                quantity: new this.H(order.quantity).round(adminTex.config.market.QUANTITY_DP),
+                price: new this.H(order.price).round(facade.config.market.PRICE_DP),
+                quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
                 side: order.side,
             }));
             yield {
