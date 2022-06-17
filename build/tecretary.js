@@ -11,7 +11,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tecretary = void 0;
 const startable_1 = require("startable");
-const check_points_1 = require("./check-points");
+const periodic_1 = require("./check-points/periodic");
+const orderbook_1 = require("./check-points/orderbook");
+const trade_group_1 = require("./check-points/trade-group");
 const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 const shiftable_1 = require("shiftable");
@@ -26,28 +28,26 @@ let Tecretary = class Tecretary {
         this.H = H;
         this.dataReader = dataReader;
         this.startable = startable_1.Startable.create(() => this.start(), () => this.stop());
-        this.adminFacadeMap = new Map([...this.texchangeMap].map(([name, texchange]) => [name, texchange.getAdminFacade()]));
-        for (const [name, tex] of this.adminFacadeMap) {
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
             const snapshot = this.progressReader.getSnapshot(name);
             if (snapshot !== null)
-                tex.restore(snapshot);
-        }
-        for (const [marketName, adminTex] of this.adminFacadeMap) {
-            const bookId = adminTex.getLatestDatabaseOrderbookId();
+                facade.restore(snapshot);
+            const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(marketName, adminTex, bookId)
-                : this.dataReader.getDatabaseOrderbooksAfterTime(marketName, adminTex, this.progressReader.getTime());
-            this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, check_points_1.makeOrderbookCheckPoints)(orderbooks, adminTex)));
-            const tradeId = adminTex.getLatestDatabaseTradeId();
+                ? this.dataReader.getDatabaseOrderbooksAfterId(name, facade, bookId)
+                : this.dataReader.getDatabaseOrderbooksAfterTime(name, facade, this.progressReader.getTime());
+            this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, orderbook_1.makeOrderbookCheckPoints)(orderbooks, texchange)));
+            const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(marketName, adminTex, tradeId)
-                : this.dataReader.getDatabaseTradeGroupsAfterTime(marketName, adminTex, this.progressReader.getTime());
-            this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, check_points_1.makeTradeGroupCheckPoints)(tradeGroups, adminTex)));
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, facade, tradeId)
+                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, facade, this.progressReader.getTime());
+            this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, trade_group_1.makeTradeGroupCheckPoints)(tradeGroups, texchange)));
         }
-        this.timeline.affiliate(shiftable_1.Shifterator.fromIterable((0, check_points_1.makePeriodicCheckPoints)(this.timeline.now(), this.config.snapshotPeriod, () => this.capture())));
+        this.timeline.affiliate(shiftable_1.Shifterator.fromIterable((0, periodic_1.makePeriodicCheckPoints)(this.timeline.now(), this.config.snapshotPeriod, () => this.capture())));
     }
     capture() {
-        this.progressReader.capture(this.timeline.now(), this.adminFacadeMap);
+        this.progressReader.capture(this.timeline.now(), this.texchangeMap);
     }
     async start() {
         await this.progressReader.startable.start(this.startable.starp);

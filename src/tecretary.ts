@@ -2,17 +2,14 @@ import { Startable, ReadyState } from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
 import { Texchange } from 'texchange/build/texchange/texchange';
-import { AdminFacade } from 'texchange/build/facades.d/admin';
 import { Config } from './config';
 import {
     HLike, HStatic,
     StrategyLike,
 } from 'secretary-like';
-import {
-    makePeriodicCheckPoints,
-    makeOrderbookCheckPoints,
-    makeTradeGroupCheckPoints,
-} from './check-points';
+import { makePeriodicCheckPoints } from './check-points/periodic';
+import { makeOrderbookCheckPoints } from './check-points/orderbook';
+import { makeTradeGroupCheckPoints } from './check-points/trade-group';
 import { Timeline } from './timeline/timeline';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
@@ -22,7 +19,6 @@ import assert = require('assert');
 
 
 export class Tecretary<H extends HLike<H>> {
-    private adminFacadeMap: Map<string, AdminFacade<H>>;
     public startable = Startable.create(
         () => this.start(),
         () => this.stop(),
@@ -32,7 +28,7 @@ export class Tecretary<H extends HLike<H>> {
         @inject(TYPES.config)
         private config: Config,
         @inject(TYPES.progressReader)
-        private progressReader: ProgressReader,
+        private progressReader: ProgressReader<H>,
         @inject(TYPES.timeline)
         private timeline: Timeline,
         @inject(TYPES.texchangeMap)
@@ -44,40 +40,34 @@ export class Tecretary<H extends HLike<H>> {
         @inject(TYPES.dataReader)
         private dataReader: DataReader<H>,
     ) {
-        this.adminFacadeMap = new Map(
-            [...this.texchangeMap].map(
-                ([name, texchange]) => [name, texchange.getAdminFacade()],
-            ),
-        );
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
 
-        for (const [name, tex] of this.adminFacadeMap) {
             const snapshot = this.progressReader.getSnapshot(name);
-            if (snapshot !== null) tex.restore(snapshot);
-        }
+            if (snapshot !== null) facade.restore(snapshot);
 
-        for (const [marketName, adminTex] of this.adminFacadeMap) {
-            const bookId = adminTex.getLatestDatabaseOrderbookId();
+            const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(marketName, adminTex, bookId)
-                : this.dataReader.getDatabaseOrderbooksAfterTime(marketName, adminTex, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseOrderbooksAfterId(name, facade, bookId)
+                : this.dataReader.getDatabaseOrderbooksAfterTime(name, facade, this.progressReader.getTime());
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeOrderbookCheckPoints<H>(
                         orderbooks,
-                        adminTex,
+                        texchange,
                     ),
                 ),
             );
 
-            const tradeId = adminTex.getLatestDatabaseTradeId();
+            const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(marketName, adminTex, tradeId)
-                : this.dataReader.getDatabaseTradeGroupsAfterTime(marketName, adminTex, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, facade, tradeId)
+                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, facade, this.progressReader.getTime());
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeTradeGroupCheckPoints<H>(
                         tradeGroups,
-                        adminTex,
+                        texchange,
                     ),
                 ),
             );
@@ -97,7 +87,7 @@ export class Tecretary<H extends HLike<H>> {
     private capture(): void {
         this.progressReader.capture(
             this.timeline.now(),
-            this.adminFacadeMap,
+            this.texchangeMap,
         );
     }
 

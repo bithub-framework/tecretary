@@ -25,11 +25,12 @@ let ProgressReader = class ProgressReader {
         });
         this.lock();
     }
-    capture(time, adminTexMap) {
+    capture(time, texchangeMap) {
         this.db.transaction(() => {
             this.setTime(time);
-            for (const [name, tex] of adminTexMap) {
-                const snapshot = tex.capture();
+            for (const [name, texchange] of texchangeMap) {
+                const facade = texchange.getAdminFacade();
+                const snapshot = facade.capture();
                 this.setSnapshot(name, snapshot);
             }
         });

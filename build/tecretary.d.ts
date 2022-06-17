@@ -12,9 +12,8 @@ export declare class Tecretary<H extends HLike<H>> {
     private strategy;
     private H;
     private dataReader;
-    private adminFacadeMap;
     startable: import("startable/build/startable").Startable;
-    constructor(config: Config, progressReader: ProgressReader, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, H: HStatic<H>, dataReader: DataReader<H>);
+    constructor(config: Config, progressReader: ProgressReader<H>, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, H: HStatic<H>, dataReader: DataReader<H>);
     private capture;
     private start;
     private stop;

@@ -15,7 +15,7 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 
 	public abstract [TYPES.config]: () => Config;
 
-	public [TYPES.progressReader] = this.rcs<ProgressReader>(ProgressReader);
+	public [TYPES.progressReader] = this.rcs<ProgressReader<H>>(ProgressReader);
 
 	public [TYPES.timeline] = this.rfs<Timeline>(() => {
 		const progressReader = this[TYPES.progressReader]();

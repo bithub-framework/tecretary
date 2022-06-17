@@ -1,5 +1,4 @@
 import { CheckPoint } from '../timeline/time-engine';
-import { Shifterator, Shiftable } from 'shiftable';
 
 
 export function* makePeriodicCheckPoints(

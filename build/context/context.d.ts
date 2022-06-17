@@ -6,6 +6,6 @@ export declare class Context<H extends HLike<H>> implements ContextLike<H> {
     timeline: TimelineLike;
     private progressReader;
     [marketId: number]: MarketLike<H>;
-    constructor(config: Config, texchangeMap: Map<string, Texchange<H>>, timeline: TimelineLike, progressReader: ProgressReader);
+    constructor(config: Config, texchangeMap: Map<string, Texchange<H>>, timeline: TimelineLike, progressReader: ProgressReader<H>);
     submit(content: string): void;
 }

@@ -27,7 +27,7 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
         @inject(TYPES.timeline)
         public timeline: TimelineLike,
         @inject(TYPES.progressReader)
-        private progressReader: ProgressReader,
+        private progressReader: ProgressReader<H>,
     ) {
         const texchanges: Texchange<H>[] = config.marketNames.map(name => {
             const texchange = texchangeMap.get(name);

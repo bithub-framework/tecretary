@@ -3,13 +3,15 @@ import { Config } from './config';
 import { Models } from 'texchange/build/texchange/models';
 import { Startable } from 'startable';
 import { AdminFacade } from 'texchange/build/facades.d/admin';
+import { Texchange } from 'texchange/build/texchange/texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
+import { HLike } from 'secretary-like';
 import assert = require('assert');
 
 
 
-export class ProgressReader {
+export class ProgressReader<H extends HLike<H>> {
 	private db: Database.Database;
 	public startable = Startable.create(
 		() => this.start(),
@@ -35,12 +37,13 @@ export class ProgressReader {
 
 	public capture(
 		time: number,
-		adminTexMap: Map<string, AdminFacade<any>>,
+		texchangeMap: Map<string, Texchange<H>>,
 	): void {
 		this.db.transaction(() => {
 			this.setTime(time);
-			for (const [name, tex] of adminTexMap) {
-				const snapshot = tex.capture();
+			for (const [name, texchange] of texchangeMap) {
+				const facade = texchange.getAdminFacade();
+				const snapshot = facade.capture();
 				this.setSnapshot(name, snapshot);
 			}
 		});
