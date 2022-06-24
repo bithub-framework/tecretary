@@ -33,19 +33,20 @@ class OrderbookReader {
     }
     *databaseOrderbooksFromRawBookOrderGroups(groups, texchange) {
         const facade = texchange.getAdminFacade();
+        const marketSpec = facade.getMarketSpec();
         for (const group of groups) {
             const asks = group
                 .filter(order => order.side === secretary_like_1.Side.ASK)
                 .map(order => ({
-                price: new this.H(order.price).round(facade.config.market.PRICE_DP),
-                quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
+                price: new this.H(order.price).round(marketSpec.PRICE_DP),
+                quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
                 side: order.side,
             }));
             const bids = group
                 .filter(order => order.side === secretary_like_1.Side.BID)
                 .map(order => ({
-                price: new this.H(order.price).round(facade.config.market.PRICE_DP),
-                quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
+                price: new this.H(order.price).round(marketSpec.PRICE_DP),
+                quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
                 side: order.side,
             }));
             yield {

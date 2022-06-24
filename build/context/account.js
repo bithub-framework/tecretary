@@ -1,11 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContextAccout = void 0;
-class ContextAccout {
+const events_1 = require("events");
+class ContextAccout extends events_1.EventEmitter {
     constructor(texchange) {
+        super();
         this.facade = texchange.getUserAccountFacade();
-        this.spec = this.facade.spec;
-        this.events = this.facade.events;
+        this.LEVERAGE = this.facade.LEVERAGE;
+        this.TAKER_FEE_RATE = this.facade.TAKER_FEE_RATE;
+        this.MAKER_FEE_RATE = this.facade.MAKER_FEE_RATE;
+        this.facade.on('positions', positions => {
+            this.emit('positions', positions);
+        });
+        this.facade.on('balances', balances => {
+            this.emit('balances', balances);
+        });
     }
     async makeOrders($orders) {
         return await this.facade.makeOrders($orders);

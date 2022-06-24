@@ -2,27 +2,56 @@ import {
 	MarketLike,
 	AccountLike,
 	HLike,
+	MarketEvents,
 } from 'secretary-like';
 import { UserMarketFacade } from 'texchange/build/facades.d/user-market';
-import { MarketSpec } from 'secretary-like';
-import { MarketEventEmitterLike } from 'secretary-like';
-import { Texchange } from 'texchange/build/texchange/texchange';
+import { EventEmitter } from 'events';
+import { Texchange } from 'texchange/build/texchange';
 import { ContextAccout } from './account';
 
 
 
-export class ContextMarket<H extends HLike<H>> implements MarketLike<H> {
+export class ContextMarket<H extends HLike<H>>
+	extends EventEmitter
+	implements MarketLike<H>
+{
 	[accountId: number]: AccountLike<H>;
-	public spec: MarketSpec<H>;
-	public events: MarketEventEmitterLike<H>;
+
+	public PRICE_DP: number;
+	public QUANTITY_DP: number;
+	public CURRENCY_DP: number;
+	public TICK_SIZE: H;
+	public MARKET_NAME: string;
+
+	public on!: <Event extends keyof MarketEvents<H>>(event: Event, listener: (...args: MarketEvents<H>[Event]) => void) => this;
+	public once!: <Event extends keyof MarketEvents<H>>(event: Event, listener: (...args: MarketEvents<H>[Event]) => void) => this;
+	public off!: <Event extends keyof MarketEvents<H>>(event: Event, listener: (...args: MarketEvents<H>[Event]) => void) => this;
+	public emit!: <Event extends keyof MarketEvents<H>>(event: Event, ...args: MarketEvents<H>[Event]) => boolean;
+
 	private facade: UserMarketFacade<H>;
 
 	constructor(
 		texchange: Texchange<H>,
 	) {
+		super();
+
 		this.facade = texchange.getUserMarketFacade();
-		this.spec = this.facade.spec;
-		this.events = this.facade.events;
+
+		this.PRICE_DP = this.facade.PRICE_DP;
+		this.QUANTITY_DP = this.facade.QUANTITY_DP;
+		this.CURRENCY_DP = this.facade.CURRENCY_DP;
+		this.TICK_SIZE = this.facade.TICK_SIZE;
+		this.MARKET_NAME = this.facade.MARKET_NAME;
+
+		this.facade.on('orderbook', orderbook => {
+			this.emit('orderbook', orderbook);
+		});
+
+		this.facade.on('trades', trades => {
+			this.emit('trades', trades);
+		});
+
+
 		this[0] = new ContextAccout(texchange);
 	}
 

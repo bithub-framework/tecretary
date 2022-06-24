@@ -1,8 +1,8 @@
 import Database = require('better-sqlite3');
 import { Config } from './config';
-import { Models } from 'texchange/build/texchange/models';
+import { Snapshot } from 'texchange/build/facades.d/admin';
 import { Startable, StartableLike } from 'startable';
-import { Texchange } from 'texchange/build/texchange/texchange';
+import { Texchange } from 'texchange/build/texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { HLike } from 'secretary-like';
@@ -109,7 +109,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 
 	public getSnapshot(
 		marketName: string,
-	): Models.Snapshot | null {
+	): Snapshot | null {
 		const result = this.db.prepare(`
             SELECT snapshot
             FROM snapshots
@@ -127,7 +127,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 
 	private setSnapshot(
 		marketName: string,
-		snapshot: Models.Snapshot,
+		snapshot: Snapshot,
 	): void {
 		const json = JSON.stringify(snapshot);
 		this.db.prepare(`

@@ -1,7 +1,7 @@
 import { Config } from './config';
-import { Models } from 'texchange/build/texchange/models';
+import { Snapshot } from 'texchange/build/facades.d/admin';
 import { StartableLike } from 'startable';
-import { Texchange } from 'texchange/build/texchange/texchange';
+import { Texchange } from 'texchange/build/texchange';
 import { HLike } from 'secretary-like';
 export declare class ProgressReader<H extends HLike<H>> implements StartableLike {
     private config;
@@ -20,7 +20,7 @@ export declare class ProgressReader<H extends HLike<H>> implements StartableLike
     private unlock;
     getTime(): number;
     private setTime;
-    getSnapshot(marketName: string): Models.Snapshot | null;
+    getSnapshot(marketName: string): Snapshot | null;
     private setSnapshot;
     log(content: string, time: number): void;
     private rawStart;

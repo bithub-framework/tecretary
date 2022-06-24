@@ -6,7 +6,7 @@ import {
 	BookOrder,
 } from 'secretary-like';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { Texchange } from 'texchange/build/texchange/texchange';
+import { Texchange } from 'texchange/build/texchange';
 
 
 
@@ -80,19 +80,20 @@ export class OrderbookReader<H extends HLike<H>> {
 		texchange: Texchange<H>,
 	): Iterable<DatabaseOrderbook<H>> {
 		const facade = texchange.getAdminFacade();
+		const marketSpec = facade.getMarketSpec();
 		for (const group of groups) {
 			const asks: BookOrder<H>[] = group
 				.filter(order => order.side === Side.ASK)
 				.map(order => ({
-					price: new this.H(order.price).round(facade.config.market.PRICE_DP),
-					quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
+					price: new this.H(order.price).round(marketSpec.PRICE_DP),
+					quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
 					side: order.side,
 				}));
 			const bids = group
 				.filter(order => order.side === Side.BID)
 				.map(order => ({
-					price: new this.H(order.price).round(facade.config.market.PRICE_DP),
-					quantity: new this.H(order.quantity).round(facade.config.market.QUANTITY_DP),
+					price: new this.H(order.price).round(marketSpec.PRICE_DP),
+					quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
 					side: order.side,
 				}));
 			yield {

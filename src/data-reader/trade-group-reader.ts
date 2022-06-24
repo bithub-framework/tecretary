@@ -2,7 +2,7 @@ import { RawTrade } from './raw-data';
 import Database = require('better-sqlite3');
 import { HStatic, HLike } from 'secretary-like';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
-import { Texchange } from 'texchange/build/texchange/texchange';
+import { Texchange } from 'texchange/build/texchange';
 
 
 
@@ -79,10 +79,11 @@ export class TradeGroupReader<H extends HLike<H>> {
 		texchange: Texchange<H>,
 	): Iterable<DatabaseTrade<H>> {
 		const facade = texchange.getAdminFacade();
+		const marketSpec = facade.getMarketSpec();
 		for (const rawTrade of rawTrades) {
 			yield {
-				price: new this.H(rawTrade.price).round(facade.config.market.PRICE_DP),
-				quantity: new this.H(rawTrade.quantity).round(facade.config.market.QUANTITY_DP),
+				price: new this.H(rawTrade.price).round(marketSpec.PRICE_DP),
+				quantity: new this.H(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
 				side: rawTrade.side,
 				id: rawTrade.id.toString(),
 				time: rawTrade.time,

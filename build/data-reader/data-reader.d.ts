@@ -2,7 +2,7 @@ import { StartableLike } from 'startable';
 import { HStatic, HLike } from 'secretary-like';
 import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
-import { Texchange } from 'texchange/build/texchange/texchange';
+import { Texchange } from 'texchange/build/texchange';
 export declare class DataReader<H extends HLike<H>> implements StartableLike {
     private db;
     private orderbookReader;
