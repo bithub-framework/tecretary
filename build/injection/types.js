@@ -12,6 +12,7 @@ TYPES.dataFilePath = Symbol();
 TYPES.startTime = Symbol();
 TYPES.texchangeMap = Symbol();
 TYPES.timeline = Symbol();
+TYPES.endTime = Symbol();
 TYPES.context = Symbol();
 TYPES.strategy = Symbol();
 TYPES.hStatic = Symbol();

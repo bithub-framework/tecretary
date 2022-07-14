@@ -9,9 +9,10 @@ export declare class Timeout implements TimeoutLike {
 }
 export declare class TimeEngine implements TimeEngineLike, Iterable<() => void> {
     private time;
+    private endTime;
     private heap;
     private checkPoints;
-    constructor(time: number);
+    constructor(time: number, endTime: number);
     merge(sorted: Shiftable<CheckPoint>): void;
     affiliate(sorted: Shiftable<CheckPoint>): void;
     setTimeout(cb: () => void, ms: number): TimeoutLike;

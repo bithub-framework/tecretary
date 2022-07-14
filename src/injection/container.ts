@@ -12,15 +12,15 @@ import { Tecretary } from '../tecretary';
 
 
 export abstract class Container<H extends HLike<H>> extends BaseContainer {
-
 	public abstract [TYPES.config]: () => Config;
+	public abstract [TYPES.endTime]: () => number;
 
 	public [TYPES.progressReader] = this.rcs<ProgressReader<H>>(ProgressReader);
-
 	public [TYPES.timeline] = this.rfs<Timeline>(() => {
 		const progressReader = this[TYPES.progressReader]();
 		return new Timeline(
 			progressReader.getTime(),
+			this[TYPES.endTime](),
 			new NodeTimeEngine(),
 		);
 	});

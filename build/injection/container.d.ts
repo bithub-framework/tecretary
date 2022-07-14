@@ -9,6 +9,7 @@ import { Texchange } from 'texchange/build/texchange';
 import { Tecretary } from '../tecretary';
 export declare abstract class Container<H extends HLike<H>> extends BaseContainer {
     abstract [TYPES.config]: () => Config;
+    abstract [TYPES.endTime]: () => number;
     [TYPES.progressReader]: () => ProgressReader<H>;
     [TYPES.timeline]: () => Timeline;
     abstract [TYPES.texchangeMap]: () => Map<string, Texchange<H>>;

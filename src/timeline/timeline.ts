@@ -23,10 +23,14 @@ export class Timeline extends TimeEngine implements TimelineLike, StartableLike 
 	private poller: Pollerloop;
 
 	public constructor(
-		time: number,
+		startTime: number,
+		endTime: number,
 		pollerEngine: TimeEngineLike,
 	) {
-		super(time);
+		super(
+			startTime,
+			endTime,
+		);
 
 		this.poller = new Pollerloop(
 			sleep => this.loop(sleep),

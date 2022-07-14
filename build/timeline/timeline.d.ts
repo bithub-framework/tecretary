@@ -13,7 +13,7 @@ export declare class Timeline extends TimeEngine implements TimelineLike, Starta
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     private lock;
     private poller;
-    constructor(time: number, pollerEngine: TimeEngineLike);
+    constructor(startTime: number, endTime: number, pollerEngine: TimeEngineLike);
     private rawStart;
     private rawStop;
     private loop;

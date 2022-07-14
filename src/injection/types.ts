@@ -9,6 +9,7 @@ export class TYPES {
 
 	public static readonly texchangeMap = Symbol();
 	public static readonly timeline = Symbol();
+	public static readonly endTime = Symbol();
 	public static readonly context = Symbol();
 	public static readonly strategy = Symbol();
 
