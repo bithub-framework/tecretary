@@ -1,6 +1,6 @@
 import { BaseContainer } from '@zimtsui/injektor';
 import { TYPES } from './types';
-import { HLike, StrategyLike } from 'secretary-like';
+import { HLike, StrategyLike, HStatic } from 'secretary-like';
 import { Config } from '../config';
 import { ProgressReader } from '../progress-reader';
 import { Timeline } from '../timeline/timeline';
@@ -9,11 +9,14 @@ import { Texchange } from 'texchange/build/texchange';
 import { Tecretary } from '../tecretary';
 export declare abstract class Container<H extends HLike<H>> extends BaseContainer {
     abstract [TYPES.config]: () => Config;
-    abstract [TYPES.endTime]: () => number;
     [TYPES.progressReader]: () => ProgressReader<H>;
-    [TYPES.timeline]: () => Timeline;
+    abstract [TYPES.startTime]: () => number;
+    abstract [TYPES.progressFilePath]: () => string;
     abstract [TYPES.texchangeMap]: () => Map<string, Texchange<H>>;
+    [TYPES.timeline]: () => Timeline;
+    abstract [TYPES.endTime]: () => number;
     [TYPES.context]: () => Context<H>;
     abstract [TYPES.strategy]: () => StrategyLike;
+    abstract [TYPES.hStatic]: () => HStatic<H>;
     [TYPES.tecretary]: () => Tecretary<H>;
 }

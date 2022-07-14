@@ -1,10 +1,10 @@
 export declare class TYPES {
     static readonly config: unique symbol;
     static readonly progressReader: unique symbol;
+    static readonly startTime: unique symbol;
     static readonly progressFilePath: unique symbol;
     static readonly dataReader: unique symbol;
     static readonly dataFilePath: unique symbol;
-    static readonly startTime: unique symbol;
     static readonly texchangeMap: unique symbol;
     static readonly timeline: unique symbol;
     static readonly endTime: unique symbol;

@@ -6,10 +6,10 @@ class TYPES {
 exports.TYPES = TYPES;
 TYPES.config = Symbol();
 TYPES.progressReader = Symbol();
+TYPES.startTime = Symbol();
 TYPES.progressFilePath = Symbol();
 TYPES.dataReader = Symbol();
 TYPES.dataFilePath = Symbol();
-TYPES.startTime = Symbol();
 TYPES.texchangeMap = Symbol();
 TYPES.timeline = Symbol();
 TYPES.endTime = Symbol();

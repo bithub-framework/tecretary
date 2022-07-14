@@ -21,6 +21,7 @@
         "@zimtsui/injektor": "^0.0.6",
         "better-sqlite3": "^7.5.1",
         "cancellable": "github:zimtsui/cancellable",
+        "high-precision": "github:bithub-framework/high-precision",
         "node-time-engine": "github:zimtsui/node-time-engine",
         "pollerloop": "github:zimtsui/pollerloop",
         "shiftable": "github:zimtsui/shiftable",
