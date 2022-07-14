@@ -4,6 +4,7 @@ import { NodeTimeEngine } from 'node-time-engine';
 import { HLike, StrategyLike, HStatic } from 'secretary-like';
 import { Config } from '../config';
 import { ProgressReader } from '../progress-reader';
+import { DataReader } from '../data-reader';
 import { Timeline } from '../timeline/timeline';
 import { Context } from '../context/context';
 import { Texchange } from 'texchange/build/texchange';
@@ -16,6 +17,8 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 	public [TYPES.progressReader] = this.rcs<ProgressReader<H>>(ProgressReader);
 	public abstract [TYPES.startTime]: () => number;
 	public abstract [TYPES.progressFilePath]: () => string;
+	public [TYPES.dataReader] = this.rcs<DataReader<H>>(DataReader);
+	public abstract [TYPES.dataFilePath]: () => string;
 
 	public abstract [TYPES.texchangeMap]: () => Map<string, Texchange<H>>;
 	public [TYPES.timeline] = this.rfs<Timeline>(() => {
