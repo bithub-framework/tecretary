@@ -39,11 +39,11 @@ export class Timeline extends TimeEngine implements TimelineLike, StartableLike 
 	}
 
 	private async rawStart(): Promise<void> {
-		await this.poller.startable.start(this.startable.starp)
+		await this.poller.start(this.startable.starp)
 	}
 
 	private async rawStop(): Promise<void> {
-		const p = this.poller.startable.stop();
+		const p = this.poller.stop();
 		this.lock.throw(new LoopStopped('Loop stopped.'));
 		await p;
 	}

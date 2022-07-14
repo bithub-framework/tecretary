@@ -20,10 +20,10 @@ class Timeline extends time_engine_1.TimeEngine {
         this.poller = new pollerloop_1.Pollerloop(sleep => this.loop(sleep), pollerEngine);
     }
     async rawStart() {
-        await this.poller.startable.start(this.startable.starp);
+        await this.poller.start(this.startable.starp);
     }
     async rawStop() {
-        const p = this.poller.startable.stop();
+        const p = this.poller.stop();
         this.lock.throw(new pollerloop_1.LoopStopped('Loop stopped.'));
         await p;
     }

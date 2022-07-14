@@ -1,17 +1,17 @@
 export class TYPES {
-	public static readonly config = Symbol();
-	public static readonly progressReader = Symbol();
-	public static readonly startTime = Symbol();
-	public static readonly progressFilePath = Symbol();
-	public static readonly dataReader = Symbol();
-	public static readonly dataFilePath = Symbol();
+	public static readonly config = Symbol('config');
+	public static readonly progressReader = Symbol('progressReader');
+	public static readonly startTime = Symbol('startTime');
+	public static readonly progressFilePath = Symbol('progressFilePath');
+	public static readonly dataReader = Symbol('dataReader');
+	public static readonly dataFilePath = Symbol('dataFilePath');
 
-	public static readonly texchangeMap = Symbol();
-	public static readonly timeline = Symbol();
-	public static readonly endTime = Symbol();
-	public static readonly context = Symbol();
-	public static readonly strategy = Symbol();
+	public static readonly texchangeMap = Symbol('texchangeMap');
+	public static readonly timeline = Symbol('timeline');
+	public static readonly endTime = Symbol('endTime');
+	public static readonly context = Symbol('context');
+	public static readonly strategy = Symbol('strategy');
 
-	public static readonly hStatic = Symbol();
-	public static readonly tecretary = Symbol();
+	public static readonly hStatic = Symbol('hStatic');
+	public static readonly tecretary = Symbol('tecretary');
 }
