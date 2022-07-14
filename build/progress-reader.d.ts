@@ -23,6 +23,7 @@ export declare class ProgressReader<H extends HLike<H>> implements StartableLike
     getSnapshot(marketName: string): Snapshot | null;
     private setSnapshot;
     log(content: string, time: number): void;
+    private clear;
     private rawStart;
     private RawStop;
 }

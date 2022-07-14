@@ -38,6 +38,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 			},
 		);
 		this.lock();
+		if (!config.continue) this.clear();
 	}
 
 	public capture(
@@ -56,17 +57,17 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 
 	private lock(): void {
 		this.db.transaction(() => {
-			const running = this.db.prepare(`
-				SELECT name
+			const line = this.db.prepare(`
+				SELECT *
 				FROM running
-				WHERE name = ?
+				WHERE project_name = ?
 			;`).get(
 				this.config.projectName,
-			).running;
-			assert(typeof running !== 'undefined');
+			);
+			assert(typeof line !== 'undefined');
 			this.db.prepare(`
 				INSERT INTO running
-				(name)
+				(project_name)
 				VALUES (?)
 			;`).run(
 				this.config.projectName,
@@ -77,7 +78,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 	private unlock(): void {
 		this.db.prepare(`
 			DELETE FROM running
-			WHERE name = ?
+			WHERE project_name = ?
 		;`).run(
 			this.config.projectName,
 		);
@@ -154,6 +155,21 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 			time,
 			content,
 		);
+	}
+
+	private clear(): void {
+		this.db.prepare(`
+			DELETE FROM projects
+			WHERE name = ?
+		;`).run();
+		this.db.prepare(`
+			DELETE FROM logs
+			WHERE project_name = ?
+		;`).run();
+		this.db.prepare(`
+			DELETE FROM snapshots
+			WHERE project_name = ?
+		;`).run();
 	}
 
 	private async rawStart(): Promise<void> { }

@@ -30,6 +30,8 @@ let ProgressReader = class ProgressReader {
             fileMustExist: true,
         });
         this.lock();
+        if (!config.continue)
+            this.clear();
     }
     capture(time, texchangeMap) {
         this.db.transaction(() => {
@@ -43,15 +45,15 @@ let ProgressReader = class ProgressReader {
     }
     lock() {
         this.db.transaction(() => {
-            const running = this.db.prepare(`
-				SELECT name
+            const line = this.db.prepare(`
+				SELECT *
 				FROM running
-				WHERE name = ?
-			;`).get(this.config.projectName).running;
-            assert(typeof running !== 'undefined');
+				WHERE project_name = ?
+			;`).get(this.config.projectName);
+            assert(typeof line !== 'undefined');
             this.db.prepare(`
 				INSERT INTO running
-				(name)
+				(project_name)
 				VALUES (?)
 			;`).run(this.config.projectName);
         });
@@ -59,7 +61,7 @@ let ProgressReader = class ProgressReader {
     unlock() {
         this.db.prepare(`
 			DELETE FROM running
-			WHERE name = ?
+			WHERE project_name = ?
 		;`).run(this.config.projectName);
     }
     getTime() {
@@ -106,6 +108,20 @@ let ProgressReader = class ProgressReader {
 			(project_name, time, content)
 			VALUES (?, ?, ?)
 		;`).run(this.config.projectName, time, content);
+    }
+    clear() {
+        this.db.prepare(`
+			DELETE FROM projects
+			WHERE name = ?
+		;`).run();
+        this.db.prepare(`
+			DELETE FROM logs
+			WHERE project_name = ?
+		;`).run();
+        this.db.prepare(`
+			DELETE FROM snapshots
+			WHERE project_name = ?
+		;`).run();
     }
     async rawStart() { }
     async RawStop() {
