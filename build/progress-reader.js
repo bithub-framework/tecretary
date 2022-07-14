@@ -113,15 +113,15 @@ let ProgressReader = class ProgressReader {
         this.db.prepare(`
 			DELETE FROM projects
 			WHERE name = ?
-		;`).run();
+		;`).run(this.config.projectName);
         this.db.prepare(`
 			DELETE FROM logs
 			WHERE project_name = ?
-		;`).run();
+		;`).run(this.config.projectName);
         this.db.prepare(`
 			DELETE FROM snapshots
 			WHERE project_name = ?
-		;`).run();
+		;`).run(this.config.projectName);
     }
     async rawStart() { }
     async RawStop() {
