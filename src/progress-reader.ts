@@ -6,6 +6,7 @@ import { Texchange } from 'texchange/build/texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { HLike } from 'secretary-like';
+import { lockPidFile } from '@zimtsui/lock-pid-file';
 
 
 
@@ -30,6 +31,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 		@inject(TYPES.startTime)
 		private startTime: number,
 	) {
+		lockPidFile(config.projectName);
 		this.db = new Database(
 			filePath,
 			{

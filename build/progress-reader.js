@@ -14,6 +14,7 @@ const Database = require("better-sqlite3");
 const startable_1 = require("startable");
 const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
+const lock_pid_file_1 = require("@zimtsui/lock-pid-file");
 let ProgressReader = class ProgressReader {
     constructor(config, filePath, startTime) {
         this.config = config;
@@ -25,6 +26,7 @@ let ProgressReader = class ProgressReader {
         this.starp = this.startable.starp;
         this.getReadyState = this.startable.getReadyState;
         this.skipStart = this.startable.skipStart;
+        (0, lock_pid_file_1.lockPidFile)(config.projectName);
         this.db = new Database(filePath, {
             fileMustExist: true,
         });

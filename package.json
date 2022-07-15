@@ -19,6 +19,7 @@
         "@zimtsui/binary-heap": "^0.0.5",
         "@zimtsui/coroutine-locks": "^0.0.2",
         "@zimtsui/injektor": "^0.0.8",
+        "@zimtsui/lock-pid-file": "^0.0.4",
         "better-sqlite3": "^7.5.1",
         "cancellable": "github:zimtsui/cancellable",
         "node-time-engine": "github:zimtsui/node-time-engine",
