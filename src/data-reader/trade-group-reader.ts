@@ -85,7 +85,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 				price: new this.H(rawTrade.price).round(marketSpec.PRICE_DP),
 				quantity: new this.H(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
 				side: rawTrade.side,
-				id: rawTrade.id.toString(),
+				id: `${rawTrade.id}`,
 				time: rawTrade.time,
 			};
 		}
@@ -101,7 +101,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 				CAST(price AS CHAR) AS price,
 				CAST(quantity AS CHAR) AS quantity,
 				side,
-				time
+				time,
+				id
 			FROM trades, markets
 			WHERE
 				trades.mid = markets.id AND
