@@ -59,49 +59,50 @@ class OrderbookReader {
     }
     getRawBookOrdersAfterTime(marketName, afterTime) {
         return this.db.prepare(`
-            SELECT
-                markets.name AS marketName,
-                time,
-                CAST(price AS TEXT),
-                CAST(quantity AS TEXT),
-                side,
-                bid AS id
-            FROM markets, orderbooks, book_orders
-            WHERE
+			SELECT
+				markets.name AS marketName,
+				time,
+				CAST(price AS TEXT) AS price,
+				CAST(quantity AS TEXT) AS quantity,
+				side,
+				bid AS id
+			FROM markets, orderbooks, book_orders
+			WHERE
 				markets.id = orderbooks.mid AND
-                orderbooks.id = book_orders.bid AND
-                markets.name = ? AND
+				orderbooks.id = book_orders.bid AND
+				markets.name = ? AND
 				orderbooks.time >= ?
-            ORDER BY time, bid, price
-        ;`).iterate(marketName, afterTime);
+			ORDER BY time, bid, price
+		;`).iterate(marketName, afterTime);
     }
     getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId) {
         const afterTime = this.db.prepare(`
-            SELECT time
-            FROM orderbooks, markets
-            WHERE
+			SELECT time
+			FROM orderbooks, markets
+			WHERE
 				orderbooks.mid = markets.id AND
-                markets.name = ? AND
-                orderbooks.id = ?
-        ;`).get(marketName, afterOrderbookId).time;
+				markets.name = ? AND
+				orderbooks.id = ?
+		;`).get(marketName, afterOrderbookId).time;
         return this.db.prepare(`
-            SELECT
-                markets.name AS marketName,
-                time,
-                CAST(price AS TEXT),
-                CAST(quantity AS TEXT),
-                side,
-                bid AS id
-            FROM markets, orderbooks, book_orders
-            WHERE markets.id = orderbooks.mid AND
-                orderbooks.id = book_orders.bid AND
-                markets.name = ? AND
-                (
-                    orderbooks.time = ? AND orderbooks.id > ?
-                    OR orderbooks.time > ?
-                )
-            ORDER BY time, bid, price
-        ;`).iterate(marketName, afterOrderbookId, afterOrderbookId, afterTime);
+			SELECT
+				markets.name AS marketName,
+				time,
+				CAST(price AS TEXT) AS price,
+				CAST(quantity AS TEXT) AS quantity,
+				side,
+				bid AS id
+			FROM markets, orderbooks, book_orders
+			WHERE
+				markets.id = orderbooks.mid AND
+				orderbooks.id = book_orders.bid AND
+				markets.name = ? AND
+				(
+					orderbooks.time = ? AND orderbooks.id > ?
+					OR orderbooks.time > ?
+				)
+			ORDER BY time, bid, price
+		;`).iterate(marketName, afterTime, afterOrderbookId, afterTime);
     }
 }
 exports.OrderbookReader = OrderbookReader;

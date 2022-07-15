@@ -46,47 +46,47 @@ class TradeGroupReader {
     }
     getRawTradesAfterTime(marketName, afterTime) {
         return this.db.prepare(`
-            SELECT
-                name AS marketName,
-                CAST(price AS CHAR) AS price,
-                CAST(quantity AS CHAR) AS quantity,
-                side,
-                time
-            FROM trades, markets
-            WHERE
+			SELECT
+				name AS marketName,
+				CAST(price AS CHAR) AS price,
+				CAST(quantity AS CHAR) AS quantity,
+				side,
+				time
+			FROM trades, markets
+			WHERE
 				trades.mid = markets.id AND
-                markets.name = ? AND
+				markets.name = ? AND
 				trades.time >= ?
-            ORDER BY time
-        ;`).iterate(marketName, afterTime);
+			ORDER BY time
+		;`).iterate(marketName, afterTime);
     }
     getRawTradesAfterTradeId(marketName, afterTradeId) {
         const afterTime = this.db.prepare(`
-            SELECT time
-            FROM trades, markets
-            WHERE
+			SELECT time
+			FROM trades, markets
+			WHERE
 				trades.mid = markets.id AND
-                markets.name = ? AND
-                trades.id = ?
-        ;`).get(marketName, afterTradeId).time;
+				markets.name = ? AND
+				trades.id = ?
+		;`).get(marketName, afterTradeId).time;
         return this.db.prepare(`
-            SELECT
-                markets.name AS marketName,
-                CAST(price AS CHAR) AS price,
-                CAST(quantity AS CHAR) AS quantity,
-                side,
-                time,
-                id
-            FROM trades, markets
-            WHERE
+			SELECT
+				markets.name AS marketName,
+				CAST(price AS CHAR) AS price,
+				CAST(quantity AS CHAR) AS quantity,
+				side,
+				time,
+				id
+			FROM trades, markets
+			WHERE
 				trades.mid = markets.id AND
-                markets.name = ? AND
-                (
-                    trades.time = ? AND trades.id > ?
-                    OR trades.time > ?
-                )
-            ORDER BY time
-        ;`).iterate(marketName, afterTime, afterTradeId, afterTime);
+				markets.name = ? AND
+				(
+					trades.time = ? AND trades.id > ?
+					OR trades.time > ?
+				)
+			ORDER BY time
+		;`).iterate(marketName, afterTime, afterTradeId, afterTime);
     }
 }
 exports.TradeGroupReader = TradeGroupReader;
