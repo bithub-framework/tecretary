@@ -102,7 +102,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 				CAST(quantity AS CHAR) AS quantity,
 				side,
 				time,
-				id
+				trades.id AS id
 			FROM trades, markets
 			WHERE
 				trades.mid = markets.id AND
@@ -138,7 +138,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 				CAST(quantity AS CHAR) AS quantity,
 				side,
 				time,
-				id
+				trades.id AS id
 			FROM trades, markets
 			WHERE
 				trades.mid = markets.id AND

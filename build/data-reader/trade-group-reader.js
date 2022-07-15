@@ -52,7 +52,7 @@ class TradeGroupReader {
 				CAST(quantity AS CHAR) AS quantity,
 				side,
 				time,
-				id
+				trades.id AS id
 			FROM trades, markets
 			WHERE
 				trades.mid = markets.id AND
@@ -77,7 +77,7 @@ class TradeGroupReader {
 				CAST(quantity AS CHAR) AS quantity,
 				side,
 				time,
-				id
+				trades.id AS id
 			FROM trades, markets
 			WHERE
 				trades.mid = markets.id AND
