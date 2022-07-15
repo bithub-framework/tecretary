@@ -6,7 +6,6 @@ import { Texchange } from 'texchange/build/texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { HLike } from 'secretary-like';
-import assert = require('assert');
 
 
 
@@ -14,7 +13,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 	private db: Database.Database;
 	private startable = Startable.create(
 		() => this.rawStart(),
-		() => this.RawStop(),
+		() => this.rawStop(),
 	);
 	public start = this.startable.start;
 	public stop = this.startable.stop;
@@ -37,7 +36,6 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 				fileMustExist: true,
 			},
 		);
-		this.lock();
 		if (!config.continue) this.clear();
 	}
 
@@ -53,35 +51,6 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 				this.setSnapshot(name, snapshot);
 			}
 		});
-	}
-
-	private lock(): void {
-		this.db.transaction(() => {
-			const line = this.db.prepare(`
-				SELECT *
-				FROM running
-				WHERE project_name = ?
-			;`).get(
-				this.config.projectName,
-			);
-			assert(typeof line !== 'undefined');
-			this.db.prepare(`
-				INSERT INTO running
-				(project_name)
-				VALUES (?)
-			;`).run(
-				this.config.projectName,
-			);
-		});
-	}
-
-	private unlock(): void {
-		this.db.prepare(`
-			DELETE FROM running
-			WHERE project_name = ?
-		;`).run(
-			this.config.projectName,
-		);
 	}
 
 	public getTime(): number {
@@ -174,8 +143,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 
 	private async rawStart(): Promise<void> { }
 
-	private async RawStop(): Promise<void> {
-		this.unlock();
+	private async rawStop(): Promise<void> {
 		this.db.close();
 	}
 }

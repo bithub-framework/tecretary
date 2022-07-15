@@ -14,12 +14,11 @@ const Database = require("better-sqlite3");
 const startable_1 = require("startable");
 const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
-const assert = require("assert");
 let ProgressReader = class ProgressReader {
     constructor(config, filePath, startTime) {
         this.config = config;
         this.startTime = startTime;
-        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.RawStop());
+        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
         this.start = this.startable.start;
         this.stop = this.startable.stop;
         this.assart = this.startable.assart;
@@ -29,7 +28,6 @@ let ProgressReader = class ProgressReader {
         this.db = new Database(filePath, {
             fileMustExist: true,
         });
-        this.lock();
         if (!config.continue)
             this.clear();
     }
@@ -42,27 +40,6 @@ let ProgressReader = class ProgressReader {
                 this.setSnapshot(name, snapshot);
             }
         });
-    }
-    lock() {
-        this.db.transaction(() => {
-            const line = this.db.prepare(`
-				SELECT *
-				FROM running
-				WHERE project_name = ?
-			;`).get(this.config.projectName);
-            assert(typeof line !== 'undefined');
-            this.db.prepare(`
-				INSERT INTO running
-				(project_name)
-				VALUES (?)
-			;`).run(this.config.projectName);
-        });
-    }
-    unlock() {
-        this.db.prepare(`
-			DELETE FROM running
-			WHERE project_name = ?
-		;`).run(this.config.projectName);
     }
     getTime() {
         const result = this.db.prepare(`
@@ -124,8 +101,7 @@ let ProgressReader = class ProgressReader {
 		;`).run(this.config.projectName);
     }
     async rawStart() { }
-    async RawStop() {
-        this.unlock();
+    async rawStop() {
         this.db.close();
     }
 };

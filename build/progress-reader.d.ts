@@ -16,8 +16,6 @@ export declare class ProgressReader<H extends HLike<H>> implements StartableLike
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     constructor(config: Config, filePath: string, startTime: number);
     capture(time: number, texchangeMap: Map<string, Texchange<H>>): void;
-    private lock;
-    private unlock;
     getTime(): number;
     private setTime;
     getSnapshot(marketName: string): Snapshot | null;
@@ -25,5 +23,5 @@ export declare class ProgressReader<H extends HLike<H>> implements StartableLike
     log(content: string, time: number): void;
     private clear;
     private rawStart;
-    private RawStop;
+    private rawStop;
 }
