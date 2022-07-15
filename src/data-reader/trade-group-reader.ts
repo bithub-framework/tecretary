@@ -103,9 +103,10 @@ export class TradeGroupReader<H extends HLike<H>> {
                 side,
                 time
             FROM trades, markets
-            WHERE trades.mid = markets.id
-                AND markets.name = ?
-				AND trades.time >= ?
+            WHERE
+				trades.mid = markets.id AND
+                markets.name = ? AND
+				trades.time >= ?
             ORDER BY time
         ;`).iterate(
 			marketName,
@@ -120,9 +121,10 @@ export class TradeGroupReader<H extends HLike<H>> {
 		const afterTime: number = this.db.prepare(`
             SELECT time
             FROM trades, markets
-            WHERE trades.mid = markets.id
-                AND markets.name = ?
-                AND trades.id = ?
+            WHERE
+				trades.mid = markets.id AND
+                markets.name = ? AND
+                trades.id = ?
         ;`).get(
 			marketName,
 			afterTradeId,
@@ -137,9 +139,10 @@ export class TradeGroupReader<H extends HLike<H>> {
                 time,
                 id
             FROM trades, markets
-            WHERE trades.mid = markets.id
-                AND markets.name = ?
-                AND (
+            WHERE
+				trades.mid = markets.id AND
+                markets.name = ? AND
+                (
                     trades.time = ? AND trades.id > ?
                     OR trades.time > ?
                 )

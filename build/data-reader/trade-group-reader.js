@@ -53,9 +53,10 @@ class TradeGroupReader {
                 side,
                 time
             FROM trades, markets
-            WHERE trades.mid = markets.id
-                AND markets.name = ?
-				AND trades.time >= ?
+            WHERE
+				trades.mid = markets.id AND
+                markets.name = ? AND
+				trades.time >= ?
             ORDER BY time
         ;`).iterate(marketName, afterTime);
     }
@@ -63,9 +64,10 @@ class TradeGroupReader {
         const afterTime = this.db.prepare(`
             SELECT time
             FROM trades, markets
-            WHERE trades.mid = markets.id
-                AND markets.name = ?
-                AND trades.id = ?
+            WHERE
+				trades.mid = markets.id AND
+                markets.name = ? AND
+                trades.id = ?
         ;`).get(marketName, afterTradeId).time;
         return this.db.prepare(`
             SELECT
@@ -76,9 +78,10 @@ class TradeGroupReader {
                 time,
                 id
             FROM trades, markets
-            WHERE trades.mid = markets.id
-                AND markets.name = ?
-                AND (
+            WHERE
+				trades.mid = markets.id AND
+                markets.name = ? AND
+                (
                     trades.time = ? AND trades.id > ?
                     OR trades.time > ?
                 )
