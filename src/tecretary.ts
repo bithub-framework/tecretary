@@ -20,7 +20,6 @@ import { TYPES } from './injection/types';
 import { Shifterator } from 'shiftable';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import assert = require('assert');
 
 
 

@@ -52,7 +52,7 @@ export class ProgressReader<H extends HLike<H>> implements StartableLike {
 				const snapshot = facade.capture();
 				this.setSnapshot(name, snapshot);
 			}
-		});
+		})();
 	}
 
 	public getTime(): number {

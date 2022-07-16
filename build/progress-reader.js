@@ -41,7 +41,7 @@ let ProgressReader = class ProgressReader {
                 const snapshot = facade.capture();
                 this.setSnapshot(name, snapshot);
             }
-        });
+        })();
     }
     getTime() {
         const result = this.db.prepare(`
