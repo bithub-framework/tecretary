@@ -6,8 +6,8 @@ export declare class OrderbookReader<H extends HLike<H>> {
     private db;
     private H;
     constructor(db: Database.Database, H: HStatic<H>);
-    getDatabaseOrderbooksAfterId(marketName: string, texchange: Texchange<H>, afterOrderbookId: number): Iterable<DatabaseOrderbook<H>>;
-    getDatabaseOrderbooksAfterTime(marketName: string, texchange: Texchange<H>, afterTime: number): Iterable<DatabaseOrderbook<H>>;
+    getDatabaseOrderbooksAfterId(marketName: string, texchange: Texchange<H>, afterOrderbookId: number, endTime: number): Generator<DatabaseOrderbook<H>, void>;
+    getDatabaseOrderbooksAfterTime(marketName: string, texchange: Texchange<H>, afterTime: number, endTime: number): Generator<DatabaseOrderbook<H>, void>;
     private rawBookOrderGroupsFromRawBookOrders;
     private databaseOrderbooksFromRawBookOrderGroups;
     private getRawBookOrdersAfterTime;

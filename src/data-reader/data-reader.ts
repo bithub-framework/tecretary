@@ -58,23 +58,27 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
         marketName: string,
         texchange: Texchange<H>,
         id: DatabaseOrderbookId,
-    ): Iterable<DatabaseOrderbook<H>> {
+        endTime: number,
+    ): Generator<DatabaseOrderbook<H>, void> {
         return this.orderbookReader.getDatabaseOrderbooksAfterId(
             marketName,
             texchange,
             Number.parseInt(id),
+            endTime,
         );
     }
 
     public getDatabaseOrderbooksAfterTime(
         marketName: string,
         texchange: Texchange<H>,
-        time: number,
-    ): Iterable<DatabaseOrderbook<H>> {
+        afterTime: number,
+        endTime: number,
+    ): Generator<DatabaseOrderbook<H>, void> {
         return this.orderbookReader.getDatabaseOrderbooksAfterTime(
             marketName,
             texchange,
-            time,
+            afterTime,
+            endTime,
         );
     }
 
@@ -82,23 +86,27 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
         marketName: string,
         texchange: Texchange<H>,
         id: DatabaseTradeId,
-    ): Iterable<DatabaseTrade<H>[]> {
+        endTime: number,
+    ): Generator<DatabaseTrade<H>[], void> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(
             marketName,
             texchange,
             Number.parseInt(id),
+            endTime,
         );
     }
 
     public getDatabaseTradeGroupsAfterTime(
         marketName: string,
         texchange: Texchange<H>,
-        time: number,
-    ): Iterable<DatabaseTrade<H>[]> {
+        afterTime: number,
+        endTime: number,
+    ): Generator<DatabaseTrade<H>[], void> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
             marketName,
             texchange,
-            time,
+            afterTime,
+            endTime,
         );
     }
 

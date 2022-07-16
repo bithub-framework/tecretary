@@ -32,17 +32,17 @@ let DataReader = class DataReader {
         this.orderbookReader = new orderbook_reader_1.OrderbookReader(this.db, H);
         this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.db, H);
     }
-    getDatabaseOrderbooksAfterId(marketName, texchange, id) {
-        return this.orderbookReader.getDatabaseOrderbooksAfterId(marketName, texchange, Number.parseInt(id));
+    getDatabaseOrderbooksAfterId(marketName, texchange, id, endTime) {
+        return this.orderbookReader.getDatabaseOrderbooksAfterId(marketName, texchange, Number.parseInt(id), endTime);
     }
-    getDatabaseOrderbooksAfterTime(marketName, texchange, time) {
-        return this.orderbookReader.getDatabaseOrderbooksAfterTime(marketName, texchange, time);
+    getDatabaseOrderbooksAfterTime(marketName, texchange, afterTime, endTime) {
+        return this.orderbookReader.getDatabaseOrderbooksAfterTime(marketName, texchange, afterTime, endTime);
     }
-    getDatabaseTradeGroupsAfterId(marketName, texchange, id) {
-        return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(marketName, texchange, Number.parseInt(id));
+    getDatabaseTradeGroupsAfterId(marketName, texchange, id, endTime) {
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(marketName, texchange, Number.parseInt(id), endTime);
     }
-    getDatabaseTradeGroupsAfterTime(marketName, texchange, time) {
-        return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(marketName, texchange, time);
+    getDatabaseTradeGroupsAfterTime(marketName, texchange, afterTime, endTime) {
+        return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(marketName, texchange, afterTime, endTime);
     }
     async rawStart() { }
     async rawStop() {

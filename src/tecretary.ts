@@ -18,6 +18,8 @@ import { Timeline } from './timeline/timeline';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { Shifterator } from 'shiftable';
+import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
+import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
 import assert = require('assert');
 
 
@@ -33,6 +35,9 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
     public starp = this.startable.starp;
     public getReadyState = this.startable.getReadyState;
     public skipStart = this.startable.skipStart;
+
+    private tradeGroupsMap = new Map<string, Generator<DatabaseTrade<H>[], void>>();
+    private orderbooksMap = new Map<string, Generator<DatabaseOrderbook<H>, void>>();
 
 
     public constructor(
@@ -50,6 +55,8 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         private H: HStatic<H>,
         @inject(TYPES.dataReader)
         private dataReader: DataReader<H>,
+        @inject(TYPES.endTime)
+        endTime: number,
     ) {
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
@@ -59,8 +66,13 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 
             const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(name, texchange, bookId)
-                : this.dataReader.getDatabaseOrderbooksAfterTime(name, texchange, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseOrderbooksAfterId(
+                    name, texchange,
+                    bookId, endTime,
+                ) : this.dataReader.getDatabaseOrderbooksAfterTime(
+                    name, texchange,
+                    this.progressReader.getTime(), endTime,
+                );
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeOrderbookCheckPoints<H>(
@@ -69,11 +81,17 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
                     ),
                 ),
             );
+            this.orderbooksMap.set(name, orderbooks);
 
             const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, texchange, tradeId)
-                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, texchange, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(
+                    name, texchange,
+                    tradeId, endTime,
+                ) : this.dataReader.getDatabaseTradeGroupsAfterTime(
+                    name, texchange,
+                    this.progressReader.getTime(), endTime,
+                );
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeTradeGroupCheckPoints<H>(
@@ -82,17 +100,18 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
                     ),
                 ),
             );
+            this.tradeGroupsMap.set(name, tradeGroups);
         }
 
-        this.timeline.affiliate(
-            Shifterator.fromIterable(
-                makePeriodicCheckPoints(
-                    this.timeline.now(),
-                    this.config.snapshotPeriod,
-                    () => this.capture(),
-                ),
-            ),
-        );
+        // this.timeline.affiliate(
+        //     Shifterator.fromIterable(
+        //         makePeriodicCheckPoints(
+        //             this.timeline.now(),
+        //             this.config.snapshotPeriod,
+        //             () => this.capture(),
+        //         ),
+        //     ),
+        // );
     }
 
     private capture(): void {
@@ -103,7 +122,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
     }
 
     private async rawStart() {
-        await this.progressReader.start(this.starp)
+        await this.progressReader.start(this.starp);
         await this.dataReader.start(this.starp);
         await this.timeline.start(this.starp);
         await this.strategy.start(this.starp);
@@ -111,11 +130,15 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 
     private async rawStop() {
         try {
-            assert(this.timeline.getReadyState() === ReadyState.STARTED);
-            await this.strategy.stop();
+            if (this.timeline.getReadyState() === ReadyState.STARTED)
+                await this.strategy.stop();
         } finally {
             this.capture();
             await this.timeline.stop();
+            for (const tradeGroups of this.tradeGroupsMap.values())
+                tradeGroups.return();
+            for (const orderbooks of this.orderbooksMap.values())
+                orderbooks.return();
             await this.dataReader.stop();
             await this.progressReader.stop();
         }

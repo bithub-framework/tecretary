@@ -6,48 +6,57 @@ class TradeGroupReader {
         this.db = db;
         this.H = H;
     }
-    getDatabaseTradeGroupsAfterId(marketName, texchange, afterTradeId) {
-        const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId);
+    getDatabaseTradeGroupsAfterId(marketName, texchange, afterTradeId, endTime) {
+        const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId, endTime);
         const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, texchange);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
-    getDatabaseTradeGroupsAfterTime(marketName, texchange, afterTime) {
-        const rawTrades = this.getRawTradesAfterTime(marketName, afterTime);
+    getDatabaseTradeGroupsAfterTime(marketName, texchange, afterTime, endTime) {
+        const rawTrades = this.getRawTradesAfterTime(marketName, afterTime, endTime);
         const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, texchange);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
     *databaseTradeGroupsFromDatabaseTrades(trades) {
         let $group = [];
-        for (const trade of trades) {
-            if ($group.length > 0 &&
-                $group[0].time !== trade.time) {
-                yield $group;
-                $group = [];
+        try {
+            for (const trade of trades) {
+                if ($group.length > 0 &&
+                    $group[0].time !== trade.time) {
+                    yield $group;
+                    $group = [];
+                }
+                $group.push(trade);
             }
-            $group.push(trade);
+            if ($group.length > 0)
+                yield $group;
         }
-        if ($group.length > 0)
-            yield $group;
+        finally {
+            trades.return();
+        }
     }
     *databaseTradesFromRawTrades(rawTrades, texchange) {
         const facade = texchange.getAdminFacade();
         const marketSpec = facade.getMarketSpec();
-        for (const rawTrade of rawTrades) {
-            yield {
-                price: new this.H(rawTrade.price).round(marketSpec.PRICE_DP),
-                quantity: new this.H(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
-                side: rawTrade.side,
-                id: `${rawTrade.id}`,
-                time: rawTrade.time,
-            };
+        try {
+            for (const rawTrade of rawTrades) {
+                yield {
+                    price: new this.H(rawTrade.price).round(marketSpec.PRICE_DP),
+                    quantity: new this.H(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
+                    side: rawTrade.side,
+                    id: `${rawTrade.id}`,
+                    time: rawTrade.time,
+                };
+            }
+        }
+        finally {
+            rawTrades.return();
         }
     }
-    getRawTradesAfterTime(marketName, afterTime) {
+    getRawTradesAfterTime(marketName, afterTime, endTime) {
         return this.db.prepare(`
 			SELECT
-				name AS marketName,
 				CAST(price AS CHAR) AS price,
 				CAST(quantity AS CHAR) AS quantity,
 				side,
@@ -57,11 +66,12 @@ class TradeGroupReader {
 			WHERE
 				trades.mid = markets.id AND
 				markets.name = ? AND
-				trades.time >= ?
+				trades.time >= ? AND
+				trades.time <= ?
 			ORDER BY time
-		;`).iterate(marketName, afterTime);
+		;`).iterate(marketName, afterTime, endTime);
     }
-    getRawTradesAfterTradeId(marketName, afterTradeId) {
+    getRawTradesAfterTradeId(marketName, afterTradeId, endTime) {
         const afterTime = this.db.prepare(`
 			SELECT time
 			FROM trades, markets
@@ -72,7 +82,6 @@ class TradeGroupReader {
 		;`).get(marketName, afterTradeId).time;
         return this.db.prepare(`
 			SELECT
-				markets.name AS marketName,
 				CAST(price AS CHAR) AS price,
 				CAST(quantity AS CHAR) AS quantity,
 				side,
@@ -85,9 +94,10 @@ class TradeGroupReader {
 				(
 					trades.time = ? AND trades.id > ?
 					OR trades.time > ?
-				)
+				) AND
+				trades.time <= ?
 			ORDER BY time
-		;`).iterate(marketName, afterTime, afterTradeId, afterTime);
+		;`).iterate(marketName, afterTime, afterTradeId, afterTime, endTime);
     }
 }
 exports.TradeGroupReader = TradeGroupReader;

@@ -17,9 +17,8 @@ class Timeout {
 }
 exports.Timeout = Timeout;
 class TimeEngine {
-    constructor(time, endTime) {
+    constructor(time) {
         this.time = time;
-        this.endTime = endTime;
         this.heap = new binary_heap_1.Heap(cmp_1.cmp);
         this.checkPoints = this.heap;
     }
@@ -41,12 +40,13 @@ class TimeEngine {
         try {
             for (;;) {
                 const checkPoint = this.checkPoints.shift();
-                assert(checkPoint.time <= this.endTime);
                 this.time = checkPoint.time;
                 yield checkPoint.cb;
             }
         }
-        catch (err) { }
+        catch (err) {
+            assert(err instanceof RangeError);
+        }
     }
     now() {
         return this.time;

@@ -32,7 +32,6 @@ export class TimeEngine implements TimeEngineLike, Iterable<() => void> {
 
 	public constructor(
 		private time: number,
-		private endTime: number,
 	) { }
 
 	public merge(sorted: Shiftable<CheckPoint>): void {
@@ -67,11 +66,12 @@ export class TimeEngine implements TimeEngineLike, Iterable<() => void> {
 		try {
 			for (; ;) {
 				const checkPoint = this.checkPoints.shift();
-				assert(checkPoint.time <= this.endTime);
 				this.time = checkPoint.time;
 				yield checkPoint.cb;
 			}
-		} catch (err) { }
+		} catch (err) {
+			assert(err instanceof RangeError);
+		}
 	}
 
 	public now(): number {

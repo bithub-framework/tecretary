@@ -15,10 +15,10 @@ export declare class DataReader<H extends HLike<H>> implements StartableLike {
     getReadyState: () => import("startable").ReadyState;
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     constructor(filePath: string, H: HStatic<H>);
-    getDatabaseOrderbooksAfterId(marketName: string, texchange: Texchange<H>, id: DatabaseOrderbookId): Iterable<DatabaseOrderbook<H>>;
-    getDatabaseOrderbooksAfterTime(marketName: string, texchange: Texchange<H>, time: number): Iterable<DatabaseOrderbook<H>>;
-    getDatabaseTradeGroupsAfterId(marketName: string, texchange: Texchange<H>, id: DatabaseTradeId): Iterable<DatabaseTrade<H>[]>;
-    getDatabaseTradeGroupsAfterTime(marketName: string, texchange: Texchange<H>, time: number): Iterable<DatabaseTrade<H>[]>;
+    getDatabaseOrderbooksAfterId(marketName: string, texchange: Texchange<H>, id: DatabaseOrderbookId, endTime: number): Generator<DatabaseOrderbook<H>, void>;
+    getDatabaseOrderbooksAfterTime(marketName: string, texchange: Texchange<H>, afterTime: number, endTime: number): Generator<DatabaseOrderbook<H>, void>;
+    getDatabaseTradeGroupsAfterId(marketName: string, texchange: Texchange<H>, id: DatabaseTradeId, endTime: number): Generator<DatabaseTrade<H>[], void>;
+    getDatabaseTradeGroupsAfterTime(marketName: string, texchange: Texchange<H>, afterTime: number, endTime: number): Generator<DatabaseTrade<H>[], void>;
     private rawStart;
     private rawStop;
 }

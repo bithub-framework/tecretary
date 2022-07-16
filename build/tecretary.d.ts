@@ -20,7 +20,9 @@ export declare class Tecretary<H extends HLike<H>> implements StartableLike {
     starp: (err?: Error | undefined) => Promise<void>;
     getReadyState: () => ReadyState;
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
-    constructor(config: Config, progressReader: ProgressReader<H>, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, H: HStatic<H>, dataReader: DataReader<H>);
+    private tradeGroupsMap;
+    private orderbooksMap;
+    constructor(config: Config, progressReader: ProgressReader<H>, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, H: HStatic<H>, dataReader: DataReader<H>, endTime: number);
     private capture;
     private rawStart;
     private rawStop;

@@ -16,10 +16,12 @@ export class TradeGroupReader<H extends HLike<H>> {
 		marketName: string,
 		texchange: Texchange<H>,
 		afterTradeId: number,
-	): Iterable<DatabaseTrade<H>[]> {
+		endTime: number,
+	): Generator<DatabaseTrade<H>[], void> {
 		const rawTrades = this.getRawTradesAfterTradeId(
 			marketName,
 			afterTradeId,
+			endTime,
 		);
 
 		const databaseTrades = this.databaseTradesFromRawTrades(
@@ -38,10 +40,12 @@ export class TradeGroupReader<H extends HLike<H>> {
 		marketName: string,
 		texchange: Texchange<H>,
 		afterTime: number,
-	): Iterable<DatabaseTrade<H>[]> {
+		endTime: number,
+	): Generator<DatabaseTrade<H>[], void> {
 		const rawTrades = this.getRawTradesAfterTime(
 			marketName,
 			afterTime,
+			endTime,
 		);
 
 		const databaseTrades = this.databaseTradesFromRawTrades(
@@ -57,47 +61,55 @@ export class TradeGroupReader<H extends HLike<H>> {
 	}
 
 	private *databaseTradeGroupsFromDatabaseTrades(
-		trades: Iterable<DatabaseTrade<H>>,
-	): Iterable<DatabaseTrade<H>[]> {
+		trades: Generator<DatabaseTrade<H>, void>,
+	): Generator<DatabaseTrade<H>[], void> {
 		let $group: DatabaseTrade<H>[] = [];
-		for (const trade of trades) {
-			if (
-				$group.length > 0 &&
-				$group[0].time !== trade.time
-			) {
-				yield $group;
-				$group = [];
+		try {
+			for (const trade of trades) {
+				if (
+					$group.length > 0 &&
+					$group[0].time !== trade.time
+				) {
+					yield $group;
+					$group = [];
+				}
+				$group.push(trade);
 			}
-			$group.push(trade);
+			if ($group.length > 0)
+				yield $group;
+		} finally {
+			trades.return();
 		}
-		if ($group.length > 0)
-			yield $group;
 	}
 
 	private *databaseTradesFromRawTrades(
-		rawTrades: Iterable<RawTrade>,
+		rawTrades: Generator<RawTrade, void>,
 		texchange: Texchange<H>,
-	): Iterable<DatabaseTrade<H>> {
+	): Generator<DatabaseTrade<H>, void> {
 		const facade = texchange.getAdminFacade();
 		const marketSpec = facade.getMarketSpec();
-		for (const rawTrade of rawTrades) {
-			yield {
-				price: new this.H(rawTrade.price).round(marketSpec.PRICE_DP),
-				quantity: new this.H(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
-				side: rawTrade.side,
-				id: `${rawTrade.id}`,
-				time: rawTrade.time,
-			};
+		try {
+			for (const rawTrade of rawTrades) {
+				yield {
+					price: new this.H(rawTrade.price).round(marketSpec.PRICE_DP),
+					quantity: new this.H(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
+					side: rawTrade.side,
+					id: `${rawTrade.id}`,
+					time: rawTrade.time,
+				};
+			}
+		} finally {
+			rawTrades.return();
 		}
 	}
 
 	private getRawTradesAfterTime(
 		marketName: string,
 		afterTime: number,
-	): Iterable<RawTrade> {
-		return this.db.prepare(`
+		endTime: number,
+	): Generator<RawTrade, void> {
+		return <Generator<RawTrade, void>>this.db.prepare(`
 			SELECT
-				name AS marketName,
 				CAST(price AS CHAR) AS price,
 				CAST(quantity AS CHAR) AS quantity,
 				side,
@@ -107,18 +119,21 @@ export class TradeGroupReader<H extends HLike<H>> {
 			WHERE
 				trades.mid = markets.id AND
 				markets.name = ? AND
-				trades.time >= ?
+				trades.time >= ? AND
+				trades.time <= ?
 			ORDER BY time
 		;`).iterate(
 			marketName,
 			afterTime,
+			endTime,
 		);
 	}
 
 	private getRawTradesAfterTradeId(
 		marketName: string,
 		afterTradeId: number,
-	): Iterable<RawTrade> {
+		endTime: number,
+	): Generator<RawTrade, void> {
 		const afterTime: number = this.db.prepare(`
 			SELECT time
 			FROM trades, markets
@@ -131,9 +146,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 			afterTradeId,
 		).time;
 
-		return this.db.prepare(`
+		return <Generator<RawTrade, void>>this.db.prepare(`
 			SELECT
-				markets.name AS marketName,
 				CAST(price AS CHAR) AS price,
 				CAST(quantity AS CHAR) AS quantity,
 				side,
@@ -146,13 +160,15 @@ export class TradeGroupReader<H extends HLike<H>> {
 				(
 					trades.time = ? AND trades.id > ?
 					OR trades.time > ?
-				)
+				) AND
+				trades.time <= ?
 			ORDER BY time
 		;`).iterate(
 			marketName,
 			afterTime,
 			afterTradeId,
 			afterTime,
+			endTime,
 		);
 	}
 }

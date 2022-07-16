@@ -17,7 +17,7 @@ class Container extends injektor_1.BaseContainer {
         this[_b] = this.rcs(data_reader_1.DataReader);
         this[_c] = this.rfs(() => {
             const progressReader = this[types_1.TYPES.progressReader]();
-            return new timeline_1.Timeline(progressReader.getTime(), this[types_1.TYPES.endTime](), new node_time_engine_1.NodeTimeEngine());
+            return new timeline_1.Timeline(progressReader.getTime(), new node_time_engine_1.NodeTimeEngine());
         });
         this[_d] = this.rcs(context_1.Context);
         this[_e] = this.rcs(tecretary_1.Tecretary);

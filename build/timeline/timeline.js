@@ -7,8 +7,8 @@ const cancellable_1 = require("cancellable");
 const pollerloop_1 = require("pollerloop");
 const startable_1 = require("startable");
 class Timeline extends time_engine_1.TimeEngine {
-    constructor(startTime, endTime, pollerEngine) {
-        super(startTime, endTime);
+    constructor(startTime, pollerEngine) {
+        super(startTime);
         this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
         this.start = this.startable.start;
         this.stop = this.startable.stop;

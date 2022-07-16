@@ -11,15 +11,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tecretary = void 0;
 const startable_1 = require("startable");
-const periodic_1 = require("./check-points/periodic");
 const orderbook_1 = require("./check-points/orderbook");
 const trade_group_1 = require("./check-points/trade-group");
 const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 const shiftable_1 = require("shiftable");
-const assert = require("assert");
 let Tecretary = class Tecretary {
-    constructor(config, progressReader, timeline, texchangeMap, strategy, H, dataReader) {
+    constructor(config, progressReader, timeline, texchangeMap, strategy, H, dataReader, endTime) {
         this.config = config;
         this.progressReader = progressReader;
         this.timeline = timeline;
@@ -34,6 +32,8 @@ let Tecretary = class Tecretary {
         this.starp = this.startable.starp;
         this.getReadyState = this.startable.getReadyState;
         this.skipStart = this.startable.skipStart;
+        this.tradeGroupsMap = new Map();
+        this.orderbooksMap = new Map();
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
             const snapshot = this.progressReader.getSnapshot(name);
@@ -41,16 +41,24 @@ let Tecretary = class Tecretary {
                 facade.restore(snapshot);
             const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(name, texchange, bookId)
-                : this.dataReader.getDatabaseOrderbooksAfterTime(name, texchange, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseOrderbooksAfterId(name, texchange, bookId, endTime) : this.dataReader.getDatabaseOrderbooksAfterTime(name, texchange, this.progressReader.getTime(), endTime);
             this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, orderbook_1.makeOrderbookCheckPoints)(orderbooks, texchange)));
+            this.orderbooksMap.set(name, orderbooks);
             const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, texchange, tradeId)
-                : this.dataReader.getDatabaseTradeGroupsAfterTime(name, texchange, this.progressReader.getTime());
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, texchange, tradeId, endTime) : this.dataReader.getDatabaseTradeGroupsAfterTime(name, texchange, this.progressReader.getTime(), endTime);
             this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, trade_group_1.makeTradeGroupCheckPoints)(tradeGroups, texchange)));
+            this.tradeGroupsMap.set(name, tradeGroups);
         }
-        this.timeline.affiliate(shiftable_1.Shifterator.fromIterable((0, periodic_1.makePeriodicCheckPoints)(this.timeline.now(), this.config.snapshotPeriod, () => this.capture())));
+        // this.timeline.affiliate(
+        //     Shifterator.fromIterable(
+        //         makePeriodicCheckPoints(
+        //             this.timeline.now(),
+        //             this.config.snapshotPeriod,
+        //             () => this.capture(),
+        //         ),
+        //     ),
+        // );
     }
     capture() {
         this.progressReader.capture(this.timeline.now(), this.texchangeMap);
@@ -63,12 +71,16 @@ let Tecretary = class Tecretary {
     }
     async rawStop() {
         try {
-            assert(this.timeline.getReadyState() === "STARTED" /* STARTED */);
-            await this.strategy.stop();
+            if (this.timeline.getReadyState() === "STARTED" /* STARTED */)
+                await this.strategy.stop();
         }
         finally {
             this.capture();
             await this.timeline.stop();
+            for (const tradeGroups of this.tradeGroupsMap.values())
+                tradeGroups.return();
+            for (const orderbooks of this.orderbooksMap.values())
+                orderbooks.return();
             await this.dataReader.stop();
             await this.progressReader.stop();
         }
@@ -81,7 +93,8 @@ Tecretary = __decorate([
     __param(3, (0, injektor_1.inject)(types_1.TYPES.texchangeMap)),
     __param(4, (0, injektor_1.inject)(types_1.TYPES.strategy)),
     __param(5, (0, injektor_1.inject)(types_1.TYPES.hStatic)),
-    __param(6, (0, injektor_1.inject)(types_1.TYPES.dataReader))
+    __param(6, (0, injektor_1.inject)(types_1.TYPES.dataReader)),
+    __param(7, (0, injektor_1.inject)(types_1.TYPES.endTime))
 ], Tecretary);
 exports.Tecretary = Tecretary;
 //# sourceMappingURL=tecretary.js.map

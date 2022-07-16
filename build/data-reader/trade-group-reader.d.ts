@@ -6,8 +6,8 @@ export declare class TradeGroupReader<H extends HLike<H>> {
     private db;
     private H;
     constructor(db: Database.Database, H: HStatic<H>);
-    getDatabaseTradeGroupsAfterId(marketName: string, texchange: Texchange<H>, afterTradeId: number): Iterable<DatabaseTrade<H>[]>;
-    getDatabaseTradeGroupsAfterTime(marketName: string, texchange: Texchange<H>, afterTime: number): Iterable<DatabaseTrade<H>[]>;
+    getDatabaseTradeGroupsAfterId(marketName: string, texchange: Texchange<H>, afterTradeId: number, endTime: number): Generator<DatabaseTrade<H>[], void>;
+    getDatabaseTradeGroupsAfterTime(marketName: string, texchange: Texchange<H>, afterTime: number, endTime: number): Generator<DatabaseTrade<H>[], void>;
     private databaseTradeGroupsFromDatabaseTrades;
     private databaseTradesFromRawTrades;
     private getRawTradesAfterTime;

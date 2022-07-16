@@ -8,9 +8,10 @@
         "node": ">=16"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "tsc -b ./test/src/tsconfig.json && node ./test/build/main.js",
         "build": "tsc -b ./src/tsconfig.json",
-        "clean": "rm -rf ./build"
+        "clean": "rm -rf ./build",
+        "clean-test": "rm -rf ./test/build"
     },
     "author": "Zim",
     "dependencies": {
@@ -31,5 +32,9 @@
         "secretary-like": "github:bithub-framework/secretary-like",
         "startable": "github:zimtsui/startable",
         "texchange": "github:bithub-framework/texchange"
+    },
+    "devDependencies": {
+        "high-precision": "github:bithub-framework/high-precision",
+        "startable-adaptor": "github:zimtsui/startable-adaptor"
     }
 }

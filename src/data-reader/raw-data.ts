@@ -1,7 +1,6 @@
 import { Side } from 'secretary-like';
 
 export interface RawBookOrder {
-	marketName: string;
 	time: number;
 	id: number;
 	price: string;
@@ -10,7 +9,6 @@ export interface RawBookOrder {
 }
 
 export interface RawTrade {
-	marketName: string;
 	price: string;
 	quantity: string;
 	side: Side;

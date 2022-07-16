@@ -25,7 +25,6 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 		const progressReader = this[TYPES.progressReader]();
 		return new Timeline(
 			progressReader.getTime(),
-			this[TYPES.endTime](),
 			new NodeTimeEngine(),
 		);
 	});
