@@ -31,10 +31,10 @@
     "peerDependencies": {
         "secretary-like": "github:bithub-framework/secretary-like",
         "startable": "github:zimtsui/startable",
-        "texchange": "github:bithub-framework/texchange"
+        "texchange": "file:../texchange"
     },
     "devDependencies": {
-        "high-precision": "github:bithub-framework/high-precision",
+        "high-precision": "file:../high-precision",
         "startable-adaptor": "github:zimtsui/startable-adaptor"
     }
 }

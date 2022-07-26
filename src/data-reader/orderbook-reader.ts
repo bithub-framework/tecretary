@@ -94,23 +94,23 @@ export class OrderbookReader<H extends HLike<H>> {
 				const asks: BookOrder<H>[] = group
 					.filter(order => order.side === Side.ASK)
 					.map(order => ({
-						price: new this.H(order.price).round(marketSpec.PRICE_DP),
-						quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
+						price: this.H.from(order.price).round(marketSpec.PRICE_DP),
+						quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
 						side: order.side,
 					}));
 				const bids = group
 					.filter(order => order.side === Side.BID)
 					.map(order => ({
-						price: new this.H(order.price).round(marketSpec.PRICE_DP),
-						quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
+						price: this.H.from(order.price).round(marketSpec.PRICE_DP),
+						quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
 						side: order.side,
 					}));
-				yield {
-					id: group[0].id.toString(),
-					time: group[0].time,
-					[Side.ASK]: asks,
-					[Side.BID]: bids,
-				}
+				yield new DatabaseOrderbook<H>(
+					bids,
+					asks,
+					group[0].time,
+					group[0].id.toString(),
+				);
 			}
 		} finally {
 			groups.return();

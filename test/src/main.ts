@@ -50,7 +50,7 @@ class TecretaryContainer extends TecretaryBaseContainer<H> {
 		1577807996537,
 	);
 	public [TecretaryTYPES.endTime] = this.rfs<number>(
-		() => this[TecretaryTYPES.startTime]() + 1 * 1 * 10 * 1000,
+		() => this[TecretaryTYPES.startTime]() + 1 * 60 * 60 * 1000,
 	);
 	public [TecretaryTYPES.strategy] = this.rfs<StrategyLike>(
 		() => new Strategy(this[TecretaryTYPES.context]()),

@@ -27,7 +27,7 @@ class TecretaryContainer extends __1.BaseContainer {
         this[_d] = this.rv('../progress.db');
         this[_e] = this.rv('/media/1tb/tecretary.db');
         this[_f] = this.rv(1577807996537);
-        this[_g] = this.rfs(() => this[__1.TYPES.startTime]() + 1 * 1 * 10 * 1000);
+        this[_g] = this.rfs(() => this[__1.TYPES.startTime]() + 1 * 60 * 60 * 1000);
         this[_h] = this.rfs(() => new strategy_1.Strategy(this[__1.TYPES.context]()));
     }
 }

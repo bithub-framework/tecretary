@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderbookReader = void 0;
 const secretary_like_1 = require("secretary-like");
+const database_orderbook_1 = require("texchange/build/interfaces/database-orderbook");
 class OrderbookReader {
     constructor(db, H) {
         this.db = db;
@@ -44,23 +45,18 @@ class OrderbookReader {
                 const asks = group
                     .filter(order => order.side === secretary_like_1.Side.ASK)
                     .map(order => ({
-                    price: new this.H(order.price).round(marketSpec.PRICE_DP),
-                    quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
+                    price: this.H.from(order.price).round(marketSpec.PRICE_DP),
+                    quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
                     side: order.side,
                 }));
                 const bids = group
                     .filter(order => order.side === secretary_like_1.Side.BID)
                     .map(order => ({
-                    price: new this.H(order.price).round(marketSpec.PRICE_DP),
-                    quantity: new this.H(order.quantity).round(marketSpec.QUANTITY_DP),
+                    price: this.H.from(order.price).round(marketSpec.PRICE_DP),
+                    quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
                     side: order.side,
                 }));
-                yield {
-                    id: group[0].id.toString(),
-                    time: group[0].time,
-                    [secretary_like_1.Side.ASK]: asks,
-                    [secretary_like_1.Side.BID]: bids,
-                };
+                yield new database_orderbook_1.DatabaseOrderbook(bids, asks, group[0].time, group[0].id.toString());
             }
         }
         finally {
