@@ -12,6 +12,6 @@ export class TYPES {
 	public static readonly context = Symbol('context');
 	public static readonly strategy = Symbol('strategy');
 
-	public static readonly hStatic = Symbol('hStatic');
+	public static readonly hFactory = Symbol('hFactory');
 	public static readonly tecretary = Symbol('tecretary');
 }

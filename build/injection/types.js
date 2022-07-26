@@ -15,6 +15,6 @@ TYPES.timeline = Symbol('timeline');
 TYPES.endTime = Symbol('endTime');
 TYPES.context = Symbol('context');
 TYPES.strategy = Symbol('strategy');
-TYPES.hStatic = Symbol('hStatic');
+TYPES.hFactory = Symbol('hFactory');
 TYPES.tecretary = Symbol('tecretary');
 //# sourceMappingURL=types.js.map

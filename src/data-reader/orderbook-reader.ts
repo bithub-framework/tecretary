@@ -1,7 +1,7 @@
 import { RawBookOrder } from './raw-data';
 import Database = require('better-sqlite3');
 import {
-	HStatic, HLike,
+	HFactory, HLike,
 	Side,
 	BookOrder,
 } from 'secretary-like';
@@ -13,7 +13,7 @@ import { Texchange } from 'texchange/build/texchange';
 export class OrderbookReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private H: HStatic<H>,
+		private hFactory: HFactory<H>,
 	) { }
 
 	public getDatabaseOrderbooksAfterId(
@@ -94,15 +94,15 @@ export class OrderbookReader<H extends HLike<H>> {
 				const asks: BookOrder<H>[] = group
 					.filter(order => order.side === Side.ASK)
 					.map(order => ({
-						price: this.H.from(order.price).round(marketSpec.PRICE_DP),
-						quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
+						price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
+						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
 						side: order.side,
 					}));
 				const bids = group
 					.filter(order => order.side === Side.BID)
 					.map(order => ({
-						price: this.H.from(order.price).round(marketSpec.PRICE_DP),
-						quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
+						price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
+						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
 						side: order.side,
 					}));
 				yield new DatabaseOrderbook<H>(

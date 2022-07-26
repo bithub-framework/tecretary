@@ -8,7 +8,7 @@ import { ProgressReader } from './progress-reader';
 import { Texchange } from 'texchange/build/texchange';
 import { Config } from './config';
 import {
-    HLike, HStatic,
+    HLike, HFactory,
     StrategyLike,
 } from 'secretary-like';
 import { makePeriodicCheckPoints } from './check-points/periodic';
@@ -50,8 +50,8 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         private texchangeMap: Map<string, Texchange<H>>,
         @inject(TYPES.strategy)
         private strategy: StrategyLike,
-        @inject(TYPES.hStatic)
-        private H: HStatic<H>,
+        @inject(TYPES.hFactory)
+        private hFactory: HFactory<H>,
         @inject(TYPES.dataReader)
         private dataReader: DataReader<H>,
         @inject(TYPES.endTime)

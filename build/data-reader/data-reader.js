@@ -17,7 +17,7 @@ const trade_group_reader_1 = require("./trade-group-reader");
 const types_1 = require("../injection/types");
 const injektor_1 = require("@zimtsui/injektor");
 let DataReader = class DataReader {
-    constructor(filePath, H) {
+    constructor(filePath, hFactory) {
         this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
         this.start = this.startable.start;
         this.stop = this.startable.stop;
@@ -29,8 +29,8 @@ let DataReader = class DataReader {
             readonly: true,
             fileMustExist: true,
         });
-        this.orderbookReader = new orderbook_reader_1.OrderbookReader(this.db, H);
-        this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.db, H);
+        this.orderbookReader = new orderbook_reader_1.OrderbookReader(this.db, hFactory);
+        this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.db, hFactory);
     }
     getDatabaseOrderbooksAfterId(marketName, texchange, id, endTime) {
         return this.orderbookReader.getDatabaseOrderbooksAfterId(marketName, texchange, Number.parseInt(id), endTime);
@@ -51,7 +51,7 @@ let DataReader = class DataReader {
 };
 DataReader = __decorate([
     __param(0, (0, injektor_1.inject)(types_1.TYPES.dataFilePath)),
-    __param(1, (0, injektor_1.inject)(types_1.TYPES.hStatic))
+    __param(1, (0, injektor_1.inject)(types_1.TYPES.hFactory))
 ], DataReader);
 exports.DataReader = DataReader;
 //# sourceMappingURL=data-reader.js.map

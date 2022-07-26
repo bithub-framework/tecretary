@@ -11,6 +11,7 @@
         "test": "tsc -b ./test/src/tsconfig.json && node ./test/build/main.js",
         "build": "tsc -b ./src/tsconfig.json",
         "clean": "rm -rf ./build",
+        "rebuild": "npm run clean && npm run build",
         "clean-test": "rm -rf ./test/build"
     },
     "author": "Zim",
@@ -29,7 +30,7 @@
         "time-engine-like": "github:zimtsui/time-engine-like"
     },
     "peerDependencies": {
-        "secretary-like": "github:bithub-framework/secretary-like",
+        "secretary-like": "file:../secretary-like",
         "startable": "github:zimtsui/startable",
         "texchange": "file:../texchange"
     },

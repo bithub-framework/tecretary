@@ -1,6 +1,6 @@
 import { RawTrade } from './raw-data';
 import Database = require('better-sqlite3');
-import { HStatic, HLike } from 'secretary-like';
+import { HFactory, HLike } from 'secretary-like';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 import { Texchange } from 'texchange/build/texchange';
 
@@ -9,7 +9,7 @@ import { Texchange } from 'texchange/build/texchange';
 export class TradeGroupReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private H: HStatic<H>,
+		private hFactory: HFactory<H>,
 	) { }
 
 	public getDatabaseTradeGroupsAfterId(
@@ -91,8 +91,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 		try {
 			for (const rawTrade of rawTrades) {
 				yield {
-					price: this.H.from(rawTrade.price).round(marketSpec.PRICE_DP),
-					quantity: this.H.from(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
+					price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_DP),
+					quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
 					side: rawTrade.side,
 					id: `${rawTrade.id}`,
 					time: rawTrade.time,

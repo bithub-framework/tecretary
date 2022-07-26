@@ -4,9 +4,9 @@ exports.OrderbookReader = void 0;
 const secretary_like_1 = require("secretary-like");
 const database_orderbook_1 = require("texchange/build/interfaces/database-orderbook");
 class OrderbookReader {
-    constructor(db, H) {
+    constructor(db, hFactory) {
         this.db = db;
-        this.H = H;
+        this.hFactory = hFactory;
     }
     getDatabaseOrderbooksAfterId(marketName, texchange, afterOrderbookId, endTime) {
         const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId, endTime);
@@ -45,15 +45,15 @@ class OrderbookReader {
                 const asks = group
                     .filter(order => order.side === secretary_like_1.Side.ASK)
                     .map(order => ({
-                    price: this.H.from(order.price).round(marketSpec.PRICE_DP),
-                    quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
+                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
+                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
                     side: order.side,
                 }));
                 const bids = group
                     .filter(order => order.side === secretary_like_1.Side.BID)
                     .map(order => ({
-                    price: this.H.from(order.price).round(marketSpec.PRICE_DP),
-                    quantity: this.H.from(order.quantity).round(marketSpec.QUANTITY_DP),
+                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
+                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
                     side: order.side,
                 }));
                 yield new database_orderbook_1.DatabaseOrderbook(bids, asks, group[0].time, group[0].id.toString());

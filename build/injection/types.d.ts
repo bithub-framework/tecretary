@@ -10,6 +10,6 @@ export declare class TYPES {
     static readonly endTime: unique symbol;
     static readonly context: unique symbol;
     static readonly strategy: unique symbol;
-    static readonly hStatic: unique symbol;
+    static readonly hFactory: unique symbol;
     static readonly tecretary: unique symbol;
 }

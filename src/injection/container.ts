@@ -1,7 +1,7 @@
 import { BaseContainer } from '@zimtsui/injektor';
 import { TYPES } from './types';
 import { NodeTimeEngine } from 'node-time-engine';
-import { HLike, StrategyLike, HStatic } from 'secretary-like';
+import { HLike, StrategyLike, HFactory } from 'secretary-like';
 import { Config } from '../config';
 import { ProgressReader } from '../progress-reader';
 import { DataReader } from '../data-reader';
@@ -32,6 +32,6 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 	public [TYPES.context] = this.rcs<Context<H>>(Context);
 	public abstract [TYPES.strategy]: () => StrategyLike;
 
-	public abstract [TYPES.hStatic]: () => HStatic<H>;
+	public abstract [TYPES.hFactory]: () => HFactory<H>;
 	public [TYPES.tecretary] = this.rcs<Tecretary<H>>(Tecretary);
 }

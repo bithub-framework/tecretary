@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TradeGroupReader = void 0;
 class TradeGroupReader {
-    constructor(db, H) {
+    constructor(db, hFactory) {
         this.db = db;
-        this.H = H;
+        this.hFactory = hFactory;
     }
     getDatabaseTradeGroupsAfterId(marketName, texchange, afterTradeId, endTime) {
         const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId, endTime);
@@ -42,8 +42,8 @@ class TradeGroupReader {
         try {
             for (const rawTrade of rawTrades) {
                 yield {
-                    price: this.H.from(rawTrade.price).round(marketSpec.PRICE_DP),
-                    quantity: this.H.from(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
+                    price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_DP),
+                    quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
                     side: rawTrade.side,
                     id: `${rawTrade.id}`,
                     time: rawTrade.time,

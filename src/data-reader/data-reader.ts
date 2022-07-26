@@ -1,6 +1,6 @@
 import { Startable, StartableLike } from 'startable';
 import Database = require('better-sqlite3');
-import { HStatic, HLike } from 'secretary-like';
+import { HFactory, HLike } from 'secretary-like';
 import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
 import { Texchange } from 'texchange/build/texchange';
@@ -32,8 +32,8 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
     public constructor(
         @inject(TYPES.dataFilePath)
         filePath: string,
-        @inject(TYPES.hStatic)
-        H: HStatic<H>,
+        @inject(TYPES.hFactory)
+        hFactory: HFactory<H>,
     ) {
         this.db = new Database(
             filePath,
@@ -45,12 +45,12 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
 
         this.orderbookReader = new OrderbookReader(
             this.db,
-            H,
+            hFactory,
         );
 
         this.tradeGroupReader = new TradeGroupReader(
             this.db,
-            H,
+            hFactory,
         );
     }
 
