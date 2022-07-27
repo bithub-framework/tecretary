@@ -54,7 +54,7 @@ class OrderbookReader {
                     price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
                     quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
                     side: secretary_like_1.Side.BID,
-                }));
+                })).reverse();
                 yield new texchange_1.DatabaseOrderbook(bids, asks, group[0].time, group[0].id.toString());
             }
         }
