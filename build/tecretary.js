@@ -36,17 +36,18 @@ let Tecretary = class Tecretary {
         this.orderbooksMap = new Map();
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
+            const marketSpec = facade.getMarketSpec();
             const snapshot = this.progressReader.getSnapshot(name);
             if (snapshot !== null)
                 facade.restore(snapshot);
             const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(name, texchange, bookId, endTime) : this.dataReader.getDatabaseOrderbooksAfterTime(name, texchange, this.progressReader.getTime(), endTime);
+                ? this.dataReader.getDatabaseOrderbooksAfterId(name, marketSpec, bookId, endTime) : this.dataReader.getDatabaseOrderbooksAfterTime(name, marketSpec, this.progressReader.getTime(), endTime);
             this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, orderbook_1.makeOrderbookCheckPoints)(orderbooks, texchange)));
             this.orderbooksMap.set(name, orderbooks);
             const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, texchange, tradeId, endTime) : this.dataReader.getDatabaseTradeGroupsAfterTime(name, texchange, this.progressReader.getTime(), endTime);
+                ? this.dataReader.getDatabaseTradeGroupsAfterId(name, marketSpec, tradeId, endTime) : this.dataReader.getDatabaseTradeGroupsAfterTime(name, marketSpec, this.progressReader.getTime(), endTime);
             this.timeline.merge(shiftable_1.Shifterator.fromIterable((0, trade_group_1.makeTradeGroupCheckPoints)(tradeGroups, texchange)));
             this.tradeGroupsMap.set(name, tradeGroups);
         }

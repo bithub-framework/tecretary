@@ -1,8 +1,10 @@
 import { RawTrade } from './raw-data';
 import Database = require('better-sqlite3');
-import { HFactory, HLike } from 'secretary-like';
+import {
+	HFactory, HLike,
+	MarketSpec,
+} from 'secretary-like';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
-import { Texchange } from 'texchange/build/texchange';
 
 
 
@@ -14,7 +16,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterId(
 		marketName: string,
-		texchange: Texchange<H>,
+		marketSpec: MarketSpec<H>,
 		afterTradeId: number,
 		endTime: number,
 	): Generator<DatabaseTrade<H>[], void> {
@@ -26,7 +28,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 		const databaseTrades = this.databaseTradesFromRawTrades(
 			rawTrades,
-			texchange,
+			marketSpec,
 		);
 
 		const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(
@@ -38,7 +40,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTime(
 		marketName: string,
-		texchange: Texchange<H>,
+		marketSpec: MarketSpec<H>,
 		afterTime: number,
 		endTime: number,
 	): Generator<DatabaseTrade<H>[], void> {
@@ -50,7 +52,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 		const databaseTrades = this.databaseTradesFromRawTrades(
 			rawTrades,
-			texchange,
+			marketSpec,
 		);
 
 		const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(
@@ -84,10 +86,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	private *databaseTradesFromRawTrades(
 		rawTrades: Generator<RawTrade, void>,
-		texchange: Texchange<H>,
+		marketSpec: MarketSpec<H>,
 	): Generator<DatabaseTrade<H>, void> {
-		const facade = texchange.getAdminFacade();
-		const marketSpec = facade.getMarketSpec();
 		try {
 			for (const rawTrade of rawTrades) {
 				yield {

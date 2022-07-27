@@ -6,15 +6,15 @@ class TradeGroupReader {
         this.db = db;
         this.hFactory = hFactory;
     }
-    getDatabaseTradeGroupsAfterId(marketName, texchange, afterTradeId, endTime) {
+    getDatabaseTradeGroupsAfterId(marketName, marketSpec, afterTradeId, endTime) {
         const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId, endTime);
-        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, texchange);
+        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, marketSpec);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
-    getDatabaseTradeGroupsAfterTime(marketName, texchange, afterTime, endTime) {
+    getDatabaseTradeGroupsAfterTime(marketName, marketSpec, afterTime, endTime) {
         const rawTrades = this.getRawTradesAfterTime(marketName, afterTime, endTime);
-        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, texchange);
+        const databaseTrades = this.databaseTradesFromRawTrades(rawTrades, marketSpec);
         const databaseTradeGroups = this.databaseTradeGroupsFromDatabaseTrades(databaseTrades);
         return databaseTradeGroups;
     }
@@ -36,9 +36,7 @@ class TradeGroupReader {
             trades.return();
         }
     }
-    *databaseTradesFromRawTrades(rawTrades, texchange) {
-        const facade = texchange.getAdminFacade();
-        const marketSpec = facade.getMarketSpec();
+    *databaseTradesFromRawTrades(rawTrades, marketSpec) {
         try {
             for (const rawTrade of rawTrades) {
                 yield {

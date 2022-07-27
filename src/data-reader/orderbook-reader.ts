@@ -4,9 +4,9 @@ import {
 	HFactory, HLike,
 	Side,
 	BookOrder,
+	MarketSpec,
 } from 'secretary-like';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { Texchange } from 'texchange/build/texchange';
 
 
 
@@ -18,7 +18,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterId(
 		marketName: string,
-		texchange: Texchange<H>,
+		marketSpec: MarketSpec<H>,
 		afterOrderbookId: number,
 		endTime: number,
 	): Generator<DatabaseOrderbook<H>, void> {
@@ -34,7 +34,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 		const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
 			rawBookOrderGroups,
-			texchange,
+			marketSpec,
 		);
 
 		return databaseOrderbooks;
@@ -42,7 +42,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterTime(
 		marketName: string,
-		texchange: Texchange<H>,
+		marketSpec: MarketSpec<H>,
 		afterTime: number,
 		endTime: number,
 	): Generator<DatabaseOrderbook<H>, void> {
@@ -58,7 +58,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 		const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(
 			rawBookOrderGroups,
-			texchange,
+			marketSpec,
 		);
 
 		return databaseOrderbooks;
@@ -85,10 +85,8 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: Generator<RawBookOrder[], void>,
-		texchange: Texchange<H>,
+		marketSpec: MarketSpec<H>,
 	): Generator<DatabaseOrderbook<H>, void> {
-		const facade = texchange.getAdminFacade();
-		const marketSpec = facade.getMarketSpec();
 		try {
 			for (const group of groups) {
 				const asks: BookOrder<H>[] = group

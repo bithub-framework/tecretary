@@ -8,16 +8,16 @@ class OrderbookReader {
         this.db = db;
         this.hFactory = hFactory;
     }
-    getDatabaseOrderbooksAfterId(marketName, texchange, afterOrderbookId, endTime) {
+    getDatabaseOrderbooksAfterId(marketName, marketSpec, afterOrderbookId, endTime) {
         const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId, endTime);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
-        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, texchange);
+        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, marketSpec);
         return databaseOrderbooks;
     }
-    getDatabaseOrderbooksAfterTime(marketName, texchange, afterTime, endTime) {
+    getDatabaseOrderbooksAfterTime(marketName, marketSpec, afterTime, endTime) {
         const rawBookOrders = this.getRawBookOrdersAfterTime(marketName, afterTime, endTime);
         const rawBookOrderGroups = this.rawBookOrderGroupsFromRawBookOrders(rawBookOrders);
-        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, texchange);
+        const databaseOrderbooks = this.databaseOrderbooksFromRawBookOrderGroups(rawBookOrderGroups, marketSpec);
         return databaseOrderbooks;
     }
     *rawBookOrderGroupsFromRawBookOrders(rawBookOrders) {
@@ -37,9 +37,7 @@ class OrderbookReader {
             rawBookOrders.return();
         }
     }
-    *databaseOrderbooksFromRawBookOrderGroups(groups, texchange) {
-        const facade = texchange.getAdminFacade();
-        const marketSpec = facade.getMarketSpec();
+    *databaseOrderbooksFromRawBookOrderGroups(groups, marketSpec) {
         try {
             for (const group of groups) {
                 const asks = group

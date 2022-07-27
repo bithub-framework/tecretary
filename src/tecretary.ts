@@ -59,6 +59,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
     ) {
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
+            const marketSpec = facade.getMarketSpec();
 
             const snapshot = this.progressReader.getSnapshot(name);
             if (snapshot !== null) facade.restore(snapshot);
@@ -66,10 +67,10 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
             const bookId = facade.getLatestDatabaseOrderbookId();
             const orderbooks = bookId !== null
                 ? this.dataReader.getDatabaseOrderbooksAfterId(
-                    name, texchange,
+                    name, marketSpec,
                     bookId, endTime,
                 ) : this.dataReader.getDatabaseOrderbooksAfterTime(
-                    name, texchange,
+                    name, marketSpec,
                     this.progressReader.getTime(), endTime,
                 );
             this.timeline.merge(
@@ -85,10 +86,10 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
             const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
                 ? this.dataReader.getDatabaseTradeGroupsAfterId(
-                    name, texchange,
+                    name, marketSpec,
                     tradeId, endTime,
                 ) : this.dataReader.getDatabaseTradeGroupsAfterTime(
-                    name, texchange,
+                    name, marketSpec,
                     this.progressReader.getTime(), endTime,
                 );
             this.timeline.merge(

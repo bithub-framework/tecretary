@@ -1,18 +1,21 @@
-import { Startable, StartableLike } from 'startable';
+import { Startable } from 'startable';
 import Database = require('better-sqlite3');
-import { HFactory, HLike } from 'secretary-like';
+import {
+    HFactory, HLike,
+    MarketSpec,
+} from 'secretary-like';
 import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
 import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
-import { Texchange } from 'texchange/build/texchange';
 import { OrderbookReader } from './orderbook-reader';
 import { TradeGroupReader } from './trade-group-reader';
+import { DataReaderLike } from '../data-reader-like';
 
 import { TYPES } from '../injection/types';
 import { inject } from '@zimtsui/injektor';
 
 
 
-export class DataReader<H extends HLike<H>> implements StartableLike {
+export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
     private db: Database.Database;
     private orderbookReader: OrderbookReader<H>;
     private tradeGroupReader: TradeGroupReader<H>;
@@ -56,13 +59,13 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
 
     public getDatabaseOrderbooksAfterId(
         marketName: string,
-        texchange: Texchange<H>,
+        marketSpec: MarketSpec<H>,
         id: DatabaseOrderbookId,
         endTime: number,
     ): Generator<DatabaseOrderbook<H>, void> {
         return this.orderbookReader.getDatabaseOrderbooksAfterId(
             marketName,
-            texchange,
+            marketSpec,
             Number.parseInt(id),
             endTime,
         );
@@ -70,13 +73,13 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
 
     public getDatabaseOrderbooksAfterTime(
         marketName: string,
-        texchange: Texchange<H>,
+        marketSpec: MarketSpec<H>,
         afterTime: number,
         endTime: number,
     ): Generator<DatabaseOrderbook<H>, void> {
         return this.orderbookReader.getDatabaseOrderbooksAfterTime(
             marketName,
-            texchange,
+            marketSpec,
             afterTime,
             endTime,
         );
@@ -84,13 +87,13 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
 
     public getDatabaseTradeGroupsAfterId(
         marketName: string,
-        texchange: Texchange<H>,
+        marketSpec: MarketSpec<H>,
         id: DatabaseTradeId,
         endTime: number,
     ): Generator<DatabaseTrade<H>[], void> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(
             marketName,
-            texchange,
+            marketSpec,
             Number.parseInt(id),
             endTime,
         );
@@ -98,13 +101,13 @@ export class DataReader<H extends HLike<H>> implements StartableLike {
 
     public getDatabaseTradeGroupsAfterTime(
         marketName: string,
-        texchange: Texchange<H>,
+        marketSpec: MarketSpec<H>,
         afterTime: number,
         endTime: number,
     ): Generator<DatabaseTrade<H>[], void> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
             marketName,
-            texchange,
+            marketSpec,
             afterTime,
             endTime,
         );
