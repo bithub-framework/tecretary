@@ -1,9 +1,9 @@
 import { Config } from './config';
 import { Snapshot } from 'texchange';
-import { StartableLike } from 'startable';
 import { Texchange } from 'texchange';
 import { HLike } from 'secretary-like';
-export declare class ProgressReader<H extends HLike<H>> implements StartableLike {
+import { ProgressReaderLike } from './progress-reader-like';
+export declare class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H> {
     private config;
     private startTime;
     private db;

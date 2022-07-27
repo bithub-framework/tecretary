@@ -7,10 +7,11 @@ import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { HLike } from 'secretary-like';
 import { lockPidFile } from '@zimtsui/lock-pid-file';
+import { ProgressReaderLike } from './progress-reader-like';
 
 
 
-export class ProgressReader<H extends HLike<H>> implements StartableLike {
+export class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H> {
 	private db: Database.Database;
 	private startable = Startable.create(
 		() => this.rawStart(),
