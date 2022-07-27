@@ -1,6 +1,6 @@
 import { ReadyState, StartableLike } from 'startable';
-import { DataReader } from './data-reader';
-import { ProgressReader } from './progress-reader';
+import { DataReaderLike } from './data-reader-like';
+import { ProgressReaderLike } from './progress-reader-like';
 import { Texchange } from 'texchange';
 import { Config } from './config';
 import { HLike, HFactory, StrategyLike } from 'secretary-like';
@@ -22,7 +22,7 @@ export declare class Tecretary<H extends HLike<H>> implements StartableLike {
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     private tradeGroupsMap;
     private orderbooksMap;
-    constructor(config: Config, progressReader: ProgressReader<H>, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, hFactory: HFactory<H>, dataReader: DataReader<H>, endTime: number);
+    constructor(config: Config, progressReader: ProgressReaderLike<H>, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, hFactory: HFactory<H>, dataReader: DataReaderLike<H>, endTime: number);
     private capture;
     private rawStart;
     private rawStop;

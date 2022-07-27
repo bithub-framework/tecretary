@@ -3,8 +3,8 @@ import {
     ReadyState,
     StartableLike,
 } from 'startable';
-import { DataReader } from './data-reader';
-import { ProgressReader } from './progress-reader';
+import { DataReaderLike } from './data-reader-like';
+import { ProgressReaderLike } from './progress-reader-like';
 import { Texchange } from 'texchange';
 import { Config } from './config';
 import {
@@ -44,7 +44,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         @inject(TYPES.config)
         private config: Config,
         @inject(TYPES.progressReader)
-        private progressReader: ProgressReader<H>,
+        private progressReader: ProgressReaderLike<H>,
         @inject(TYPES.timeline)
         private timeline: Timeline,
         @inject(TYPES.texchangeMap)
@@ -54,7 +54,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         @inject(TYPES.hFactory)
         private hFactory: HFactory<H>,
         @inject(TYPES.dataReader)
-        private dataReader: DataReader<H>,
+        private dataReader: DataReaderLike<H>,
         @inject(TYPES.endTime)
         endTime: number,
     ) {

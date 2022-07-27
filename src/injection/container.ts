@@ -7,7 +7,9 @@ import {
 } from 'secretary-like';
 import { Config } from '../config';
 import { ProgressReader } from '../progress-reader';
+import { ProgressReaderLike } from '../progress-reader-like';
 import { DataReader } from '../data-reader';
+import { DataReaderLike } from '../data-reader-like';
 import { Timeline } from '../timeline/timeline';
 import { Context } from '../context';
 import { Texchange } from 'texchange';
@@ -17,10 +19,10 @@ import { Tecretary } from '../tecretary';
 
 export abstract class Container<H extends HLike<H>> extends BaseContainer {
 	public abstract [TYPES.config]: () => Config;
-	public [TYPES.progressReader] = this.rcs<ProgressReader<H>>(ProgressReader);
+	public [TYPES.progressReader] = this.rcs<ProgressReaderLike<H>>(ProgressReader);
 	public abstract [TYPES.startTime]: () => number;
 	public abstract [TYPES.progressFilePath]: () => string;
-	public [TYPES.dataReader] = this.rcs<DataReader<H>>(DataReader);
+	public [TYPES.dataReader] = this.rcs<DataReaderLike<H>>(DataReader);
 	public abstract [TYPES.dataFilePath]: () => string;
 
 	public abstract [TYPES.texchangeMap]: () => Map<string, Texchange<H>>;
