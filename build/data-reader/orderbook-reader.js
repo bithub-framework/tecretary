@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderbookReader = void 0;
 const secretary_like_1 = require("secretary-like");
-const database_orderbook_1 = require("texchange/build/interfaces/database-orderbook");
+const texchange_1 = require("texchange");
 class OrderbookReader {
     constructor(db, hFactory) {
         this.db = db;
@@ -54,7 +54,7 @@ class OrderbookReader {
                     quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
                     side: order.side,
                 }));
-                yield new database_orderbook_1.DatabaseOrderbook(bids, asks, group[0].time, group[0].id.toString());
+                yield new texchange_1.DatabaseOrderbook(bids, asks, group[0].time, group[0].id.toString());
             }
         }
         finally {

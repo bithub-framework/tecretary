@@ -1,6 +1,6 @@
 import Database = require('better-sqlite3');
 import { HFactory, HLike, MarketSpec } from 'secretary-like';
-import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
+import { DatabaseOrderbook } from 'texchange';
 export declare class OrderbookReader<H extends HLike<H>> {
     private db;
     private hFactory;

@@ -5,6 +5,7 @@ import {
 	MarketSpec,
 } from 'secretary-like';
 import { DatabaseTrade } from 'texchange';
+import { DatabaseIterableIterator } from './database-iterable-iterator';
 
 
 
@@ -85,7 +86,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 	}
 
 	private *databaseTradesFromRawTrades(
-		rawTrades: Generator<RawTrade, void>,
+		rawTrades: DatabaseIterableIterator<RawTrade>,
 		marketSpec: MarketSpec<H>,
 	): Generator<DatabaseTrade<H>, void> {
 		try {
@@ -107,8 +108,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 		marketName: string,
 		afterTime: number,
 		endTime: number,
-	): Generator<RawTrade, void> {
-		return <Generator<RawTrade, void>>this.db.prepare(`
+	): DatabaseIterableIterator<RawTrade> {
+		return <DatabaseIterableIterator<RawTrade>>this.db.prepare(`
 			SELECT
 				CAST(price AS CHAR) AS price,
 				CAST(quantity AS CHAR) AS quantity,
@@ -133,7 +134,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 		marketName: string,
 		afterTradeId: number,
 		endTime: number,
-	): Generator<RawTrade, void> {
+	): DatabaseIterableIterator<RawTrade> {
 		const afterTime: number = this.db.prepare(`
 			SELECT time
 			FROM trades, markets
