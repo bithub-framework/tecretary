@@ -17,11 +17,13 @@ const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 const shiftable_1 = require("shiftable");
 let Tecretary = class Tecretary {
-    constructor(progressReader, timeline, texchangeMap, strategy, dataReader, endTime) {
+    constructor(config, progressReader, timeline, texchangeMap, strategy, hFactory, dataReader, endTime) {
+        this.config = config;
         this.progressReader = progressReader;
         this.timeline = timeline;
         this.texchangeMap = texchangeMap;
         this.strategy = strategy;
+        this.hFactory = hFactory;
         this.dataReader = dataReader;
         this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
         this.start = this.startable.start;
@@ -86,12 +88,14 @@ let Tecretary = class Tecretary {
     }
 };
 Tecretary = __decorate([
-    __param(0, (0, injektor_1.inject)(types_1.TYPES.progressReader)),
-    __param(1, (0, injektor_1.inject)(types_1.TYPES.timeline)),
-    __param(2, (0, injektor_1.inject)(types_1.TYPES.texchangeMap)),
-    __param(3, (0, injektor_1.inject)(types_1.TYPES.strategy)),
-    __param(4, (0, injektor_1.inject)(types_1.TYPES.dataReader)),
-    __param(5, (0, injektor_1.inject)(types_1.TYPES.endTime))
+    __param(0, (0, injektor_1.inject)(types_1.TYPES.config)),
+    __param(1, (0, injektor_1.inject)(types_1.TYPES.progressReader)),
+    __param(2, (0, injektor_1.inject)(types_1.TYPES.timeline)),
+    __param(3, (0, injektor_1.inject)(types_1.TYPES.texchangeMap)),
+    __param(4, (0, injektor_1.inject)(types_1.TYPES.strategy)),
+    __param(5, (0, injektor_1.inject)(types_1.TYPES.hFactory)),
+    __param(6, (0, injektor_1.inject)(types_1.TYPES.dataReader)),
+    __param(7, (0, injektor_1.inject)(types_1.TYPES.endTime))
 ], Tecretary);
 exports.Tecretary = Tecretary;
 //# sourceMappingURL=tecretary.js.map
