@@ -40,8 +40,6 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 
 
     public constructor(
-        @inject(TYPES.config)
-        private config: Config,
         @inject(TYPES.progressReader)
         private progressReader: ProgressReader<H>,
         @inject(TYPES.timeline)
@@ -50,8 +48,6 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         private texchangeMap: Map<string, Texchange<H>>,
         @inject(TYPES.strategy)
         private strategy: StrategyLike,
-        @inject(TYPES.hFactory)
-        private hFactory: HFactory<H>,
         @inject(TYPES.dataReader)
         private dataReader: DataReader<H>,
         @inject(TYPES.endTime)

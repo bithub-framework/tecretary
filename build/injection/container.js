@@ -1,5 +1,5 @@
 "use strict";
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d, _e, _f;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Container = void 0;
 const injektor_1 = require("@zimtsui/injektor");
@@ -20,9 +20,14 @@ class Container extends injektor_1.BaseContainer {
             return new timeline_1.Timeline(progressReader.getTime(), new node_time_engine_1.NodeTimeEngine());
         });
         this[_d] = this.rcs(context_1.Context);
-        this[_e] = this.rcs(tecretary_1.Tecretary);
+        this[_e] = this.rfs(() => {
+            const Strategy = this[types_1.TYPES.Strategy]();
+            const ctx = this[types_1.TYPES.context]();
+            return new Strategy(ctx);
+        });
+        this[_f] = this.rcs(tecretary_1.Tecretary);
     }
 }
 exports.Container = Container;
-_a = types_1.TYPES.progressReader, _b = types_1.TYPES.dataReader, _c = types_1.TYPES.timeline, _d = types_1.TYPES.context, _e = types_1.TYPES.tecretary;
+_a = types_1.TYPES.progressReader, _b = types_1.TYPES.dataReader, _c = types_1.TYPES.timeline, _d = types_1.TYPES.context, _e = types_1.TYPES.strategy, _f = types_1.TYPES.tecretary;
 //# sourceMappingURL=container.js.map

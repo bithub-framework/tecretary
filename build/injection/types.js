@@ -14,6 +14,7 @@ TYPES.texchangeMap = Symbol('texchangeMap');
 TYPES.timeline = Symbol('timeline');
 TYPES.endTime = Symbol('endTime');
 TYPES.context = Symbol('context');
+TYPES.Strategy = Symbol('strategyStatic');
 TYPES.strategy = Symbol('strategy');
 TYPES.hFactory = Symbol('hFactory');
 TYPES.tecretary = Symbol('tecretary');

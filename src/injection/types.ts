@@ -10,6 +10,8 @@ export class TYPES {
 	public static readonly timeline = Symbol('timeline');
 	public static readonly endTime = Symbol('endTime');
 	public static readonly context = Symbol('context');
+
+	public static readonly Strategy = Symbol('strategyStatic');
 	public static readonly strategy = Symbol('strategy');
 
 	public static readonly hFactory = Symbol('hFactory');
