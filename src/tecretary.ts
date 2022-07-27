@@ -74,6 +74,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
                     name, marketSpec,
                     this.progressReader.getTime(), endTime,
                 );
+            this.orderbooksMap.set(name, orderbooks);
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeOrderbookCheckPoints<H>(
@@ -82,7 +83,6 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
                     ),
                 ),
             );
-            this.orderbooksMap.set(name, orderbooks);
 
             const tradeId = facade.getLatestDatabaseTradeId();
             const tradeGroups = tradeId !== null
@@ -93,6 +93,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
                     name, marketSpec,
                     this.progressReader.getTime(), endTime,
                 );
+            this.tradeGroupsMap.set(name, tradeGroups);
             this.timeline.merge(
                 Shifterator.fromIterable(
                     makeTradeGroupCheckPoints<H>(
@@ -101,8 +102,23 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
                     ),
                 ),
             );
-            this.tradeGroupsMap.set(name, tradeGroups);
         }
+
+        this.timeline.merge(
+            Shifterator.fromIterable<CheckPoint>([{
+                time: endTime,
+                cb: async () => {
+                    try {
+                        for (const [name, texchange] of this.texchangeMap) {
+                            const facade = texchange.getAdminFacade();
+                            facade.stop(new EndOfData('End of data.'));
+                        }
+                    } catch (err) {
+                        this.starp();
+                    }
+                }
+            }]),
+        );
 
         // this.timeline.affiliate(
         //     Shifterator.fromIterable(
@@ -126,13 +142,22 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         await this.progressReader.start(this.starp);
         await this.dataReader.start(this.starp);
         await this.timeline.start(this.starp);
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
+            await facade.start(this.starp);
+        }
         await this.strategy.start(this.starp);
     }
 
     private async rawStop() {
         try {
-            if (this.timeline.getReadyState() === ReadyState.STARTED)
+            if (this.timeline.getReadyState() === ReadyState.STARTED) {
                 await this.strategy.stop();
+                for (const [name, texchange] of this.texchangeMap) {
+                    const facade = texchange.getAdminFacade();
+                    await facade.stop();
+                }
+            }
         } finally {
             this.capture();
             await this.timeline.stop();
@@ -145,3 +170,5 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         }
     }
 }
+
+export class EndOfData extends Error { }

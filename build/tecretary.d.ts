@@ -27,3 +27,5 @@ export declare class Tecretary<H extends HLike<H>> implements StartableLike {
     private rawStart;
     private rawStop;
 }
+export declare class EndOfData extends Error {
+}
