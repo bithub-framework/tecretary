@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderbookReader = void 0;
+const raw_data_1 = require("./raw-data");
 const secretary_like_1 = require("secretary-like");
 const texchange_1 = require("texchange");
 class OrderbookReader {
@@ -41,18 +42,18 @@ class OrderbookReader {
         try {
             for (const group of groups) {
                 const asks = group
-                    .filter(order => order.side === secretary_like_1.Side.ASK)
+                    .filter(order => order.side === raw_data_1.RawSide.ASK)
                     .map(order => ({
                     price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
                     quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
-                    side: order.side,
+                    side: secretary_like_1.Side.ASK,
                 }));
                 const bids = group
-                    .filter(order => order.side === secretary_like_1.Side.BID)
+                    .filter(order => order.side === raw_data_1.RawSide.BID)
                     .map(order => ({
                     price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
                     quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
-                    side: order.side,
+                    side: secretary_like_1.Side.BID,
                 }));
                 yield new texchange_1.DatabaseOrderbook(bids, asks, group[0].time, group[0].id.toString());
             }

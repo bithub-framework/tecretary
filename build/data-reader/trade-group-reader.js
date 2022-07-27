@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TradeGroupReader = void 0;
+const raw_data_1 = require("./raw-data");
+const secretary_like_1 = require("secretary-like");
 class TradeGroupReader {
     constructor(db, hFactory) {
         this.db = db;
@@ -42,7 +44,7 @@ class TradeGroupReader {
                 yield {
                     price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_DP),
                     quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
-                    side: rawTrade.side,
+                    side: rawTrade.side === raw_data_1.RawSide.BID ? secretary_like_1.Side.BID : secretary_like_1.Side.ASK,
                     id: `${rawTrade.id}`,
                     time: rawTrade.time,
                 };

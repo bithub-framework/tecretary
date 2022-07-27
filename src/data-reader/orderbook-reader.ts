@@ -1,4 +1,4 @@
-import { RawBookOrder } from './raw-data';
+import { RawBookOrder, RawSide } from './raw-data';
 import Database = require('better-sqlite3');
 import {
 	HFactory, HLike,
@@ -91,18 +91,18 @@ export class OrderbookReader<H extends HLike<H>> {
 		try {
 			for (const group of groups) {
 				const asks: BookOrder<H>[] = group
-					.filter(order => order.side === Side.ASK)
+					.filter(order => order.side === RawSide.ASK)
 					.map(order => ({
 						price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
 						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
-						side: order.side,
+						side: Side.ASK,
 					}));
-				const bids = group
-					.filter(order => order.side === Side.BID)
+				const bids: BookOrder<H>[] = group
+					.filter(order => order.side === RawSide.BID)
 					.map(order => ({
 						price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
 						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
-						side: order.side,
+						side: Side.BID,
 					}));
 				yield new DatabaseOrderbook<H>(
 					bids,

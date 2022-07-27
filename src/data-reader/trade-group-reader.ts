@@ -1,8 +1,9 @@
-import { RawTrade } from './raw-data';
+import { RawTrade, RawSide } from './raw-data';
 import Database = require('better-sqlite3');
 import {
 	HFactory, HLike,
 	MarketSpec,
+	Side,
 } from 'secretary-like';
 import { DatabaseTrade } from 'texchange';
 import { DatabaseIterableIterator } from './database-iterable-iterator';
@@ -94,7 +95,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 				yield {
 					price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_DP),
 					quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
-					side: rawTrade.side,
+					side: rawTrade.side === RawSide.BID ? Side.BID : Side.ASK,
 					id: `${rawTrade.id}`,
 					time: rawTrade.time,
 				};
