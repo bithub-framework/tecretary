@@ -1,8 +1,8 @@
 import Database = require('better-sqlite3');
 import { Config } from './config';
-import { Snapshot } from 'texchange/build/facades.d/admin';
+import { Snapshot } from 'texchange';
 import { Startable, StartableLike } from 'startable';
-import { Texchange } from 'texchange/build/texchange';
+import { Texchange } from 'texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { HLike } from 'secretary-like';

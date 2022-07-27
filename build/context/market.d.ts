@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { MarketLike, AccountLike, HLike, MarketEvents } from 'secretary-like';
+import { Texchange } from 'texchange';
 import { EventEmitter } from 'events';
-import { Texchange } from 'texchange/build/texchange';
 export declare class ContextMarket<H extends HLike<H>> extends EventEmitter implements MarketLike<H> {
     [accountId: number]: AccountLike<H>;
     PRICE_DP: number;

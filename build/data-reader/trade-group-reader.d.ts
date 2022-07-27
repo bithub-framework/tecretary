@@ -1,6 +1,6 @@
 import Database = require('better-sqlite3');
 import { HFactory, HLike, MarketSpec } from 'secretary-like';
-import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
+import { DatabaseTrade } from 'texchange';
 export declare class TradeGroupReader<H extends HLike<H>> {
     private db;
     private hFactory;

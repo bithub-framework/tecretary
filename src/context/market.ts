@@ -4,9 +4,11 @@ import {
 	HLike,
 	MarketEvents,
 } from 'secretary-like';
-import { UserMarketFacade } from 'texchange/build/facades.d/user-market';
+import {
+	UserMarketFacade,
+	Texchange,
+} from 'texchange';
 import { EventEmitter } from 'events';
-import { Texchange } from 'texchange/build/texchange';
 import { ContextAccout } from './account';
 
 

@@ -4,8 +4,12 @@ import {
     HFactory, HLike,
     MarketSpec,
 } from 'secretary-like';
-import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
-import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
+import {
+    DatabaseOrderbook,
+    DatabaseOrderbookId,
+    DatabaseTrade,
+    DatabaseTradeId,
+} from 'texchange';
 import { OrderbookReader } from './orderbook-reader';
 import { TradeGroupReader } from './trade-group-reader';
 import { DataReaderLike } from '../data-reader-like';

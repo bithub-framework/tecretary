@@ -1,7 +1,7 @@
 import { Config } from './config';
-import { Snapshot } from 'texchange/build/facades.d/admin';
+import { Snapshot } from 'texchange';
 import { StartableLike } from 'startable';
-import { Texchange } from 'texchange/build/texchange';
+import { Texchange } from 'texchange';
 import { HLike } from 'secretary-like';
 export declare class ProgressReader<H extends HLike<H>> implements StartableLike {
     private config;

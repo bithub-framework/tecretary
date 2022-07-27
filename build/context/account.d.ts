@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { AccountLike, HLike, LimitOrder, Balances, Positions, OpenOrder, Amendment, AccountEvents } from 'secretary-like';
-import { Texchange } from 'texchange/build/texchange';
+import { Texchange } from 'texchange';
 import { EventEmitter } from 'events';
 export declare class ContextAccout<H extends HLike<H>> extends EventEmitter implements AccountLike<H> {
     on: <Event extends keyof AccountEvents<H>>(event: Event, listener: (...args: AccountEvents<H>[Event]) => void) => this;

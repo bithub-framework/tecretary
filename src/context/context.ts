@@ -4,7 +4,7 @@ import {
     HLike,
     TimelineLike,
 } from 'secretary-like';
-import { Texchange } from 'texchange/build/texchange';
+import { Texchange } from 'texchange';
 import { ProgressReader } from '../progress-reader';
 import { Config } from '../config';
 import assert = require('assert');

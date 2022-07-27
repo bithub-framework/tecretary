@@ -5,8 +5,8 @@ import { Config } from '../config';
 import { ProgressReader } from '../progress-reader';
 import { DataReader } from '../data-reader';
 import { Timeline } from '../timeline/timeline';
-import { Context } from '../context/context';
-import { Texchange } from 'texchange/build/texchange';
+import { Context } from '../context';
+import { Texchange } from 'texchange';
 import { Tecretary } from '../tecretary';
 export declare abstract class Container<H extends HLike<H>> extends BaseContainer {
     abstract [TYPES.config]: () => Config;

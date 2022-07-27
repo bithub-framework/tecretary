@@ -1,6 +1,5 @@
 import { HFactory, HLike, MarketSpec } from 'secretary-like';
-import { DatabaseOrderbook, DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
-import { DatabaseTrade, DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
+import { DatabaseOrderbook, DatabaseOrderbookId, DatabaseTrade, DatabaseTradeId } from 'texchange';
 import { DataReaderLike } from '../data-reader-like';
 export declare class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
     private db;

@@ -5,7 +5,7 @@ import {
 } from 'startable';
 import { DataReader } from './data-reader';
 import { ProgressReader } from './progress-reader';
-import { Texchange } from 'texchange/build/texchange';
+import { Texchange } from 'texchange';
 import { Config } from './config';
 import {
     HLike, HFactory,

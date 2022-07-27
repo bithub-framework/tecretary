@@ -3,10 +3,12 @@ import {
 	MarketSpec,
 } from 'secretary-like';
 import { StartableLike } from 'startable';
-import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
-import { DatabaseOrderbookId } from 'texchange/build/interfaces/database-orderbook';
-import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
-import { DatabaseTradeId } from 'texchange/build/interfaces/database-trade';
+import {
+	DatabaseOrderbook,
+	DatabaseOrderbookId,
+	DatabaseTrade,
+	DatabaseTradeId,
+} from 'texchange';
 
 
 

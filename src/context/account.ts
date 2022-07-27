@@ -8,8 +8,10 @@ import {
 	Amendment,
 	AccountEvents,
 } from 'secretary-like';
-import { UserAccountFacade } from 'texchange/build/facades.d/user-account';
-import { Texchange } from 'texchange/build/texchange';
+import {
+	UserAccountFacade,
+	Texchange,
+} from 'texchange';
 import { EventEmitter } from 'events';
 
 

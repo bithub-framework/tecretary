@@ -4,7 +4,7 @@ import {
 	HFactory, HLike,
 	MarketSpec,
 } from 'secretary-like';
-import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
+import { DatabaseTrade } from 'texchange';
 
 
 
