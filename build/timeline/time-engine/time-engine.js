@@ -5,8 +5,6 @@ const binary_heap_1 = require("@zimtsui/binary-heap");
 const shiftable_1 = require("shiftable");
 const assert = require("assert");
 const cmp_1 = require("./cmp");
-class ShiftableHeap extends binary_heap_1.Heap {
-}
 class Timeout {
     constructor(node) {
         this.node = node;
@@ -21,11 +19,14 @@ class TimeEngine {
         this.time = time;
         this.heap = new binary_heap_1.Heap(cmp_1.cmp);
         this.checkPoints = this.heap;
+        this.sorted = true;
     }
     merge(sorted) {
+        assert(this.sorted);
         this.checkPoints = new shiftable_1.Merged(cmp_1.cmp, this.checkPoints, sorted);
     }
     affiliate(sorted) {
+        assert(this.sorted);
         this.checkPoints = new shiftable_1.Affiliation(cmp_1.cmp, this.checkPoints, sorted);
     }
     setTimeout(cb, ms) {

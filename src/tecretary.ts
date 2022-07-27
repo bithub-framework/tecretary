@@ -18,6 +18,7 @@ import { Timeline } from './timeline/timeline';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { Shifterator } from 'shiftable';
+import { CheckPoint } from './timeline/time-engine';
 import { DatabaseTrade } from 'texchange/build/interfaces/database-trade';
 import { DatabaseOrderbook } from 'texchange/build/interfaces/database-orderbook';
 

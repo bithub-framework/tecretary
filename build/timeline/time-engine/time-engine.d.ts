@@ -11,6 +11,7 @@ export declare class TimeEngine implements TimeEngineLike, Iterable<() => void> 
     private time;
     private heap;
     private checkPoints;
+    private sorted;
     constructor(time: number);
     merge(sorted: Shiftable<CheckPoint>): void;
     affiliate(sorted: Shiftable<CheckPoint>): void;
