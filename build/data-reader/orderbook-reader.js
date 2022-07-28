@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderbookReader = void 0;
 const raw_data_1 = require("./raw-data");
 const secretary_like_1 = require("secretary-like");
-const texchange_1 = require("texchange");
 class OrderbookReader {
     constructor(db, hFactory) {
         this.db = db;
@@ -55,7 +54,12 @@ class OrderbookReader {
                     quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
                     side: secretary_like_1.Side.BID,
                 })).reverse();
-                yield new texchange_1.DatabaseOrderbook(bids, asks, group[0].time, group[0].id.toString());
+                yield {
+                    [secretary_like_1.Side.BID]: bids,
+                    [secretary_like_1.Side.ASK]: asks,
+                    time: group[0].time,
+                    id: group[0].id.toString(),
+                };
             }
         }
         finally {

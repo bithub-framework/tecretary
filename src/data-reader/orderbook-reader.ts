@@ -104,12 +104,12 @@ export class OrderbookReader<H extends HLike<H>> {
 						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
 						side: Side.BID,
 					})).reverse();
-				yield new DatabaseOrderbook<H>(
-					bids,
-					asks,
-					group[0].time,
-					group[0].id.toString(),
-				);
+				yield {
+					[Side.BID]: bids,
+					[Side.ASK]: asks,
+					time: group[0].time,
+					id: group[0].id.toString(),
+				};
 			}
 		} finally {
 			groups.return();
