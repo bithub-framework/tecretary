@@ -7,7 +7,8 @@ import {
 	Side, Length, Action,
 } from 'secretary-like';
 import { Startable } from 'startable';
-import { Pollerloop, Loop } from 'pollerloop';
+import { Pollerloop, Loop, LoopStopped } from 'pollerloop';
+import assert = require('assert');
 
 
 export class Strategy<H extends HLike<H>> implements StrategyLike {
@@ -35,12 +36,13 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	}
 
 	private loop: Loop = async sleep => {
-		for (const startTime = this.ctx.timeline.now();
-			this.ctx.timeline.now() < startTime + 60 * 60 * 1000;
-			await sleep(60 * 1000)
-		) {
-			const balances = await this.ctx[0][0].getBalances();
-			console.log(JSON.stringify(balances));
+		try {
+			for (; ; await sleep(60 * 1000)) {
+				const balances = await this.ctx[0][0].getBalances();
+				console.log(JSON.stringify(balances));
+			}
+		} catch (err) {
+			assert(err instanceof LoopStopped)
 		}
 	}
 
@@ -63,15 +65,22 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		console.log(JSON.stringify(results[0]));
 	}
 
+	private onError = (err: Error) => {
+		// console.error(err);
+		this.starp();
+	}
+
 	private async rawStart(): Promise<void> {
 		this.ctx[0].on('trades', this.onTrades);
 		this.ctx[0].on('orderbook', this.onOrderbook);
+		this.ctx[0].on('error', this.onError);
 		await this.poller.start(this.starp);
 	}
 
 	private async rawStop(): Promise<void> {
 		this.ctx[0].off('trades', this.onTrades);
 		this.ctx[0].off('orderbook', this.onOrderbook);
+		this.ctx[0].off('error', this.onError);
 		await this.poller.stop();
 	}
 }

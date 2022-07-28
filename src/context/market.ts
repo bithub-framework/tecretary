@@ -53,6 +53,9 @@ export class ContextMarket<H extends HLike<H>>
 			this.emit('trades', trades);
 		});
 
+		this.facade.on('error', error => {
+			this.emit('error', error);
+		});
 
 		this[0] = new ContextAccout(texchange);
 	}

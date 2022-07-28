@@ -4,6 +4,7 @@ exports.Strategy = void 0;
 const secretary_like_1 = require("secretary-like");
 const startable_1 = require("startable");
 const pollerloop_1 = require("pollerloop");
+const assert = require("assert");
 class Strategy {
     constructor(ctx) {
         this.ctx = ctx;
@@ -17,9 +18,14 @@ class Strategy {
         this.latestPrice = null;
         this.bought = false;
         this.loop = async (sleep) => {
-            for (const startTime = this.ctx.timeline.now(); this.ctx.timeline.now() < startTime + 60 * 60 * 1000; await sleep(60 * 1000)) {
-                const balances = await this.ctx[0][0].getBalances();
-                console.log(JSON.stringify(balances));
+            try {
+                for (;; await sleep(60 * 1000)) {
+                    const balances = await this.ctx[0][0].getBalances();
+                    console.log(JSON.stringify(balances));
+                }
+            }
+            catch (err) {
+                assert(err instanceof pollerloop_1.LoopStopped);
             }
         };
         this.onTrades = async (trades) => {
@@ -40,16 +46,22 @@ class Strategy {
                 }]);
             console.log(JSON.stringify(results[0]));
         };
+        this.onError = (err) => {
+            // console.error(err);
+            this.starp();
+        };
         this.poller = new pollerloop_1.Pollerloop(this.loop, ctx.timeline);
     }
     async rawStart() {
         this.ctx[0].on('trades', this.onTrades);
         this.ctx[0].on('orderbook', this.onOrderbook);
+        this.ctx[0].on('error', this.onError);
         await this.poller.start(this.starp);
     }
     async rawStop() {
         this.ctx[0].off('trades', this.onTrades);
         this.ctx[0].off('orderbook', this.onOrderbook);
+        this.ctx[0].off('error', this.onError);
         await this.poller.stop();
     }
 }

@@ -15,6 +15,7 @@ export declare class Strategy<H extends HLike<H>> implements StrategyLike {
     private loop;
     private onTrades;
     private onOrderbook;
+    private onError;
     private rawStart;
     private rawStop;
 }

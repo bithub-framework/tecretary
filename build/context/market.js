@@ -18,6 +18,9 @@ class ContextMarket extends events_1.EventEmitter {
         this.facade.on('trades', trades => {
             this.emit('trades', trades);
         });
+        this.facade.on('error', error => {
+            this.emit('error', error);
+        });
         this[0] = new account_1.ContextAccout(texchange);
     }
     quantity(price, dollarVolume) {
