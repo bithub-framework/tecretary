@@ -32,10 +32,10 @@ class Strategy {
                 return;
             this.bought = true;
             const results = await this.ctx[0][0].makeOrders([{
-                    price: orderbook[secretary_like_1.Side.ASK][0].price,
-                    quantity: orderbook[secretary_like_1.Side.ASK][0].quantity,
+                    price: orderbook.get(secretary_like_1.Side.ASK)[0].price,
+                    quantity: orderbook.get(secretary_like_1.Side.ASK)[0].quantity,
                     length: secretary_like_1.Length.LONG,
-                    operation: secretary_like_1.Operation.OPEN,
+                    action: secretary_like_1.Action.OPEN,
                     side: secretary_like_1.Side.BID,
                 }]);
             console.log(JSON.stringify(results[0]));

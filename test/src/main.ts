@@ -9,40 +9,39 @@ import {
 	Config,
 } from '../..';
 import {
-	HStatic,
+	HStatic, HFactory,
 	StrategyStaticLike,
 } from 'secretary-like';
 import {
-	BigH as H,
-	BigHFactory as HFactory,
+	BigH,
+	bigHFactory,
 } from 'high-precision';
 import { Strategy } from './strategy';
 import { adapt } from 'startable-adaptor';
 
 
-
-class TecretaryContainer extends TecretaryBaseContainer<H> {
+class TecretaryContainer extends TecretaryBaseContainer<BigH> {
 	public [TECRETARY_BASE_TYPES.config] = this.rv<Config>({
 		projectName: 'test',
 		marketNames: ['binance-perpetual-btcusdt'],
 		snapshotPeriod: Number.POSITIVE_INFINITY,
 		continue: false,
 	});
-	public [TECRETARY_BASE_TYPES.texchangeMap] = this.rfs<Map<string, Texchange<H>>>(() => {
-		const texchangeContainer = new TexchangeDefaultContainer<H>(
+	public [TECRETARY_BASE_TYPES.texchangeMap] = this.rfs<Map<string, Texchange<BigH>>>(() => {
+		const texchangeContainer = new TexchangeDefaultContainer<BigH>(
 			this[TECRETARY_BASE_TYPES.timeline](),
 			this[TECRETARY_BASE_TYPES.hFactory](),
 			this[TECRETARY_BASE_TYPES.hStatic](),
-			new H(1000),
-			new H(7000),
+			bigHFactory.from(1000),
+			bigHFactory.from(7000),
 		);
-		return new Map<string, Texchange<H>>([[
+		return new Map<string, Texchange<BigH>>([[
 			'binance-perpetual-btcusdt',
 			texchangeContainer[TEXCHANGE_DEFAULT_TYPES.texchange](),
 		]]);
 	});
-	public [TECRETARY_BASE_TYPES.hFactory] = this.rv<HFactory>(new HFactory());
-	public [TECRETARY_BASE_TYPES.hStatic] = this.rv<HStatic<H>>(H);
+	public [TECRETARY_BASE_TYPES.hFactory] = this.rv<HFactory<BigH>>(bigHFactory);
+	public [TECRETARY_BASE_TYPES.hStatic] = this.rv<HStatic<BigH>>(BigH);
 	public [TECRETARY_BASE_TYPES.progressFilePath] = this.rv<string>(
 		'../progress.db',
 	);
@@ -55,7 +54,7 @@ class TecretaryContainer extends TecretaryBaseContainer<H> {
 	public [TECRETARY_BASE_TYPES.endTime] = this.rfs<number>(
 		() => this[TECRETARY_BASE_TYPES.startTime]() + 1 * 60 * 60 * 1000,
 	);
-	public [TECRETARY_BASE_TYPES.Strategy] = this.rv<StrategyStaticLike<H>>(Strategy);
+	public [TECRETARY_BASE_TYPES.Strategy] = this.rv<StrategyStaticLike<BigH>>(Strategy);
 }
 
 const tecretaryContainer = new TecretaryContainer();
