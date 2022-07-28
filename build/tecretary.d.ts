@@ -25,6 +25,8 @@ export declare class Tecretary<H extends HLike<H>> implements StartableLike {
     constructor(config: Config, progressReader: ProgressReaderLike<H>, timeline: Timeline, texchangeMap: Map<string, Texchange<H>>, strategy: StrategyLike, hFactory: HFactory<H>, dataReader: DataReaderLike<H>, endTime: number);
     private capture;
     private rawStart;
+    private stopForEndOfData;
+    private stopForOtherReason;
     private rawStop;
 }
 export declare class EndOfData extends Error {

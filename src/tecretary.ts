@@ -108,14 +108,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
             Shifterator.fromIterable<CheckPoint>([{
                 time: endTime,
                 cb: async () => {
-                    try {
-                        for (const [name, texchange] of this.texchangeMap) {
-                            const facade = texchange.getAdminFacade();
-                            facade.stop(new EndOfData('End of data.'));
-                        }
-                    } catch (err) {
-                        this.starp();
-                    }
+                    this.starp(new EndOfData('End of data.'));
                 }
             }]),
         );
@@ -149,15 +142,28 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
         await this.strategy.start(this.starp);
     }
 
-    private async rawStop() {
+    private async stopForEndOfData() {
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
+            await facade.stop(new EndOfData('End of data.'));
+        }
+    }
+
+    private async stopForOtherReason() {
+        await this.strategy.stop();
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
+            await facade.stop();
+        }
+    }
+
+    private async rawStop(err?: Error) {
         try {
-            if (this.timeline.getReadyState() === ReadyState.STARTED) {
-                await this.strategy.stop();
-                for (const [name, texchange] of this.texchangeMap) {
-                    const facade = texchange.getAdminFacade();
-                    await facade.stop();
-                }
-            }
+            if (this.timeline.getReadyState() === ReadyState.STARTED)
+                if (err instanceof EndOfData)
+                    await this.stopForEndOfData();
+                else
+                    await this.stopForOtherReason();
         } finally {
             this.capture();
             await this.timeline.stop();

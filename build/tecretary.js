@@ -54,15 +54,7 @@ let Tecretary = class Tecretary {
         this.timeline.merge(shiftable_1.Shifterator.fromIterable([{
                 time: endTime,
                 cb: async () => {
-                    try {
-                        for (const [name, texchange] of this.texchangeMap) {
-                            const facade = texchange.getAdminFacade();
-                            facade.stop(new EndOfData('End of data.'));
-                        }
-                    }
-                    catch (err) {
-                        this.starp();
-                    }
+                    this.starp(new EndOfData('End of data.'));
                 }
             }]));
         // this.timeline.affiliate(
@@ -88,15 +80,26 @@ let Tecretary = class Tecretary {
         }
         await this.strategy.start(this.starp);
     }
-    async rawStop() {
+    async stopForEndOfData() {
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
+            await facade.stop(new EndOfData('End of data.'));
+        }
+    }
+    async stopForOtherReason() {
+        await this.strategy.stop();
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
+            await facade.stop();
+        }
+    }
+    async rawStop(err) {
         try {
-            if (this.timeline.getReadyState() === "STARTED" /* STARTED */) {
-                await this.strategy.stop();
-                for (const [name, texchange] of this.texchangeMap) {
-                    const facade = texchange.getAdminFacade();
-                    await facade.stop();
-                }
-            }
+            if (this.timeline.getReadyState() === "STARTED" /* STARTED */)
+                if (err instanceof EndOfData)
+                    await this.stopForEndOfData();
+                else
+                    await this.stopForOtherReason();
         }
         finally {
             this.capture();
