@@ -9,7 +9,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EndOfData = exports.Tecretary = void 0;
+exports.Tecretary = void 0;
 const startable_1 = require("startable");
 const orderbook_1 = require("./check-points/orderbook");
 const trade_group_1 = require("./check-points/trade-group");
@@ -56,9 +56,7 @@ let Tecretary = class Tecretary {
         }
         this.timeline.merge(shiftable_1.Shifterator.fromIterable([{
                 time: endTime,
-                cb: async () => {
-                    this.starp(new EndOfData('End of data.'));
-                }
+                cb: this.starp,
             }]));
         // this.timeline.affiliate(
         //	 Shifterator.fromIterable(
@@ -103,23 +101,14 @@ let Tecretary = class Tecretary {
             this.virtualMachine.starp(err);
         });
     }
-    async virtualMachineRawStop(err) {
-        if (err instanceof EndOfData) {
-            for (const [name, texchange] of this.texchangeMap) {
-                const facade = texchange.getAdminFacade();
-                await facade.stop(new EndOfData('End of data.'));
-            }
-            if (this.strategyRunning) {
-                await this.strategyRunning.rdlock().catch(() => { });
-                await this.strategy.stop();
-            }
+    async virtualMachineRawStop() {
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
+            await facade.stop();
         }
-        else {
+        if (this.strategyRunning) {
+            await this.strategyRunning.rdlock().catch(() => { });
             await this.strategy.stop();
-            for (const [name, texchange] of this.texchangeMap) {
-                const facade = texchange.getAdminFacade();
-                await facade.stop();
-            }
         }
     }
     async rawStart() {
@@ -142,18 +131,11 @@ let Tecretary = class Tecretary {
             if (this.realMachineRunning)
                 await Promise.any([
                     this.realMachineRunning.rdlock(),
-                    this.virtualMachine.stop(),
+                    this.virtualMachine.stop(err),
                 ]);
         }
         finally {
-            this.capture();
-            await this.timeline.stop();
-            for (const tradeGroups of this.tradeGroupsMap.values())
-                tradeGroups.return();
-            for (const orderbooks of this.orderbooksMap.values())
-                orderbooks.return();
-            await this.dataReader.stop();
-            await this.progressReader.stop();
+            await this.virtualMachine.stop();
         }
     }
 };
@@ -168,7 +150,4 @@ Tecretary = __decorate([
     __param(7, (0, injektor_1.inject)(types_1.TYPES.endTime))
 ], Tecretary);
 exports.Tecretary = Tecretary;
-class EndOfData extends Error {
-}
-exports.EndOfData = EndOfData;
 //# sourceMappingURL=tecretary.js.map

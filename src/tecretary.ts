@@ -119,9 +119,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 		this.timeline.merge(
 			Shifterator.fromIterable<CheckPoint>([{
 				time: endTime,
-				cb: async () => {
-					this.starp(new EndOfData('End of data.'));
-				}
+				cb: this.starp,
 			}]),
 		);
 
@@ -174,22 +172,14 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 		});
 	}
 
-	private async virtualMachineRawStop(err?: Error) {
-		if (err instanceof EndOfData) {
-			for (const [name, texchange] of this.texchangeMap) {
-				const facade = texchange.getAdminFacade();
-				await facade.stop(new EndOfData('End of data.'));
-			}
-			if (this.strategyRunning) {
-				await this.strategyRunning.rdlock().catch(() => { });
-				await this.strategy.stop();
-			}
-		} else {
+	private async virtualMachineRawStop() {
+		for (const [name, texchange] of this.texchangeMap) {
+			const facade = texchange.getAdminFacade();
+			await facade.stop();
+		}
+		if (this.strategyRunning) {
+			await this.strategyRunning.rdlock().catch(() => { });
 			await this.strategy.stop();
-			for (const [name, texchange] of this.texchangeMap) {
-				const facade = texchange.getAdminFacade();
-				await facade.stop();
-			}
 		}
 	}
 
@@ -212,19 +202,10 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 			if (this.realMachineRunning)
 				await Promise.any([
 					this.realMachineRunning.rdlock(),
-					this.virtualMachine.stop(),
+					this.virtualMachine.stop(err),
 				]);
 		} finally {
-			this.capture();
-			await this.timeline.stop();
-			for (const tradeGroups of this.tradeGroupsMap.values())
-				tradeGroups.return();
-			for (const orderbooks of this.orderbooksMap.values())
-				orderbooks.return();
-			await this.dataReader.stop();
-			await this.progressReader.stop();
+			await this.virtualMachine.stop();
 		}
 	}
 }
-
-export class EndOfData extends Error { }
