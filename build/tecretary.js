@@ -16,6 +16,7 @@ const trade_group_1 = require("./check-points/trade-group");
 const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 const shiftable_1 = require("shiftable");
+const coroutine_locks_1 = require("@zimtsui/coroutine-locks");
 let Tecretary = class Tecretary {
     constructor(config, progressReader, timeline, texchangeMap, strategy, hFactory, dataReader, endTime) {
         this.config = config;
@@ -32,6 +33,8 @@ let Tecretary = class Tecretary {
         this.starp = this.startable.starp;
         this.getReadyState = this.startable.getReadyState;
         this.skipStart = this.startable.skipStart;
+        this.realMachine = startable_1.Startable.create(() => this.realMachineRawStart(), () => this.realMachineRawStop());
+        this.virtualMachine = startable_1.Startable.create(() => this.virtualMachineRawStart(), () => this.virtualMachineRawStop());
         this.tradeGroupsMap = new Map();
         this.orderbooksMap = new Map();
         for (const [name, texchange] of this.texchangeMap) {
@@ -58,48 +61,89 @@ let Tecretary = class Tecretary {
                 }
             }]));
         // this.timeline.affiliate(
-        //     Shifterator.fromIterable(
-        //         makePeriodicCheckPoints(
-        //             this.timeline.now(),
-        //             this.config.snapshotPeriod,
-        //             () => this.capture(),
-        //         ),
-        //     ),
+        //	 Shifterator.fromIterable(
+        //		 makePeriodicCheckPoints(
+        //			 this.timeline.now(),
+        //			 this.config.snapshotPeriod,
+        //			 () => this.capture(),
+        //		 ),
+        //	 ),
         // );
     }
     capture() {
         this.progressReader.capture(this.timeline.now(), this.texchangeMap);
     }
+    async realMachineRawStart() {
+        await this.progressReader.start(this.realMachine.starp);
+        await this.dataReader.start(this.realMachine.starp);
+        await this.timeline.start(this.realMachine.starp);
+    }
+    async realMachineRawStop() {
+        await this.timeline.stop();
+        this.capture();
+        for (const tradeGroups of this.tradeGroupsMap.values())
+            tradeGroups.return();
+        for (const orderbooks of this.orderbooksMap.values())
+            orderbooks.return();
+        await this.dataReader.stop();
+        await this.progressReader.stop();
+    }
+    async virtualMachineRawStart() {
+        for (const [name, texchange] of this.texchangeMap) {
+            const facade = texchange.getAdminFacade();
+            await facade.start(this.virtualMachine.starp);
+        }
+        this.strategyRunning = new coroutine_locks_1.Rwlock();
+        this.strategyRunning.trywrlock();
+        await this.strategy.start(err => {
+            if (err)
+                this.strategyRunning.throw(err);
+            else
+                this.strategyRunning.unlock();
+            this.virtualMachine.starp(err);
+        });
+    }
+    async virtualMachineRawStop(err) {
+        if (err instanceof EndOfData) {
+            for (const [name, texchange] of this.texchangeMap) {
+                const facade = texchange.getAdminFacade();
+                await facade.stop(new EndOfData('End of data.'));
+            }
+            if (this.strategyRunning) {
+                await this.strategyRunning.rdlock().catch(() => { });
+                await this.strategy.stop();
+            }
+        }
+        else {
+            await this.strategy.stop();
+            for (const [name, texchange] of this.texchangeMap) {
+                const facade = texchange.getAdminFacade();
+                await facade.stop();
+            }
+        }
+    }
     async rawStart() {
-        await this.progressReader.start(this.starp);
-        await this.dataReader.start(this.starp);
-        await this.timeline.start(this.starp);
-        for (const [name, texchange] of this.texchangeMap) {
-            const facade = texchange.getAdminFacade();
-            await facade.start(this.starp);
-        }
-        await this.strategy.start(this.starp);
-    }
-    async stopForEndOfData() {
-        for (const [name, texchange] of this.texchangeMap) {
-            const facade = texchange.getAdminFacade();
-            await facade.stop(new EndOfData('End of data.'));
-        }
-    }
-    async stopForOtherReason() {
-        await this.strategy.stop();
-        for (const [name, texchange] of this.texchangeMap) {
-            const facade = texchange.getAdminFacade();
-            await facade.stop();
-        }
+        this.realMachineRunning = new coroutine_locks_1.Rwlock();
+        this.realMachineRunning.trywrlock();
+        await this.realMachine.start(err => {
+            if (err)
+                this.realMachineRunning.throw(err);
+            else
+                this.realMachineRunning.unlock();
+            this.starp(err);
+        });
+        await Promise.any([
+            this.realMachineRunning.rdlock(),
+            this.virtualMachine.start(this.starp),
+        ]);
     }
     async rawStop(err) {
         try {
-            if (this.timeline.getReadyState() === "STARTED" /* STARTED */)
-                if (err instanceof EndOfData)
-                    await this.stopForEndOfData();
-                else
-                    await this.stopForOtherReason();
+            if (this.realMachineRunning)
+                await Promise.any([
+                    this.realMachineRunning.rdlock(),
+                    this.virtualMachine.stop(),
+                ]);
         }
         finally {
             this.capture();

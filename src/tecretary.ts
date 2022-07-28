@@ -1,15 +1,15 @@
 import {
-    Startable,
-    ReadyState,
-    StartableLike,
+	Startable,
+	ReadyState,
+	StartableLike,
 } from 'startable';
 import { DataReaderLike } from './data-reader-like';
 import { ProgressReaderLike } from './progress-reader-like';
 import { Texchange } from 'texchange';
 import { Config } from './config';
 import {
-    HLike, HFactory,
-    StrategyLike,
+	HLike, HFactory,
+	StrategyLike,
 } from 'secretary-like';
 import { makePeriodicCheckPoints } from './check-points/periodic';
 import { makeOrderbookCheckPoints } from './check-points/orderbook';
@@ -21,160 +21,210 @@ import { Shifterator } from 'shiftable';
 import { CheckPoint } from './timeline/time-engine';
 import { DatabaseTrade } from 'texchange';
 import { DatabaseOrderbook } from 'texchange';
+import { Rwlock } from '@zimtsui/coroutine-locks';
 
 
 
 export class Tecretary<H extends HLike<H>> implements StartableLike {
-    private startable = Startable.create(
-        () => this.rawStart(),
-        () => this.rawStop(),
-    );
-    public start = this.startable.start;
-    public stop = this.startable.stop;
-    public assart = this.startable.assart;
-    public starp = this.startable.starp;
-    public getReadyState = this.startable.getReadyState;
-    public skipStart = this.startable.skipStart;
+	private startable = Startable.create(
+		() => this.rawStart(),
+		() => this.rawStop(),
+	);
+	public start = this.startable.start;
+	public stop = this.startable.stop;
+	public assart = this.startable.assart;
+	public starp = this.startable.starp;
+	public getReadyState = this.startable.getReadyState;
+	public skipStart = this.startable.skipStart;
 
-    private tradeGroupsMap = new Map<string, Generator<DatabaseTrade<H>[], void>>();
-    private orderbooksMap = new Map<string, Generator<DatabaseOrderbook<H>, void>>();
+	private realMachine = Startable.create(
+		() => this.realMachineRawStart(),
+		() => this.realMachineRawStop(),
+	);
+	private virtualMachine = Startable.create(
+		() => this.virtualMachineRawStart(),
+		() => this.virtualMachineRawStop(),
+	);
+	private realMachineRunning?: Rwlock;
+	private strategyRunning?: Rwlock;
+
+	private tradeGroupsMap = new Map<string, Generator<DatabaseTrade<H>[], void>>();
+	private orderbooksMap = new Map<string, Generator<DatabaseOrderbook<H>, void>>();
 
 
-    public constructor(
-        @inject(TYPES.config)
-        private config: Config,
-        @inject(TYPES.progressReader)
-        private progressReader: ProgressReaderLike<H>,
-        @inject(TYPES.timeline)
-        private timeline: Timeline,
-        @inject(TYPES.texchangeMap)
-        private texchangeMap: Map<string, Texchange<H>>,
-        @inject(TYPES.strategy)
-        private strategy: StrategyLike,
-        @inject(TYPES.hFactory)
-        private hFactory: HFactory<H>,
-        @inject(TYPES.dataReader)
-        private dataReader: DataReaderLike<H>,
-        @inject(TYPES.endTime)
-        endTime: number,
-    ) {
-        for (const [name, texchange] of this.texchangeMap) {
-            const facade = texchange.getAdminFacade();
-            const marketSpec = facade.getMarketSpec();
+	public constructor(
+		@inject(TYPES.config)
+		private config: Config,
+		@inject(TYPES.progressReader)
+		private progressReader: ProgressReaderLike<H>,
+		@inject(TYPES.timeline)
+		private timeline: Timeline,
+		@inject(TYPES.texchangeMap)
+		private texchangeMap: Map<string, Texchange<H>>,
+		@inject(TYPES.strategy)
+		private strategy: StrategyLike,
+		@inject(TYPES.hFactory)
+		private hFactory: HFactory<H>,
+		@inject(TYPES.dataReader)
+		private dataReader: DataReaderLike<H>,
+		@inject(TYPES.endTime)
+		endTime: number,
+	) {
+		for (const [name, texchange] of this.texchangeMap) {
+			const facade = texchange.getAdminFacade();
+			const marketSpec = facade.getMarketSpec();
 
-            const snapshot = this.progressReader.getSnapshot(name);
-            if (snapshot !== null) facade.restore(snapshot);
+			const snapshot = this.progressReader.getSnapshot(name);
+			if (snapshot !== null) facade.restore(snapshot);
 
-            const bookId = facade.getLatestDatabaseOrderbookId();
-            const orderbooks = bookId !== null
-                ? this.dataReader.getDatabaseOrderbooksAfterId(
-                    name, marketSpec,
-                    bookId, endTime,
-                ) : this.dataReader.getDatabaseOrderbooksAfterTime(
-                    name, marketSpec,
-                    this.progressReader.getTime(), endTime,
-                );
-            this.orderbooksMap.set(name, orderbooks);
-            this.timeline.merge(
-                Shifterator.fromIterable(
-                    makeOrderbookCheckPoints<H>(
-                        orderbooks,
-                        texchange,
-                    ),
-                ),
-            );
+			const bookId = facade.getLatestDatabaseOrderbookId();
+			const orderbooks = bookId !== null
+				? this.dataReader.getDatabaseOrderbooksAfterId(
+					name, marketSpec,
+					bookId, endTime,
+				) : this.dataReader.getDatabaseOrderbooksAfterTime(
+					name, marketSpec,
+					this.progressReader.getTime(), endTime,
+				);
+			this.orderbooksMap.set(name, orderbooks);
+			this.timeline.merge(
+				Shifterator.fromIterable(
+					makeOrderbookCheckPoints<H>(
+						orderbooks,
+						texchange,
+					),
+				),
+			);
 
-            const tradeId = facade.getLatestDatabaseTradeId();
-            const tradeGroups = tradeId !== null
-                ? this.dataReader.getDatabaseTradeGroupsAfterId(
-                    name, marketSpec,
-                    tradeId, endTime,
-                ) : this.dataReader.getDatabaseTradeGroupsAfterTime(
-                    name, marketSpec,
-                    this.progressReader.getTime(), endTime,
-                );
-            this.tradeGroupsMap.set(name, tradeGroups);
-            this.timeline.merge(
-                Shifterator.fromIterable(
-                    makeTradeGroupCheckPoints<H>(
-                        tradeGroups,
-                        texchange,
-                    ),
-                ),
-            );
-        }
+			const tradeId = facade.getLatestDatabaseTradeId();
+			const tradeGroups = tradeId !== null
+				? this.dataReader.getDatabaseTradeGroupsAfterId(
+					name, marketSpec,
+					tradeId, endTime,
+				) : this.dataReader.getDatabaseTradeGroupsAfterTime(
+					name, marketSpec,
+					this.progressReader.getTime(), endTime,
+				);
+			this.tradeGroupsMap.set(name, tradeGroups);
+			this.timeline.merge(
+				Shifterator.fromIterable(
+					makeTradeGroupCheckPoints<H>(
+						tradeGroups,
+						texchange,
+					),
+				),
+			);
+		}
 
-        this.timeline.merge(
-            Shifterator.fromIterable<CheckPoint>([{
-                time: endTime,
-                cb: async () => {
-                    this.starp(new EndOfData('End of data.'));
-                }
-            }]),
-        );
+		this.timeline.merge(
+			Shifterator.fromIterable<CheckPoint>([{
+				time: endTime,
+				cb: async () => {
+					this.starp(new EndOfData('End of data.'));
+				}
+			}]),
+		);
 
-        // this.timeline.affiliate(
-        //     Shifterator.fromIterable(
-        //         makePeriodicCheckPoints(
-        //             this.timeline.now(),
-        //             this.config.snapshotPeriod,
-        //             () => this.capture(),
-        //         ),
-        //     ),
-        // );
-    }
+		// this.timeline.affiliate(
+		//	 Shifterator.fromIterable(
+		//		 makePeriodicCheckPoints(
+		//			 this.timeline.now(),
+		//			 this.config.snapshotPeriod,
+		//			 () => this.capture(),
+		//		 ),
+		//	 ),
+		// );
+	}
 
-    private capture(): void {
-        this.progressReader.capture(
-            this.timeline.now(),
-            this.texchangeMap,
-        );
-    }
+	private capture(): void {
+		this.progressReader.capture(
+			this.timeline.now(),
+			this.texchangeMap,
+		);
+	}
 
-    private async rawStart() {
-        await this.progressReader.start(this.starp);
-        await this.dataReader.start(this.starp);
-        await this.timeline.start(this.starp);
-        for (const [name, texchange] of this.texchangeMap) {
-            const facade = texchange.getAdminFacade();
-            await facade.start(this.starp);
-        }
-        await this.strategy.start(this.starp);
-    }
+	private async realMachineRawStart() {
+		await this.progressReader.start(this.realMachine.starp);
+		await this.dataReader.start(this.realMachine.starp);
+		await this.timeline.start(this.realMachine.starp);
+	}
 
-    private async stopForEndOfData() {
-        for (const [name, texchange] of this.texchangeMap) {
-            const facade = texchange.getAdminFacade();
-            await facade.stop(new EndOfData('End of data.'));
-        }
-    }
+	private async realMachineRawStop() {
+		await this.timeline.stop();
+		this.capture();
+		for (const tradeGroups of this.tradeGroupsMap.values())
+			tradeGroups.return();
+		for (const orderbooks of this.orderbooksMap.values())
+			orderbooks.return();
+		await this.dataReader.stop();
+		await this.progressReader.stop();
+	}
 
-    private async stopForOtherReason() {
-        await this.strategy.stop();
-        for (const [name, texchange] of this.texchangeMap) {
-            const facade = texchange.getAdminFacade();
-            await facade.stop();
-        }
-    }
+	private async virtualMachineRawStart() {
+		for (const [name, texchange] of this.texchangeMap) {
+			const facade = texchange.getAdminFacade();
+			await facade.start(this.virtualMachine.starp);
+		}
+		this.strategyRunning = new Rwlock();
+		this.strategyRunning.trywrlock();
+		await this.strategy.start(err => {
+			if (err) this.strategyRunning!.throw(err);
+			else this.strategyRunning!.unlock();
+			this.virtualMachine.starp(err);
+		});
+	}
 
-    private async rawStop(err?: Error) {
-        try {
-            if (this.timeline.getReadyState() === ReadyState.STARTED)
-                if (err instanceof EndOfData)
-                    await this.stopForEndOfData();
-                else
-                    await this.stopForOtherReason();
-        } finally {
-            this.capture();
-            await this.timeline.stop();
-            for (const tradeGroups of this.tradeGroupsMap.values())
-                tradeGroups.return();
-            for (const orderbooks of this.orderbooksMap.values())
-                orderbooks.return();
-            await this.dataReader.stop();
-            await this.progressReader.stop();
-        }
-    }
+	private async virtualMachineRawStop(err?: Error) {
+		if (err instanceof EndOfData) {
+			for (const [name, texchange] of this.texchangeMap) {
+				const facade = texchange.getAdminFacade();
+				await facade.stop(new EndOfData('End of data.'));
+			}
+			if (this.strategyRunning) {
+				await this.strategyRunning.rdlock().catch(() => { });
+				await this.strategy.stop();
+			}
+		} else {
+			await this.strategy.stop();
+			for (const [name, texchange] of this.texchangeMap) {
+				const facade = texchange.getAdminFacade();
+				await facade.stop();
+			}
+		}
+	}
+
+	private async rawStart() {
+		this.realMachineRunning = new Rwlock();
+		this.realMachineRunning.trywrlock();
+		await this.realMachine.start(err => {
+			if (err) this.realMachineRunning!.throw(err);
+			else this.realMachineRunning!.unlock();
+			this.starp(err);
+		});
+		await Promise.any([
+			this.realMachineRunning.rdlock(),
+			this.virtualMachine.start(this.starp),
+		]);
+	}
+
+	private async rawStop(err?: Error) {
+		try {
+			if (this.realMachineRunning)
+				await Promise.any([
+					this.realMachineRunning.rdlock(),
+					this.virtualMachine.stop(),
+				]);
+		} finally {
+			this.capture();
+			await this.timeline.stop();
+			for (const tradeGroups of this.tradeGroupsMap.values())
+				tradeGroups.return();
+			for (const orderbooks of this.orderbooksMap.values())
+				orderbooks.return();
+			await this.dataReader.stop();
+			await this.progressReader.stop();
+		}
+	}
 }
 
 export class EndOfData extends Error { }
