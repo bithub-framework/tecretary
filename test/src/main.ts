@@ -1,64 +1,65 @@
 import {
+	Texchange,
 	DefaultContainer as TexchangeDefaultContainer,
+	DEFAULT_TYPES as TEXCHANGE_DEFAULT_TYPES,
 } from 'texchange';
 import {
-	TYPES as TexchangeDefaultTYPES,
-} from 'texchange/build/injection/default/types';
-import { Texchange } from 'texchange/build/texchange';
-import {
-	TYPES as TecretaryTYPES,
+	BASE_TYPES as TECRETARY_BASE_TYPES,
 	BaseContainer as TecretaryBaseContainer,
+	Config,
 } from '../..';
-import { Config } from '../../build/config';
 import {
 	HStatic,
-	StrategyLike,
+	StrategyStaticLike,
 } from 'secretary-like';
-import { BigH as H } from 'high-precision';
+import {
+	BigH as H,
+	BigHFactory as HFactory,
+} from 'high-precision';
 import { Strategy } from './strategy';
 import { adapt } from 'startable-adaptor';
 
 
 
 class TecretaryContainer extends TecretaryBaseContainer<H> {
-	public [TecretaryTYPES.config] = this.rv<Config>({
+	public [TECRETARY_BASE_TYPES.config] = this.rv<Config>({
 		projectName: 'test',
 		marketNames: ['binance-perpetual-btcusdt'],
 		snapshotPeriod: Number.POSITIVE_INFINITY,
 		continue: false,
 	});
-	public [TecretaryTYPES.texchangeMap] = this.rfs<Map<string, Texchange<H>>>(() => {
-		const texchangeContainer = new TexchangeDefaultContainer(
-			this[TecretaryTYPES.timeline](),
-			this[TecretaryTYPES.hStatic](),
+	public [TECRETARY_BASE_TYPES.texchangeMap] = this.rfs<Map<string, Texchange<H>>>(() => {
+		const texchangeContainer = new TexchangeDefaultContainer<H>(
+			this[TECRETARY_BASE_TYPES.timeline](),
+			this[TECRETARY_BASE_TYPES.hFactory](),
+			this[TECRETARY_BASE_TYPES.hStatic](),
 			new H(1000),
 			new H(7000),
 		);
 		return new Map<string, Texchange<H>>([[
 			'binance-perpetual-btcusdt',
-			texchangeContainer[TexchangeDefaultTYPES.texchange](),
+			texchangeContainer[TEXCHANGE_DEFAULT_TYPES.texchange](),
 		]]);
 	});
-	public [TecretaryTYPES.hStatic] = this.rv<HStatic<H>>(H);
-	public [TecretaryTYPES.progressFilePath] = this.rv<string>(
+	public [TECRETARY_BASE_TYPES.hFactory] = this.rv<HFactory>(new HFactory());
+	public [TECRETARY_BASE_TYPES.hStatic] = this.rv<HStatic<H>>(H);
+	public [TECRETARY_BASE_TYPES.progressFilePath] = this.rv<string>(
 		'../progress.db',
 	);
-	public [TecretaryTYPES.dataFilePath] = this.rv<string>(
+	public [TECRETARY_BASE_TYPES.dataFilePath] = this.rv<string>(
 		'/media/1tb/tecretary.db',
 	);
-	public [TecretaryTYPES.startTime] = this.rv<number>(
+	public [TECRETARY_BASE_TYPES.startTime] = this.rv<number>(
 		1577807996537,
 	);
-	public [TecretaryTYPES.endTime] = this.rfs<number>(
-		() => this[TecretaryTYPES.startTime]() + 1 * 60 * 60 * 1000,
+	public [TECRETARY_BASE_TYPES.endTime] = this.rfs<number>(
+		() => this[TECRETARY_BASE_TYPES.startTime]() + 1 * 60 * 60 * 1000,
 	);
-	public [TecretaryTYPES.strategy] = this.rfs<StrategyLike>(
-		() => new Strategy(this[TecretaryTYPES.context]()),
-	);
+	public [TECRETARY_BASE_TYPES.Strategy] = this.rv<StrategyStaticLike<H>>(Strategy);
 }
 
 const tecretaryContainer = new TecretaryContainer();
-const tecretary = tecretaryContainer[TecretaryTYPES.tecretary]();
+const tecretary = tecretaryContainer[TECRETARY_BASE_TYPES.tecretary]();
 
 adapt(
 	tecretary,

@@ -17,5 +17,6 @@ TYPES.context = Symbol('context');
 TYPES.Strategy = Symbol('strategyStatic');
 TYPES.strategy = Symbol('strategy');
 TYPES.hFactory = Symbol('hFactory');
+TYPES.hStatic = Symbol('hStatic');
 TYPES.tecretary = Symbol('tecretary');
 //# sourceMappingURL=types.js.map

@@ -1,6 +1,6 @@
 import { BaseContainer } from '@zimtsui/injektor';
 import { TYPES } from './types';
-import { HLike, HFactory, StrategyLike, StrategyStaticLike } from 'secretary-like';
+import { HLike, HFactory, HStatic, StrategyLike, StrategyStaticLike } from 'secretary-like';
 import { Config } from '../config';
 import { ProgressReaderLike } from '../progress-reader-like';
 import { DataReaderLike } from '../data-reader-like';
@@ -22,5 +22,6 @@ export declare abstract class Container<H extends HLike<H>> extends BaseContaine
     abstract [TYPES.Strategy]: () => StrategyStaticLike<H>;
     [TYPES.strategy]: () => StrategyLike;
     abstract [TYPES.hFactory]: () => HFactory<H>;
+    abstract [TYPES.hStatic]: () => HStatic<H>;
     [TYPES.tecretary]: () => Tecretary<H>;
 }

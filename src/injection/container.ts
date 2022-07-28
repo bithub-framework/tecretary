@@ -2,7 +2,7 @@ import { BaseContainer } from '@zimtsui/injektor';
 import { TYPES } from './types';
 import { NodeTimeEngine } from 'node-time-engine';
 import {
-	HLike, HFactory,
+	HLike, HFactory, HStatic,
 	StrategyLike, StrategyStaticLike,
 } from 'secretary-like';
 import { Config } from '../config';
@@ -44,5 +44,7 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 	});
 
 	public abstract [TYPES.hFactory]: () => HFactory<H>;
+	public abstract [TYPES.hStatic]: () => HStatic<H>;
+
 	public [TYPES.tecretary] = this.rcs<Tecretary<H>>(Tecretary);
 }
