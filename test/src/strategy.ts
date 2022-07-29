@@ -42,7 +42,7 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 				console.log(JSON.stringify(balances));
 			}
 		} catch (err) {
-			assert(err instanceof LoopStopped)
+			assert(err instanceof LoopStopped, <Error>err);
 		}
 	}
 
@@ -56,8 +56,8 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		if (this.bought) return;
 		this.bought = true;
 		const results = await this.ctx[0][0].makeOrders([{
-			price: orderbook.get(Side.ASK)[0].price,
-			quantity: orderbook.get(Side.ASK)[0].quantity,
+			price: orderbook[Side.ASK][0].price,
+			quantity: orderbook[Side.ASK][0].quantity,
 			length: Length.LONG,
 			action: Action.OPEN,
 			side: Side.BID,

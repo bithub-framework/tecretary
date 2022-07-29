@@ -2,7 +2,7 @@ import { RawTrade, RawSide } from './raw-data';
 import Database = require('better-sqlite3');
 import {
 	HFactory, HLike,
-	MarketSpec,
+	MarketSpecLike,
 	Side,
 } from 'secretary-like';
 import { DatabaseTrade } from 'texchange';
@@ -18,7 +18,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterId(
 		marketName: string,
-		marketSpec: MarketSpec<H>,
+		marketSpec: MarketSpecLike<H>,
 		afterTradeId: number,
 		endTime: number,
 	): Generator<DatabaseTrade<H>[], void> {
@@ -42,7 +42,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTime(
 		marketName: string,
-		marketSpec: MarketSpec<H>,
+		marketSpec: MarketSpecLike<H>,
 		afterTime: number,
 		endTime: number,
 	): Generator<DatabaseTrade<H>[], void> {
@@ -88,7 +88,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	private *databaseTradesFromRawTrades(
 		rawTrades: DatabaseIterableIterator<RawTrade>,
-		marketSpec: MarketSpec<H>,
+		marketSpec: MarketSpecLike<H>,
 	): Generator<DatabaseTrade<H>, void> {
 		try {
 			for (const rawTrade of rawTrades) {

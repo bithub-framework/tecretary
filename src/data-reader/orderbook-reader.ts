@@ -4,7 +4,7 @@ import {
 	HFactory, HLike,
 	Side,
 	BookOrder,
-	MarketSpec,
+	MarketSpecLike,
 } from 'secretary-like';
 import { DatabaseOrderbook } from 'texchange';
 import { DatabaseIterableIterator } from './database-iterable-iterator';
@@ -19,7 +19,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterId(
 		marketName: string,
-		marketSpec: MarketSpec<H>,
+		marketSpec: MarketSpecLike<H>,
 		afterOrderbookId: number,
 		endTime: number,
 	): Generator<DatabaseOrderbook<H>, void> {
@@ -43,7 +43,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterTime(
 		marketName: string,
-		marketSpec: MarketSpec<H>,
+		marketSpec: MarketSpecLike<H>,
 		afterTime: number,
 		endTime: number,
 	): Generator<DatabaseOrderbook<H>, void> {
@@ -86,7 +86,7 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: Generator<RawBookOrder[], void>,
-		marketSpec: MarketSpec<H>,
+		marketSpec: MarketSpecLike<H>,
 	): Generator<DatabaseOrderbook<H>, void> {
 		try {
 			for (const group of groups) {

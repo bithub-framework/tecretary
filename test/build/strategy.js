@@ -25,7 +25,7 @@ class Strategy {
                 }
             }
             catch (err) {
-                assert(err instanceof pollerloop_1.LoopStopped);
+                assert(err instanceof pollerloop_1.LoopStopped, err);
             }
         };
         this.onTrades = async (trades) => {
@@ -38,8 +38,8 @@ class Strategy {
                 return;
             this.bought = true;
             const results = await this.ctx[0][0].makeOrders([{
-                    price: orderbook.get(secretary_like_1.Side.ASK)[0].price,
-                    quantity: orderbook.get(secretary_like_1.Side.ASK)[0].quantity,
+                    price: orderbook[secretary_like_1.Side.ASK][0].price,
+                    quantity: orderbook[secretary_like_1.Side.ASK][0].quantity,
                     length: secretary_like_1.Length.LONG,
                     action: secretary_like_1.Action.OPEN,
                     side: secretary_like_1.Side.BID,

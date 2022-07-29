@@ -2,7 +2,7 @@ import { Startable } from 'startable';
 import Database = require('better-sqlite3');
 import {
     HFactory, HLike,
-    MarketSpec,
+    MarketSpecLike,
 } from 'secretary-like';
 import {
     DatabaseOrderbook,
@@ -63,7 +63,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseOrderbooksAfterId(
         marketName: string,
-        marketSpec: MarketSpec<H>,
+        marketSpec: MarketSpecLike<H>,
         id: DatabaseOrderbookId,
         endTime: number,
     ): Generator<DatabaseOrderbook<H>, void> {
@@ -77,7 +77,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseOrderbooksAfterTime(
         marketName: string,
-        marketSpec: MarketSpec<H>,
+        marketSpec: MarketSpecLike<H>,
         afterTime: number,
         endTime: number,
     ): Generator<DatabaseOrderbook<H>, void> {
@@ -91,7 +91,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseTradeGroupsAfterId(
         marketName: string,
-        marketSpec: MarketSpec<H>,
+        marketSpec: MarketSpecLike<H>,
         id: DatabaseTradeId,
         endTime: number,
     ): Generator<DatabaseTrade<H>[], void> {
@@ -105,7 +105,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseTradeGroupsAfterTime(
         marketName: string,
-        marketSpec: MarketSpec<H>,
+        marketSpec: MarketSpecLike<H>,
         afterTime: number,
         endTime: number,
     ): Generator<DatabaseTrade<H>[], void> {
