@@ -14,7 +14,7 @@
         "rebuild": "npm run clean && npm run build",
         "build-test": "tsc -b ./test/src/tsconfig.json",
         "clean-test": "rm -rf ./test/build",
-        "rebuild-test": "npm run clean-test && npm run build-test"
+        "retest": "npm run clean && npm run clean-test && npm run test"
     },
     "author": "Zim",
     "dependencies": {
