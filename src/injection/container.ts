@@ -15,6 +15,7 @@ import { Context } from '../context';
 import {
 	Texchange,
 	DataTypesNamespace as TexchangeDataTypesNamespace,
+	VirtualMachineContextLike,
 } from 'texchange';
 import { Tecretary } from '../tecretary';
 
@@ -41,6 +42,12 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 			progressReader.getTime(),
 			new NodeTimeEngine(),
 		);
+	});
+	public [TYPES.vmctx] = this.rfs<VirtualMachineContextLike<H>>(() => {
+		return {
+			timeline: this[TYPES.timeline](),
+			DataTypes: this[TYPES.TexchangeDataTypes](),
+		}
 	});
 	public abstract [TYPES.endTime]: () => number;
 	public [TYPES.context] = this.rcs<Context<H>>(Context);

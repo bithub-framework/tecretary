@@ -18,7 +18,7 @@ class TecretaryContainer extends __1.BaseContainer {
             continue: false,
         });
         this[_b] = this.rfs(() => {
-            const texchangeContainer = new texchange_1.DefaultContainer(this[TECRETARY_TYPES.timeline](), this[TECRETARY_TYPES.TexchangeDataTypes](), high_precision_1.bigDecimalHFactory.from(1000), high_precision_1.bigDecimalHFactory.from(7000));
+            const texchangeContainer = new texchange_1.DefaultContainer(this[TECRETARY_TYPES.vmctx](), high_precision_1.bigDecimalHFactory.from(1000), high_precision_1.bigDecimalHFactory.from(7000));
             return new Map([[
                     'binance-perpetual-btcusdt',
                     texchangeContainer[texchange_1.DEFAULT_TYPES.texchange](),

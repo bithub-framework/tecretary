@@ -12,6 +12,7 @@ TYPES.dataReader = Symbol('dataReader');
 TYPES.dataFilePath = Symbol('dataFilePath');
 TYPES.texchangeMap = Symbol('texchangeMap');
 TYPES.timeline = Symbol('timeline');
+TYPES.vmctx = Symbol('vmctx');
 TYPES.endTime = Symbol('endTime');
 TYPES.context = Symbol('context');
 TYPES.Strategy = Symbol('strategyStatic');

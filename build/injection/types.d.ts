@@ -7,6 +7,7 @@ export declare class TYPES {
     static readonly dataFilePath: unique symbol;
     static readonly texchangeMap: unique symbol;
     static readonly timeline: unique symbol;
+    static readonly vmctx: unique symbol;
     static readonly endTime: unique symbol;
     static readonly context: unique symbol;
     static readonly Strategy: unique symbol;

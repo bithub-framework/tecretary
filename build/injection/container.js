@@ -1,5 +1,5 @@
 "use strict";
-var _a, _b, _c, _d, _e, _f, _g;
+var _a, _b, _c, _d, _e, _f, _g, _h;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Container = void 0;
 const injektor_1 = require("@zimtsui/injektor");
@@ -23,15 +23,21 @@ class Container extends injektor_1.BaseContainer {
             const progressReader = this[types_1.TYPES.progressReader]();
             return new timeline_1.Timeline(progressReader.getTime(), new node_time_engine_1.NodeTimeEngine());
         });
-        this[_e] = this.rcs(context_1.Context);
-        this[_f] = this.rfs(() => {
+        this[_e] = this.rfs(() => {
+            return {
+                timeline: this[types_1.TYPES.timeline](),
+                DataTypes: this[types_1.TYPES.TexchangeDataTypes](),
+            };
+        });
+        this[_f] = this.rcs(context_1.Context);
+        this[_g] = this.rfs(() => {
             const Strategy = this[types_1.TYPES.Strategy]();
             const ctx = this[types_1.TYPES.context]();
             return new Strategy(ctx);
         });
-        this[_g] = this.rcs(tecretary_1.Tecretary);
+        this[_h] = this.rcs(tecretary_1.Tecretary);
     }
 }
 exports.Container = Container;
-_a = types_1.TYPES.TexchangeDataTypes, _b = types_1.TYPES.progressReader, _c = types_1.TYPES.dataReader, _d = types_1.TYPES.timeline, _e = types_1.TYPES.context, _f = types_1.TYPES.strategy, _g = types_1.TYPES.tecretary;
+_a = types_1.TYPES.TexchangeDataTypes, _b = types_1.TYPES.progressReader, _c = types_1.TYPES.dataReader, _d = types_1.TYPES.timeline, _e = types_1.TYPES.vmctx, _f = types_1.TYPES.context, _g = types_1.TYPES.strategy, _h = types_1.TYPES.tecretary;
 //# sourceMappingURL=container.js.map

@@ -8,6 +8,7 @@ export class TYPES {
 
 	public static readonly texchangeMap = Symbol('texchangeMap');
 	public static readonly timeline = Symbol('timeline');
+	public static readonly vmctx = Symbol('vmctx');
 	public static readonly endTime = Symbol('endTime');
 	public static readonly context = Symbol('context');
 
