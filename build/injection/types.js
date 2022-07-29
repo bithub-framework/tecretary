@@ -5,7 +5,6 @@ class TYPES {
 }
 exports.TYPES = TYPES;
 TYPES.config = Symbol('config');
-TYPES.TexchangeDataTypes = Symbol('TexchangeDataTypes');
 TYPES.progressReader = Symbol('progressReader');
 TYPES.startTime = Symbol('startTime');
 TYPES.progressFilePath = Symbol('progressFilePath');
@@ -19,5 +18,6 @@ TYPES.Strategy = Symbol('strategyStatic');
 TYPES.strategy = Symbol('strategy');
 TYPES.hFactory = Symbol('hFactory');
 TYPES.hStatic = Symbol('hStatic');
+TYPES.TexchangeDataTypes = Symbol('TexchangeDataTypes');
 TYPES.tecretary = Symbol('tecretary');
 //# sourceMappingURL=types.js.map

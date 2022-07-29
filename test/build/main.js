@@ -18,7 +18,7 @@ class TecretaryContainer extends __1.BaseContainer {
             continue: false,
         });
         this[_b] = this.rfs(() => {
-            const texchangeContainer = new texchange_1.DefaultContainer(this[TECRETARY_TYPES.timeline](), this[TECRETARY_TYPES.hFactory](), this[TECRETARY_TYPES.hStatic](), high_precision_1.bigDecimalHFactory.from(1000), high_precision_1.bigDecimalHFactory.from(7000));
+            const texchangeContainer = new texchange_1.DefaultContainer(this[TECRETARY_TYPES.timeline](), this[TECRETARY_TYPES.TexchangeDataTypes](), high_precision_1.bigDecimalHFactory.from(1000), high_precision_1.bigDecimalHFactory.from(7000));
             return new Map([[
                     'binance-perpetual-btcusdt',
                     texchangeContainer[texchange_1.DEFAULT_TYPES.texchange](),
@@ -29,7 +29,7 @@ class TecretaryContainer extends __1.BaseContainer {
         this[_e] = this.rv('../progress.db');
         this[_f] = this.rv('/media/1tb/tecretary.db');
         this[_g] = this.rv(1577807996537);
-        this[_h] = this.rfs(() => this[TECRETARY_TYPES.startTime]() + 1 * 60 * 60 * 1000);
+        this[_h] = this.rfs(() => this[TECRETARY_TYPES.startTime]() + 1 * 20 * 60 * 1000);
         this[_j] = this.rv(strategy_1.Strategy);
     }
 }

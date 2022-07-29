@@ -14,7 +14,9 @@ const tecretary_1 = require("../tecretary");
 class Container extends injektor_1.BaseContainer {
     constructor() {
         super(...arguments);
-        this[_a] = this.rcs(texchange_1.DataTypesNamespace);
+        this[_a] = this.rfs(() => {
+            return new texchange_1.DataTypesNamespace(this[types_1.TYPES.hFactory](), this[types_1.TYPES.hStatic]());
+        });
         this[_b] = this.rcs(progress_reader_1.ProgressReader);
         this[_c] = this.rcs(data_reader_1.DataReader);
         this[_d] = this.rfs(() => {

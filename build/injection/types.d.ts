@@ -1,6 +1,5 @@
 export declare class TYPES {
     static readonly config: unique symbol;
-    static readonly TexchangeDataTypes: unique symbol;
     static readonly progressReader: unique symbol;
     static readonly startTime: unique symbol;
     static readonly progressFilePath: unique symbol;
@@ -14,5 +13,6 @@ export declare class TYPES {
     static readonly strategy: unique symbol;
     static readonly hFactory: unique symbol;
     static readonly hStatic: unique symbol;
+    static readonly TexchangeDataTypes: unique symbol;
     static readonly tecretary: unique symbol;
 }

@@ -22,7 +22,12 @@ import { Tecretary } from '../tecretary';
 
 export abstract class Container<H extends HLike<H>> extends BaseContainer {
 	public abstract [TYPES.config]: () => Config;
-	public [TYPES.TexchangeDataTypes] = this.rcs<TexchangeDataTypesNamespace<H>>(TexchangeDataTypesNamespace);
+	public [TYPES.TexchangeDataTypes] = this.rfs<TexchangeDataTypesNamespace<H>>(() => {
+		return new TexchangeDataTypesNamespace(
+			this[TYPES.hFactory](),
+			this[TYPES.hStatic](),
+		);
+	});
 	public [TYPES.progressReader] = this.rcs<ProgressReaderLike<H>>(ProgressReader);
 	public abstract [TYPES.startTime]: () => number;
 	public abstract [TYPES.progressFilePath]: () => string;
