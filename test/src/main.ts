@@ -32,8 +32,7 @@ class TecretaryContainer extends TecretaryBaseContainer<H> {
 	public [TECRETARY_TYPES.texchangeMap] = this.rfs<Map<string, Texchange<H>>>(() => {
 		const texchangeContainer = new TexchangeContainer<H>(
 			this[TECRETARY_TYPES.timeline](),
-			this[TECRETARY_TYPES.hFactory](),
-			this[TECRETARY_TYPES.hStatic](),
+			this[TECRETARY_TYPES.TexchangeDataTypes](),
 			hFactory.from(1000),
 			hFactory.from(7000),
 		);

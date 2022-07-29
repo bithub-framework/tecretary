@@ -15,7 +15,8 @@ const market_1 = require("./market");
 const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("../injection/types");
 let Context = class Context {
-    constructor(config, texchangeMap, timeline, progressReader) {
+    constructor(config, texchangeMap, DataTypes, timeline, progressReader) {
+        this.DataTypes = DataTypes;
         this.timeline = timeline;
         this.progressReader = progressReader;
         const texchanges = config.marketNames.map(name => {
@@ -34,8 +35,9 @@ let Context = class Context {
 Context = __decorate([
     __param(0, (0, injektor_1.inject)(types_1.TYPES.config)),
     __param(1, (0, injektor_1.inject)(types_1.TYPES.texchangeMap)),
-    __param(2, (0, injektor_1.inject)(types_1.TYPES.timeline)),
-    __param(3, (0, injektor_1.inject)(types_1.TYPES.progressReader))
+    __param(2, (0, injektor_1.inject)(types_1.TYPES.TexchangeDataTypes)),
+    __param(3, (0, injektor_1.inject)(types_1.TYPES.timeline)),
+    __param(4, (0, injektor_1.inject)(types_1.TYPES.progressReader))
 ], Context);
 exports.Context = Context;
 //# sourceMappingURL=context.js.map

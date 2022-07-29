@@ -1,5 +1,6 @@
 export declare class TYPES {
     static readonly config: unique symbol;
+    static readonly TexchangeDataTypes: unique symbol;
     static readonly progressReader: unique symbol;
     static readonly startTime: unique symbol;
     static readonly progressFilePath: unique symbol;

@@ -12,13 +12,17 @@ import { DataReader } from '../data-reader';
 import { DataReaderLike } from '../data-reader-like';
 import { Timeline } from '../timeline/timeline';
 import { Context } from '../context';
-import { Texchange } from 'texchange';
+import {
+	Texchange,
+	DataTypesNamespace as TexchangeDataTypesNamespace,
+} from 'texchange';
 import { Tecretary } from '../tecretary';
 
 
 
 export abstract class Container<H extends HLike<H>> extends BaseContainer {
 	public abstract [TYPES.config]: () => Config;
+	public [TYPES.TexchangeDataTypes] = this.rcs<TexchangeDataTypesNamespace<H>>(TexchangeDataTypesNamespace);
 	public [TYPES.progressReader] = this.rcs<ProgressReaderLike<H>>(ProgressReader);
 	public abstract [TYPES.startTime]: () => number;
 	public abstract [TYPES.progressFilePath]: () => string;

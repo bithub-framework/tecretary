@@ -1,5 +1,6 @@
 export class TYPES {
 	public static readonly config = Symbol('config');
+	public static readonly TexchangeDataTypes = Symbol('TexchangeDataTypes');
 	public static readonly progressReader = Symbol('progressReader');
 	public static readonly startTime = Symbol('startTime');
 	public static readonly progressFilePath = Symbol('progressFilePath');

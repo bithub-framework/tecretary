@@ -6,10 +6,11 @@ import { ProgressReaderLike } from '../progress-reader-like';
 import { DataReaderLike } from '../data-reader-like';
 import { Timeline } from '../timeline/timeline';
 import { Context } from '../context';
-import { Texchange } from 'texchange';
+import { Texchange, DataTypesNamespace as TexchangeDataTypesNamespace } from 'texchange';
 import { Tecretary } from '../tecretary';
 export declare abstract class Container<H extends HLike<H>> extends BaseContainer {
     abstract [TYPES.config]: () => Config;
+    [TYPES.TexchangeDataTypes]: () => TexchangeDataTypesNamespace<H>;
     [TYPES.progressReader]: () => ProgressReaderLike<H>;
     abstract [TYPES.startTime]: () => number;
     abstract [TYPES.progressFilePath]: () => string;

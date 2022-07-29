@@ -5,6 +5,7 @@ class TYPES {
 }
 exports.TYPES = TYPES;
 TYPES.config = Symbol('config');
+TYPES.TexchangeDataTypes = Symbol('TexchangeDataTypes');
 TYPES.progressReader = Symbol('progressReader');
 TYPES.startTime = Symbol('startTime');
 TYPES.progressFilePath = Symbol('progressFilePath');

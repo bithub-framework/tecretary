@@ -3,6 +3,7 @@ import {
     ContextLike,
     HLike,
     TimelineLike,
+    DataTypesNamespace as SecretaryDataTypesNamespace,
 } from 'secretary-like';
 import { Texchange } from 'texchange';
 import { ProgressReader } from '../progress-reader';
@@ -24,6 +25,8 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
         config: Config,
         @inject(TYPES.texchangeMap)
         texchangeMap: Map<string, Texchange<H>>,
+        @inject(TYPES.TexchangeDataTypes)
+        public DataTypes: SecretaryDataTypesNamespace<H>,
         @inject(TYPES.timeline)
         public timeline: TimelineLike,
         @inject(TYPES.progressReader)
