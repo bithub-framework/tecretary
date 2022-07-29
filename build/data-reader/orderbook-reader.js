@@ -43,15 +43,15 @@ class OrderbookReader {
                 const asks = group
                     .filter(order => order.side === raw_data_1.RawSide.ASK)
                     .map(order => ({
-                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
-                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
+                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: secretary_like_1.Side.ASK,
                 }));
                 const bids = group
                     .filter(order => order.side === raw_data_1.RawSide.BID)
                     .map(order => ({
-                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
-                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
+                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: secretary_like_1.Side.BID,
                 })).reverse();
                 yield {

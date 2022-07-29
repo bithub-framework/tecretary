@@ -4,9 +4,9 @@ import { Texchange } from 'texchange';
 import { EventEmitter } from 'events';
 export declare class ContextMarket<H extends HLike<H>> extends EventEmitter implements MarketLike<H> {
     [accountId: number]: AccountLike<H>;
-    PRICE_DP: number;
-    QUANTITY_DP: number;
-    CURRENCY_DP: number;
+    PRICE_SCALE: number;
+    QUANTITY_SCALE: number;
+    CURRENCY_SCALE: number;
     TICK_SIZE: H;
     MARKET_NAME: string;
     on: <Event extends keyof MarketEvents<H>>(event: Event, listener: (...args: MarketEvents<H>[Event]) => void) => this;

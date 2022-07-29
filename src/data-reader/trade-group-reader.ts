@@ -93,8 +93,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 		try {
 			for (const rawTrade of rawTrades) {
 				yield {
-					price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_DP),
-					quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_DP),
+					price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_SCALE),
+					quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_SCALE),
 					side: rawTrade.side === RawSide.BID ? Side.BID : Side.ASK,
 					id: `${rawTrade.id}`,
 					time: rawTrade.time,

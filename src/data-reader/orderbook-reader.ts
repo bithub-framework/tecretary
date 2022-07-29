@@ -93,15 +93,15 @@ export class OrderbookReader<H extends HLike<H>> {
 				const asks: BookOrder<H>[] = group
 					.filter(order => order.side === RawSide.ASK)
 					.map(order => ({
-						price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
-						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
+						price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
 						side: Side.ASK,
 					}));
 				const bids: BookOrder<H>[] = group
 					.filter(order => order.side === RawSide.BID)
 					.map(order => ({
-						price: this.hFactory.from(order.price).round(marketSpec.PRICE_DP),
-						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_DP),
+						price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
 						side: Side.BID,
 					})).reverse();
 				yield {

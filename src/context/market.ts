@@ -19,9 +19,9 @@ export class ContextMarket<H extends HLike<H>>
 {
 	[accountId: number]: AccountLike<H>;
 
-	public PRICE_DP: number;
-	public QUANTITY_DP: number;
-	public CURRENCY_DP: number;
+	public PRICE_SCALE: number;
+	public QUANTITY_SCALE: number;
+	public CURRENCY_SCALE: number;
 	public TICK_SIZE: H;
 	public MARKET_NAME: string;
 
@@ -39,9 +39,9 @@ export class ContextMarket<H extends HLike<H>>
 
 		this.facade = texchange.getUserMarketFacade();
 
-		this.PRICE_DP = this.facade.PRICE_DP;
-		this.QUANTITY_DP = this.facade.QUANTITY_DP;
-		this.CURRENCY_DP = this.facade.CURRENCY_DP;
+		this.PRICE_SCALE = this.facade.PRICE_SCALE;
+		this.QUANTITY_SCALE = this.facade.QUANTITY_SCALE;
+		this.CURRENCY_SCALE = this.facade.CURRENCY_SCALE;
 		this.TICK_SIZE = this.facade.TICK_SIZE;
 		this.MARKET_NAME = this.facade.MARKET_NAME;
 
