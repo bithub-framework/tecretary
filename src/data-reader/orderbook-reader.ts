@@ -1,13 +1,13 @@
 import { RawBookOrder, RawSide } from './raw-data';
 import Database = require('better-sqlite3');
 import {
-	HFactory, HLike,
+	HLike,
 	Side,
-	BookOrderLike,
-	MarketSpecLike,
+	BookOrder,
+	MarketSpec,
 } from 'secretary-like';
 import {
-	DatabaseOrderbookLike,
+	DatabaseOrderbook,
 	DataTypesNamespace as TexchangeDataTypesNamespace,
 } from 'texchange';
 import { DatabaseIterableIterator } from './database-iterable-iterator';
@@ -22,10 +22,10 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterId(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		afterOrderbookId: number,
 		endTime: number,
-	): Generator<DatabaseOrderbookLike<H>, void> {
+	): Generator<DatabaseOrderbook<H>, void> {
 		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
 			marketName,
 			afterOrderbookId,
@@ -46,10 +46,10 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	public getDatabaseOrderbooksAfterTime(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		afterTime: number,
 		endTime: number,
-	): Generator<DatabaseOrderbookLike<H>, void> {
+	): Generator<DatabaseOrderbook<H>, void> {
 		const rawBookOrders = this.getRawBookOrdersAfterTime(
 			marketName,
 			afterTime,
@@ -89,18 +89,18 @@ export class OrderbookReader<H extends HLike<H>> {
 
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: Generator<RawBookOrder[], void>,
-		marketSpec: MarketSpecLike<H>,
-	): Generator<DatabaseOrderbookLike<H>, void> {
+		marketSpec: MarketSpec<H>,
+	): Generator<DatabaseOrderbook<H>, void> {
 		try {
 			for (const group of groups) {
-				const asks: BookOrderLike<H>[] = group
+				const asks: BookOrder<H>[] = group
 					.filter(order => order.side === RawSide.ASK)
 					.map(order => this.DataTypes.bookOrderFactory.new({
 						price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
 						quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
 						side: Side.ASK,
 					}));
-				const bids: BookOrderLike<H>[] = group
+				const bids: BookOrder<H>[] = group
 					.filter(order => order.side === RawSide.BID)
 					.map(order => this.DataTypes.bookOrderFactory.new({
 						price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),

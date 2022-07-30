@@ -1,11 +1,11 @@
 import {
 	AccountLike,
 	HLike,
-	LimitOrderLike,
-	BalancesLike,
-	PositionsLike,
-	OpenOrderLike,
-	AmendmentLike,
+	LimitOrder,
+	Balances,
+	Positions,
+	OpenOrder,
+	Amendment,
 	AccountEvents,
 } from 'secretary-like';
 import {
@@ -50,27 +50,27 @@ export class ContextAccout<H extends HLike<H>>
 		});
 	}
 
-	public async makeOrders($orders: LimitOrderLike<H>[]): Promise<(OpenOrderLike<H> | Error)[]> {
+	public async makeOrders($orders: LimitOrder<H>[]): Promise<(OpenOrder<H> | Error)[]> {
 		return await this.facade.makeOrders($orders);
 	}
 
-	public async amendOrders($amendments: AmendmentLike<H>[]): Promise<(OpenOrderLike<H> | Error)[]> {
+	public async amendOrders($amendments: Amendment<H>[]): Promise<(OpenOrder<H> | Error)[]> {
 		return await this.facade.amendOrders($amendments);
 	}
 
-	public async cancelOrders($orders: OpenOrderLike<H>[]): Promise<OpenOrderLike<H>[]> {
+	public async cancelOrders($orders: OpenOrder<H>[]): Promise<OpenOrder<H>[]> {
 		return await this.facade.cancelOrders($orders);
 	}
 
-	public async getBalances(): Promise<BalancesLike<H>> {
+	public async getBalances(): Promise<Balances<H>> {
 		return await this.facade.getBalances();
 	}
 
-	public async getPositions(): Promise<PositionsLike<H>> {
+	public async getPositions(): Promise<Positions<H>> {
 		return await this.facade.getPositions();
 	}
 
-	public async getOpenOrders(): Promise<OpenOrderLike<H>[]> {
+	public async getOpenOrders(): Promise<OpenOrder<H>[]> {
 		return await this.facade.getOpenOrders();
 	}
 }

@@ -2,13 +2,13 @@ import { HLike } from 'secretary-like';
 import { CheckPoint } from '../timeline/time-engine';
 import {
 	Texchange,
-	DatabaseTradeLike,
+	DatabaseTrade,
 } from 'texchange';
 
 
 
 export function* makeTradeGroupCheckPoints<H extends HLike<H>>(
-	groups: Iterable<DatabaseTradeLike<H>[]>,
+	groups: Iterable<DatabaseTrade<H>[]>,
 	texchange: Texchange<H>,
 ): Iterable<CheckPoint> {
 	const facade = texchange.getAdminFacade();

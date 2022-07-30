@@ -18,8 +18,8 @@ import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { Shifterator } from 'shiftable';
 import { CheckPoint } from './timeline/time-engine';
-import { DatabaseTradeLike } from 'texchange';
-import { DatabaseOrderbookLike } from 'texchange';
+import { DatabaseTrade } from 'texchange';
+import { DatabaseOrderbook } from 'texchange';
 import { Rwlock } from '@zimtsui/coroutine-locks';
 
 
@@ -47,8 +47,8 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 	private realMachineRunning?: Rwlock;
 	private strategyRunning?: Rwlock;
 
-	private tradeGroupsMap = new Map<string, Generator<DatabaseTradeLike<H>[], void>>();
-	private orderbooksMap = new Map<string, Generator<DatabaseOrderbookLike<H>, void>>();
+	private tradeGroupsMap = new Map<string, Generator<DatabaseTrade<H>[], void>>();
+	private orderbooksMap = new Map<string, Generator<DatabaseOrderbook<H>, void>>();
 
 
 	public constructor(

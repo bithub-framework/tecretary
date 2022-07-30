@@ -1,12 +1,12 @@
 import { RawTrade, RawSide } from './raw-data';
 import Database = require('better-sqlite3');
 import {
-	HFactory, HLike,
-	MarketSpecLike,
+	HLike,
+	MarketSpec,
 	Side,
 } from 'secretary-like';
 import {
-	DatabaseTradeLike,
+	DatabaseTrade,
 	DataTypesNamespace as TexchangeDataTypesNamespace,
 } from 'texchange';
 import { DatabaseIterableIterator } from './database-iterable-iterator';
@@ -21,10 +21,10 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterId(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		afterTradeId: number,
 		endTime: number,
-	): Generator<DatabaseTradeLike<H>[], void> {
+	): Generator<DatabaseTrade<H>[], void> {
 		const rawTrades = this.getRawTradesAfterTradeId(
 			marketName,
 			afterTradeId,
@@ -45,10 +45,10 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	public getDatabaseTradeGroupsAfterTime(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		afterTime: number,
 		endTime: number,
-	): Generator<DatabaseTradeLike<H>[], void> {
+	): Generator<DatabaseTrade<H>[], void> {
 		const rawTrades = this.getRawTradesAfterTime(
 			marketName,
 			afterTime,
@@ -68,9 +68,9 @@ export class TradeGroupReader<H extends HLike<H>> {
 	}
 
 	private *databaseTradeGroupsFromDatabaseTrades(
-		trades: Generator<DatabaseTradeLike<H>, void>,
-	): Generator<DatabaseTradeLike<H>[], void> {
-		let $group: DatabaseTradeLike<H>[] = [];
+		trades: Generator<DatabaseTrade<H>, void>,
+	): Generator<DatabaseTrade<H>[], void> {
+		let $group: DatabaseTrade<H>[] = [];
 		try {
 			for (const trade of trades) {
 				if (
@@ -91,8 +91,8 @@ export class TradeGroupReader<H extends HLike<H>> {
 
 	private *databaseTradesFromRawTrades(
 		rawTrades: DatabaseIterableIterator<RawTrade>,
-		marketSpec: MarketSpecLike<H>,
-	): Generator<DatabaseTradeLike<H>, void> {
+		marketSpec: MarketSpec<H>,
+	): Generator<DatabaseTrade<H>, void> {
 		try {
 			for (const rawTrade of rawTrades) {
 				yield this.DataTypes.databaseTradeFactory.new({

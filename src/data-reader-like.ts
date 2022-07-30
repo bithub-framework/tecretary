@@ -1,12 +1,12 @@
 import {
 	HLike,
-	MarketSpecLike,
+	MarketSpec,
 } from 'secretary-like';
 import { StartableLike } from 'startable';
 import {
-	DatabaseOrderbookLike,
+	DatabaseOrderbook,
 	DatabaseOrderbookId,
-	DatabaseTradeLike,
+	DatabaseTrade,
 	DatabaseTradeId,
 } from 'texchange';
 
@@ -15,29 +15,29 @@ import {
 export interface DataReaderLike<H extends HLike<H>> extends StartableLike {
 	getDatabaseOrderbooksAfterId(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		id: DatabaseOrderbookId,
 		endTime: number,
-	): Generator<DatabaseOrderbookLike<H>, void>;
+	): Generator<DatabaseOrderbook<H>, void>;
 
 	getDatabaseOrderbooksAfterTime(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		afterTime: number,
 		endTime: number,
-	): Generator<DatabaseOrderbookLike<H>, void>;
+	): Generator<DatabaseOrderbook<H>, void>;
 
 	getDatabaseTradeGroupsAfterId(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		id: DatabaseTradeId,
 		endTime: number,
-	): Generator<DatabaseTradeLike<H>[], void>;
+	): Generator<DatabaseTrade<H>[], void>;
 
 	getDatabaseTradeGroupsAfterTime(
 		marketName: string,
-		marketSpec: MarketSpecLike<H>,
+		marketSpec: MarketSpec<H>,
 		afterTime: number,
 		endTime: number,
-	): Generator<DatabaseTradeLike<H>[], void>;
+	): Generator<DatabaseTrade<H>[], void>;
 }

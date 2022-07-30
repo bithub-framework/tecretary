@@ -2,12 +2,12 @@ import { Startable } from 'startable';
 import Database = require('better-sqlite3');
 import {
     HFactory, HLike,
-    MarketSpecLike,
+    MarketSpec,
 } from 'secretary-like';
 import {
-    DatabaseOrderbookLike,
+    DatabaseOrderbook,
     DatabaseOrderbookId,
-    DatabaseTradeLike,
+    DatabaseTrade,
     DatabaseTradeId,
     DataTypesNamespace as TexchangeDataTypesNamespace
 } from 'texchange';
@@ -64,10 +64,10 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseOrderbooksAfterId(
         marketName: string,
-        marketSpec: MarketSpecLike<H>,
+        marketSpec: MarketSpec<H>,
         id: DatabaseOrderbookId,
         endTime: number,
-    ): Generator<DatabaseOrderbookLike<H>, void> {
+    ): Generator<DatabaseOrderbook<H>, void> {
         return this.orderbookReader.getDatabaseOrderbooksAfterId(
             marketName,
             marketSpec,
@@ -78,10 +78,10 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseOrderbooksAfterTime(
         marketName: string,
-        marketSpec: MarketSpecLike<H>,
+        marketSpec: MarketSpec<H>,
         afterTime: number,
         endTime: number,
-    ): Generator<DatabaseOrderbookLike<H>, void> {
+    ): Generator<DatabaseOrderbook<H>, void> {
         return this.orderbookReader.getDatabaseOrderbooksAfterTime(
             marketName,
             marketSpec,
@@ -92,10 +92,10 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseTradeGroupsAfterId(
         marketName: string,
-        marketSpec: MarketSpecLike<H>,
+        marketSpec: MarketSpec<H>,
         id: DatabaseTradeId,
         endTime: number,
-    ): Generator<DatabaseTradeLike<H>[], void> {
+    ): Generator<DatabaseTrade<H>[], void> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(
             marketName,
             marketSpec,
@@ -106,10 +106,10 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
 
     public getDatabaseTradeGroupsAfterTime(
         marketName: string,
-        marketSpec: MarketSpecLike<H>,
+        marketSpec: MarketSpec<H>,
         afterTime: number,
         endTime: number,
-    ): Generator<DatabaseTradeLike<H>[], void> {
+    ): Generator<DatabaseTrade<H>[], void> {
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
             marketName,
             marketSpec,
