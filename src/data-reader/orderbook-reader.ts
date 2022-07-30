@@ -10,7 +10,7 @@ import {
 	DatabaseOrderbook,
 	DataTypesNamespace as TexchangeDataTypesNamespace,
 } from 'texchange';
-import { DatabaseIterableIterator } from './database-iterable-iterator';
+import { DatabaseIterable } from './database-iterable-iterator';
 
 
 
@@ -69,7 +69,7 @@ export class OrderbookReader<H extends HLike<H>> {
 	}
 
 	private *rawBookOrderGroupsFromRawBookOrders(
-		rawBookOrders: DatabaseIterableIterator<RawBookOrder>,
+		rawBookOrders: DatabaseIterable<RawBookOrder>,
 	): Generator<RawBookOrder[], void> {
 		let $group: RawBookOrder[] = [];
 		try {
@@ -123,8 +123,8 @@ export class OrderbookReader<H extends HLike<H>> {
 		marketName: string,
 		afterTime: number,
 		endTime: number,
-	): DatabaseIterableIterator<RawBookOrder> {
-		return <DatabaseIterableIterator<RawBookOrder>>this.db.prepare(`
+	): DatabaseIterable<RawBookOrder> {
+		return <DatabaseIterable<RawBookOrder>>this.db.prepare(`
 			SELECT
 				time,
 				CAST(price AS TEXT) AS price,
@@ -150,7 +150,7 @@ export class OrderbookReader<H extends HLike<H>> {
 		marketName: string,
 		afterOrderbookId: number,
 		endTime: number,
-	): DatabaseIterableIterator<RawBookOrder> {
+	): DatabaseIterable<RawBookOrder> {
 		const afterTime: number = this.db.prepare(`
 			SELECT time
 			FROM orderbooks, markets
@@ -163,7 +163,7 @@ export class OrderbookReader<H extends HLike<H>> {
 			afterOrderbookId,
 		).time;
 
-		return <DatabaseIterableIterator<RawBookOrder>>this.db.prepare(`
+		return <DatabaseIterable<RawBookOrder>>this.db.prepare(`
 			SELECT
 				time,
 				CAST(price AS TEXT) AS price,

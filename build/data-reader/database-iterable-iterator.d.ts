@@ -1,3 +1,4 @@
-export interface DatabaseIterableIterator<T> extends IterableIterator<T> {
-    return(): IteratorResult<T>;
+export interface DatabaseIterable<T> {
+    [Symbol.iterator](): Iterator<T>;
+    return(): void;
 }
