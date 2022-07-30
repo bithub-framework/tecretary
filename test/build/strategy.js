@@ -20,12 +20,12 @@ class Strategy {
             try {
                 for (;; await sleep(2 * 1000)) {
                     const balances = await this.ctx[0][0].getBalances();
-                    console.log(this.ctx.DataTypes.balancesFactory.capture(balances));
+                    console.log(balances.toJSON());
                     const positions = await this.ctx[0][0].getPositions();
-                    console.log(this.ctx.DataTypes.positionsFactory.capture(positions));
+                    console.log(positions.toJSON());
                     const openOrders = await this.ctx[0][0].getOpenOrders();
                     openOrders.forEach(order => {
-                        console.log(this.ctx.DataTypes.openOrderFactory.capture(order));
+                        console.log(order.toJSON());
                     });
                 }
             }
@@ -52,7 +52,7 @@ class Strategy {
             if (results[0] instanceof Error)
                 console.log(results[0]);
             else
-                console.log(this.ctx.DataTypes.openOrderFactory.capture(results[0]));
+                console.log(results[0].toJSON());
         };
         this.onError = (err) => {
             // console.error(err);
