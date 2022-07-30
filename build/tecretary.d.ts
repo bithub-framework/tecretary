@@ -1,4 +1,4 @@
-import { ReadyState, StartableLike } from 'startable';
+import { StartableLike } from 'startable';
 import { DataReaderLike } from './data-reader-like';
 import { ProgressReaderLike } from './progress-reader-like';
 import { Texchange } from 'texchange';
@@ -18,7 +18,7 @@ export declare class Tecretary<H extends HLike<H>> implements StartableLike {
     stop: (err?: Error | undefined) => Promise<void>;
     assart: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
     starp: (err?: Error | undefined) => Promise<void>;
-    getReadyState: () => ReadyState;
+    getReadyState: () => import("startable").ReadyState;
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     private realMachine;
     private virtualMachine;

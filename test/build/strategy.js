@@ -16,12 +16,17 @@ class Strategy {
         this.getReadyState = this.startable.getReadyState;
         this.skipStart = this.startable.skipStart;
         this.latestPrice = null;
-        this.bought = false;
         this.loop = async (sleep) => {
             try {
-                for (;; await sleep(60 * 1000)) {
+                for (;; await sleep(2 * 1000)) {
                     const balances = await this.ctx[0][0].getBalances();
-                    console.log(JSON.stringify(balances));
+                    console.log(this.ctx.DataTypes.balancesFactory.capture(balances));
+                    const positions = await this.ctx[0][0].getPositions();
+                    console.log(this.ctx.DataTypes.positionsFactory.capture(positions));
+                    const openOrders = await this.ctx[0][0].getOpenOrders();
+                    openOrders.forEach(order => {
+                        console.log(this.ctx.DataTypes.openOrderFactory.capture(order));
+                    });
                 }
             }
             catch (err) {
@@ -34,17 +39,20 @@ class Strategy {
         };
         this.onOrderbook = async (orderbook) => {
             // console.log(`orderbook - ${orderbook.time}`);
-            if (this.bought)
-                return;
-            this.bought = true;
+        };
+        this.onceOrderbook = async (orderbook) => {
+            // console.log(`orderbook - ${orderbook.time}`);
             const results = await this.ctx[0][0].makeOrders([{
-                    price: orderbook[secretary_like_1.Side.ASK][0].price,
+                    price: orderbook[secretary_like_1.Side.ASK][0].price.minus(1),
                     quantity: orderbook[secretary_like_1.Side.ASK][0].quantity,
                     length: secretary_like_1.Length.LONG,
                     action: secretary_like_1.Action.OPEN,
                     side: secretary_like_1.Side.BID,
                 }]);
-            console.log(JSON.stringify(results[0]));
+            if (results[0] instanceof Error)
+                console.log(results[0]);
+            else
+                console.log(this.ctx.DataTypes.openOrderFactory.capture(results[0]));
         };
         this.onError = (err) => {
             // console.error(err);
@@ -55,12 +63,14 @@ class Strategy {
     async rawStart() {
         this.ctx[0].on('trades', this.onTrades);
         this.ctx[0].on('orderbook', this.onOrderbook);
+        this.ctx[0].once('orderbook', this.onceOrderbook);
         this.ctx[0].on('error', this.onError);
         await this.poller.start(this.starp);
     }
     async rawStop() {
         this.ctx[0].off('trades', this.onTrades);
         this.ctx[0].off('orderbook', this.onOrderbook);
+        this.ctx[0].off('orderbook', this.onceOrderbook);
         this.ctx[0].off('error', this.onError);
         await this.poller.stop();
     }

@@ -53,7 +53,7 @@ class TecretaryContainer extends TecretaryBaseContainer<H> {
 		1577807996537,
 	);
 	public [TECRETARY_TYPES.endTime] = this.rfs<number>(
-		() => this[TECRETARY_TYPES.startTime]() + 1 * 20 * 60 * 1000,
+		() => this[TECRETARY_TYPES.startTime]() + 20 * 1000,
 	);
 	public [TECRETARY_TYPES.Strategy] = this.rv<StrategyStaticLike<H>>(Strategy);
 }

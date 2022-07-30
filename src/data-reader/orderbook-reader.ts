@@ -3,10 +3,13 @@ import Database = require('better-sqlite3');
 import {
 	HFactory, HLike,
 	Side,
-	BookOrder,
+	BookOrderLike,
 	MarketSpecLike,
 } from 'secretary-like';
-import { DatabaseOrderbook } from 'texchange';
+import {
+	DatabaseOrderbookLike,
+	DataTypesNamespace as TexchangeDataTypesNamespace,
+} from 'texchange';
 import { DatabaseIterableIterator } from './database-iterable-iterator';
 
 
@@ -14,7 +17,7 @@ import { DatabaseIterableIterator } from './database-iterable-iterator';
 export class OrderbookReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private hFactory: HFactory<H>,
+		private DataTypes: TexchangeDataTypesNamespace<H>,
 	) { }
 
 	public getDatabaseOrderbooksAfterId(
@@ -22,7 +25,7 @@ export class OrderbookReader<H extends HLike<H>> {
 		marketSpec: MarketSpecLike<H>,
 		afterOrderbookId: number,
 		endTime: number,
-	): Generator<DatabaseOrderbook<H>, void> {
+	): Generator<DatabaseOrderbookLike<H>, void> {
 		const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(
 			marketName,
 			afterOrderbookId,
@@ -46,7 +49,7 @@ export class OrderbookReader<H extends HLike<H>> {
 		marketSpec: MarketSpecLike<H>,
 		afterTime: number,
 		endTime: number,
-	): Generator<DatabaseOrderbook<H>, void> {
+	): Generator<DatabaseOrderbookLike<H>, void> {
 		const rawBookOrders = this.getRawBookOrdersAfterTime(
 			marketName,
 			afterTime,
@@ -87,29 +90,29 @@ export class OrderbookReader<H extends HLike<H>> {
 	private *databaseOrderbooksFromRawBookOrderGroups(
 		groups: Generator<RawBookOrder[], void>,
 		marketSpec: MarketSpecLike<H>,
-	): Generator<DatabaseOrderbook<H>, void> {
+	): Generator<DatabaseOrderbookLike<H>, void> {
 		try {
 			for (const group of groups) {
-				const asks: BookOrder<H>[] = group
+				const asks: BookOrderLike<H>[] = group
 					.filter(order => order.side === RawSide.ASK)
-					.map(order => ({
-						price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
-						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
+					.map(order => this.DataTypes.bookOrderFactory.new({
+						price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+						quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
 						side: Side.ASK,
 					}));
-				const bids: BookOrder<H>[] = group
+				const bids: BookOrderLike<H>[] = group
 					.filter(order => order.side === RawSide.BID)
-					.map(order => ({
-						price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
-						quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
+					.map(order => this.DataTypes.bookOrderFactory.new({
+						price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+						quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
 						side: Side.BID,
 					})).reverse();
-				yield {
+				yield this.DataTypes.databaseOrderbookFactory.new({
 					[Side.BID]: bids,
 					[Side.ASK]: asks,
 					time: group[0].time,
 					id: group[0].id.toString(),
-				};
+				});
 			}
 		} finally {
 			groups.return();

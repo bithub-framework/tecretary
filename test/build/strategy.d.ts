@@ -9,12 +9,12 @@ export declare class Strategy<H extends HLike<H>> implements StrategyLike {
     getReadyState: () => import("startable").ReadyState;
     skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
     private latestPrice;
-    private bought;
     private poller;
     constructor(ctx: ContextLike<H>);
     private loop;
     private onTrades;
     private onOrderbook;
+    private onceOrderbook;
     private onError;
     private rawStart;
     private rawStop;

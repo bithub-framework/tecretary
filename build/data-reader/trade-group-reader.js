@@ -4,9 +4,9 @@ exports.TradeGroupReader = void 0;
 const raw_data_1 = require("./raw-data");
 const secretary_like_1 = require("secretary-like");
 class TradeGroupReader {
-    constructor(db, hFactory) {
+    constructor(db, DataTypes) {
         this.db = db;
-        this.hFactory = hFactory;
+        this.DataTypes = DataTypes;
     }
     getDatabaseTradeGroupsAfterId(marketName, marketSpec, afterTradeId, endTime) {
         const rawTrades = this.getRawTradesAfterTradeId(marketName, afterTradeId, endTime);
@@ -41,13 +41,13 @@ class TradeGroupReader {
     *databaseTradesFromRawTrades(rawTrades, marketSpec) {
         try {
             for (const rawTrade of rawTrades) {
-                yield {
-                    price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_SCALE),
-                    quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_SCALE),
+                yield this.DataTypes.databaseTradeFactory.new({
+                    price: this.DataTypes.hFactory.from(rawTrade.price).round(marketSpec.PRICE_SCALE),
+                    quantity: this.DataTypes.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: rawTrade.side === raw_data_1.RawSide.BID ? secretary_like_1.Side.BID : secretary_like_1.Side.ASK,
-                    id: `${rawTrade.id}`,
+                    id: rawTrade.id.toString(),
                     time: rawTrade.time,
-                };
+                });
             }
         }
         finally {

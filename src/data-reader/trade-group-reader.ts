@@ -5,7 +5,10 @@ import {
 	MarketSpecLike,
 	Side,
 } from 'secretary-like';
-import { DatabaseTrade } from 'texchange';
+import {
+	DatabaseTradeLike,
+	DataTypesNamespace as TexchangeDataTypesNamespace,
+} from 'texchange';
 import { DatabaseIterableIterator } from './database-iterable-iterator';
 
 
@@ -13,7 +16,7 @@ import { DatabaseIterableIterator } from './database-iterable-iterator';
 export class TradeGroupReader<H extends HLike<H>> {
 	public constructor(
 		private db: Database.Database,
-		private hFactory: HFactory<H>,
+		private DataTypes: TexchangeDataTypesNamespace<H>,
 	) { }
 
 	public getDatabaseTradeGroupsAfterId(
@@ -21,7 +24,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 		marketSpec: MarketSpecLike<H>,
 		afterTradeId: number,
 		endTime: number,
-	): Generator<DatabaseTrade<H>[], void> {
+	): Generator<DatabaseTradeLike<H>[], void> {
 		const rawTrades = this.getRawTradesAfterTradeId(
 			marketName,
 			afterTradeId,
@@ -45,7 +48,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 		marketSpec: MarketSpecLike<H>,
 		afterTime: number,
 		endTime: number,
-	): Generator<DatabaseTrade<H>[], void> {
+	): Generator<DatabaseTradeLike<H>[], void> {
 		const rawTrades = this.getRawTradesAfterTime(
 			marketName,
 			afterTime,
@@ -65,9 +68,9 @@ export class TradeGroupReader<H extends HLike<H>> {
 	}
 
 	private *databaseTradeGroupsFromDatabaseTrades(
-		trades: Generator<DatabaseTrade<H>, void>,
-	): Generator<DatabaseTrade<H>[], void> {
-		let $group: DatabaseTrade<H>[] = [];
+		trades: Generator<DatabaseTradeLike<H>, void>,
+	): Generator<DatabaseTradeLike<H>[], void> {
+		let $group: DatabaseTradeLike<H>[] = [];
 		try {
 			for (const trade of trades) {
 				if (
@@ -89,16 +92,16 @@ export class TradeGroupReader<H extends HLike<H>> {
 	private *databaseTradesFromRawTrades(
 		rawTrades: DatabaseIterableIterator<RawTrade>,
 		marketSpec: MarketSpecLike<H>,
-	): Generator<DatabaseTrade<H>, void> {
+	): Generator<DatabaseTradeLike<H>, void> {
 		try {
 			for (const rawTrade of rawTrades) {
-				yield {
-					price: this.hFactory.from(rawTrade.price).round(marketSpec.PRICE_SCALE),
-					quantity: this.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_SCALE),
+				yield this.DataTypes.databaseTradeFactory.new({
+					price: this.DataTypes.hFactory.from(rawTrade.price).round(marketSpec.PRICE_SCALE),
+					quantity: this.DataTypes.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_SCALE),
 					side: rawTrade.side === RawSide.BID ? Side.BID : Side.ASK,
-					id: `${rawTrade.id}`,
+					id: rawTrade.id.toString(),
 					time: rawTrade.time,
-				};
+				});
 			}
 		} finally {
 			rawTrades.return();

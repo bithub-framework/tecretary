@@ -4,9 +4,9 @@ exports.OrderbookReader = void 0;
 const raw_data_1 = require("./raw-data");
 const secretary_like_1 = require("secretary-like");
 class OrderbookReader {
-    constructor(db, hFactory) {
+    constructor(db, DataTypes) {
         this.db = db;
-        this.hFactory = hFactory;
+        this.DataTypes = DataTypes;
     }
     getDatabaseOrderbooksAfterId(marketName, marketSpec, afterOrderbookId, endTime) {
         const rawBookOrders = this.getRawBookOrdersAfterOrderbookId(marketName, afterOrderbookId, endTime);
@@ -42,24 +42,24 @@ class OrderbookReader {
             for (const group of groups) {
                 const asks = group
                     .filter(order => order.side === raw_data_1.RawSide.ASK)
-                    .map(order => ({
-                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
-                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
+                    .map(order => this.DataTypes.bookOrderFactory.new({
+                    price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+                    quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: secretary_like_1.Side.ASK,
                 }));
                 const bids = group
                     .filter(order => order.side === raw_data_1.RawSide.BID)
-                    .map(order => ({
-                    price: this.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
-                    quantity: this.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
+                    .map(order => this.DataTypes.bookOrderFactory.new({
+                    price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
+                    quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: secretary_like_1.Side.BID,
                 })).reverse();
-                yield {
+                yield this.DataTypes.databaseOrderbookFactory.new({
                     [secretary_like_1.Side.BID]: bids,
                     [secretary_like_1.Side.ASK]: asks,
                     time: group[0].time,
                     id: group[0].id.toString(),
-                };
+                });
             }
         }
         finally {
