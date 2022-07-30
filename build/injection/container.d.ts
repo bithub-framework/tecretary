@@ -18,7 +18,7 @@ export declare abstract class Container<H extends HLike<H>> extends BaseContaine
     abstract [TYPES.dataFilePath]: () => string;
     abstract [TYPES.texchangeMap]: () => Map<string, Texchange<H>>;
     [TYPES.timeline]: () => Timeline;
-    [TYPES.vmctx]: () => VirtualMachineContextLike<H>;
+    [TYPES.vMCTX]: () => VirtualMachineContextLike<H>;
     abstract [TYPES.endTime]: () => number;
     [TYPES.context]: () => Context<H>;
     abstract [TYPES.Strategy]: () => StrategyStaticLike<H>;
