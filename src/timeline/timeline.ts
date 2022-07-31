@@ -4,11 +4,11 @@ import { Cancellable } from 'cancellable';
 import { TimeEngineLike } from 'time-engine-like';
 import { Pollerloop, Sleep, LoopStopped } from 'pollerloop';
 import { TimelineLike } from 'secretary-like';
-import { Startable, StartableLike } from 'startable';
+import { createStartable, StartableLike } from 'startable';
 
 
 export class Timeline extends TimeEngine implements TimelineLike, StartableLike {
-	private startable = Startable.create(
+	private startable = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);

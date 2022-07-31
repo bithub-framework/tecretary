@@ -1,7 +1,7 @@
 import Database = require('better-sqlite3');
 import { Config } from './config';
 import { Snapshot } from 'texchange';
-import { Startable, StartableLike } from 'startable';
+import { createStartable } from 'startable';
 import { Texchange } from 'texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
@@ -13,7 +13,7 @@ import { ProgressReaderLike } from './progress-reader-like';
 
 export class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H> {
 	private db: Database.Database;
-	private startable = Startable.create(
+	private startable = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);

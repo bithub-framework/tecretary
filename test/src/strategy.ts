@@ -6,13 +6,13 @@ import {
 	Orderbook,
 	Side, Length, Action,
 } from 'secretary-like';
-import { Startable } from 'startable';
+import { createStartable } from 'startable';
 import { Pollerloop, Loop, LoopStopped } from 'pollerloop';
 import assert = require('assert');
 
 
 export class Strategy<H extends HLike<H>> implements StrategyLike {
-	private startable = Startable.create(
+	private startable = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);

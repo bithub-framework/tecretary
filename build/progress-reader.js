@@ -19,7 +19,7 @@ let ProgressReader = class ProgressReader {
     constructor(config, filePath, startTime) {
         this.config = config;
         this.startTime = startTime;
-        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
+        this.startable = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
         this.start = this.startable.start;
         this.stop = this.startable.stop;
         this.assart = this.startable.assart;

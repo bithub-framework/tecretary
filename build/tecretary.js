@@ -26,15 +26,15 @@ let Tecretary = class Tecretary {
         this.strategy = strategy;
         this.hFactory = hFactory;
         this.dataReader = dataReader;
-        this.startable = startable_1.Startable.create(() => this.rawStart(), () => this.rawStop());
+        this.startable = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
         this.start = this.startable.start;
         this.stop = this.startable.stop;
         this.assart = this.startable.assart;
         this.starp = this.startable.starp;
         this.getReadyState = this.startable.getReadyState;
         this.skipStart = this.startable.skipStart;
-        this.realMachine = startable_1.Startable.create(() => this.realMachineRawStart(), () => this.realMachineRawStop());
-        this.virtualMachine = startable_1.Startable.create(() => this.virtualMachineRawStart(), () => this.virtualMachineRawStop());
+        this.realMachine = (0, startable_1.createStartable)(() => this.realMachineRawStart(), () => this.realMachineRawStop());
+        this.virtualMachine = (0, startable_1.createStartable)(() => this.virtualMachineRawStart(), () => this.virtualMachineRawStop());
         this.tradeGroupsMap = new Map();
         this.orderbooksMap = new Map();
         for (const [name, texchange] of this.texchangeMap) {

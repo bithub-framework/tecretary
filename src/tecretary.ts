@@ -1,5 +1,5 @@
 import {
-	Startable,
+	createStartable,
 	StartableLike,
 } from 'startable';
 import { DataReaderLike } from './data-reader-like';
@@ -25,7 +25,7 @@ import { Rwlock } from '@zimtsui/coroutine-locks';
 
 
 export class Tecretary<H extends HLike<H>> implements StartableLike {
-	private startable = Startable.create(
+	private startable = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);
@@ -36,11 +36,11 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 	public getReadyState = this.startable.getReadyState;
 	public skipStart = this.startable.skipStart;
 
-	private realMachine = Startable.create(
+	private realMachine = createStartable(
 		() => this.realMachineRawStart(),
 		() => this.realMachineRawStop(),
 	);
-	private virtualMachine = Startable.create(
+	private virtualMachine = createStartable(
 		() => this.virtualMachineRawStart(),
 		() => this.virtualMachineRawStop(),
 	);

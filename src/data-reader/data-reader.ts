@@ -1,4 +1,4 @@
-import { Startable } from 'startable';
+import { createStartable } from 'startable';
 import Database = require('better-sqlite3');
 import {
     HFactory, HLike,
@@ -25,7 +25,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
     private orderbookReader: OrderbookReader<H>;
     private tradeGroupReader: TradeGroupReader<H>;
 
-    private startable = Startable.create(
+    private startable = createStartable(
         () => this.rawStart(),
         () => this.rawStop(),
     );
