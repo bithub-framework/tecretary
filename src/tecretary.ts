@@ -24,17 +24,11 @@ import { Rwlock } from '@zimtsui/coroutine-locks';
 
 
 
-export class Tecretary<H extends HLike<H>> implements StartableLike {
-	private startable = createStartable(
+export class Tecretary<H extends HLike<H>> {
+	public $s = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);
-	public start = this.startable.start;
-	public stop = this.startable.stop;
-	public assart = this.startable.assart;
-	public starp = this.startable.starp;
-	public getReadyState = this.startable.getReadyState;
-	public skipStart = this.startable.skipStart;
 
 	private realMachine = createStartable(
 		() => this.realMachineRawStart(),
@@ -118,7 +112,7 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 		this.timeline.merge(
 			Shifterator.fromIterable<CheckPoint>([{
 				time: endTime,
-				cb: this.starp,
+				cb: this.$s.starp,
 			}]),
 		);
 
@@ -141,30 +135,30 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 	}
 
 	private async realMachineRawStart() {
-		await this.progressReader.start(this.realMachine.starp);
-		await this.dataReader.start(this.realMachine.starp);
-		await this.timeline.start(this.realMachine.starp);
+		await this.progressReader.$s.start([], this.realMachine.starp);
+		await this.dataReader.$s.start([], this.realMachine.starp);
+		await this.timeline.$s.start([], this.realMachine.starp);
 	}
 
 	private async realMachineRawStop() {
-		await this.timeline.stop();
+		await this.timeline.$s.stop();
 		this.capture();
 		for (const tradeGroups of this.tradeGroupsMap.values())
 			tradeGroups.return();
 		for (const orderbooks of this.orderbooksMap.values())
 			orderbooks.return();
-		await this.dataReader.stop();
-		await this.progressReader.stop();
+		await this.dataReader.$s.stop();
+		await this.progressReader.$s.stop();
 	}
 
 	private async virtualMachineRawStart() {
 		for (const [name, texchange] of this.texchangeMap) {
 			const facade = texchange.getAdminFacade();
-			await facade.start(this.virtualMachine.starp);
+			await facade.$s.start([], this.virtualMachine.starp);
 		}
 		this.strategyRunning = new Rwlock();
 		this.strategyRunning.trywrlock();
-		await this.strategy.start(err => {
+		await this.strategy.$s.start([], err => {
 			if (err) this.strategyRunning!.throw(err);
 			else this.strategyRunning!.unlock();
 			this.virtualMachine.starp(err);
@@ -174,25 +168,25 @@ export class Tecretary<H extends HLike<H>> implements StartableLike {
 	private async virtualMachineRawStop() {
 		for (const [name, texchange] of this.texchangeMap) {
 			const facade = texchange.getAdminFacade();
-			await facade.stop();
+			await facade.$s.stop();
 		}
 		if (this.strategyRunning) {
 			await this.strategyRunning.rdlock().catch(() => { });
-			await this.strategy.stop();
+			await this.strategy.$s.stop();
 		}
 	}
 
 	private async rawStart() {
 		this.realMachineRunning = new Rwlock();
 		this.realMachineRunning.trywrlock();
-		await this.realMachine.start(err => {
+		await this.realMachine.start([], err => {
 			if (err) this.realMachineRunning!.throw(err);
 			else this.realMachineRunning!.unlock();
-			this.starp(err);
+			this.$s.starp(err);
 		});
 		await Promise.any([
 			this.realMachineRunning.rdlock(),
-			this.virtualMachine.start(this.starp),
+			this.virtualMachine.start([], this.$s.starp),
 		]);
 	}
 

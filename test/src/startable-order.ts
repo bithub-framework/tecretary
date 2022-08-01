@@ -1,5 +1,4 @@
 import {
-	StartableLike,
 	createStartable,
 	ReadyState,
 } from 'startable';
@@ -15,44 +14,46 @@ import assert = require('assert');
 
 
 
-export class StartableOrder<H extends HLike<H>> implements StartableLike {
-	private startable = createStartable(
-		() => this.rawStart(),
-		() => this.rawStop(),
+export class StartableOrder<H extends HLike<H>> {
+	public $s = createStartable(
+		this.rawStart.bind(this),
+		this.rawStop.bind(this),
 	);
-	public start = this.startable.start;
-	public stop = this.startable.stop;
-	public assart = this.startable.assart;
-	public starp = this.startable.starp;
-	public getReadyState = this.startable.getReadyState;
-	public skipStart = this.startable.skipStart;
 
-	private openOrder: OpenOrder<H> | null = null;
-	private limitOrder: LimitOrder<H>;
+	private openOrder?: OpenOrder<H>;
+	private limitOrder?: LimitOrder<H>;
 
 	public constructor(
-		source: LimitOrder.Source<H>,
 		private latest: H,
 		private goal: H,
 		private ctx: ContextLike<H>,
 	) {
-		this.limitOrder = this.ctx.DataTypes.limitOrderFactory.create(source);
-		assert(latest.neq(goal));
-		assert(
-			this.limitOrder.quantity.times(
-				source.side === Side.BID ? 1 : -1
-			).eq(goal.minus(latest)),
-		);
+		assert(latest.eq(goal));
 	}
 
 	private onPositions = (positions: Positions<H>) => {
 		this.latest = positions.position[Length.LONG]
 			.minus(positions.position[Length.SHORT]);
-		if (this.latest.eq(this.goal)) this.stop(new Fulfilled());
+		if (this.latest.eq(this.goal)) this.$s.starp(new Fulfilled());
 	}
 
-	private async rawStart() {
-		const [order] = await this.ctx[0][0].makeOrders([this.limitOrder]);
+	private async rawStart(
+		source: LimitOrder.Source<H>,
+		latest: H,
+		goal: H,
+	) {
+		assert(latest.neq(goal));
+		const limitOrder = this.ctx.DataTypes.limitOrderFactory.create(source);
+		assert(
+			limitOrder.quantity.times(
+				source.side === Side.BID ? 1 : -1
+			).eq(goal.minus(latest)),
+		);
+		this.limitOrder = limitOrder;
+		this.latest = latest;
+		this.goal = goal;
+
+		const [order] = await this.ctx[0][0].makeOrders([source]);
 		assert(!(order instanceof Error), <Error>order);
 		this.openOrder = order;
 		this.ctx[0][0].on('positions', this.onPositions);
@@ -61,16 +62,18 @@ export class StartableOrder<H extends HLike<H>> implements StartableLike {
 	private async rawStop(err?: Error) {
 		this.ctx[0][0].off('positions', this.onPositions);
 		if (err instanceof Fulfilled) return;
-		[this.openOrder] = await this.ctx[0][0].cancelOrders([this.openOrder!]);
+		const [cancelled] = await this.ctx[0][0].cancelOrders([
+			this.getInitialOpenOrder(),
+		]);
 		this.latest = this.goal.minus(
-			this.openOrder.unfilled.times(
-				this.openOrder.side === Side.BID ? 1 : -1,
+			cancelled.unfilled.times(
+				cancelled.side === Side.BID ? 1 : -1,
 			),
 		);
 	}
 
 	public getLatest(): H {
-		assert(this.getReadyState() === ReadyState.STOPPED);
+		assert(this.$s.getReadyState() === ReadyState.STOPPED);
 		return this.latest;
 	}
 
@@ -79,7 +82,16 @@ export class StartableOrder<H extends HLike<H>> implements StartableLike {
 	}
 
 	public getLimitOrder(): LimitOrder<H> {
-		return this.limitOrder;
+		assert(this.$s.getReadyState() !== ReadyState.STOPPED);
+		return this.limitOrder!;
+	}
+
+	private getInitialOpenOrder(): OpenOrder<H> {
+		assert(
+			this.$s.getReadyState() === ReadyState.STARTED ||
+			this.$s.getReadyState() === ReadyState.STOPPING
+		);
+		return this.openOrder!;
 	}
 }
 

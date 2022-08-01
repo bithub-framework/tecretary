@@ -26,13 +26,7 @@ let Tecretary = class Tecretary {
         this.strategy = strategy;
         this.hFactory = hFactory;
         this.dataReader = dataReader;
-        this.startable = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
-        this.start = this.startable.start;
-        this.stop = this.startable.stop;
-        this.assart = this.startable.assart;
-        this.starp = this.startable.starp;
-        this.getReadyState = this.startable.getReadyState;
-        this.skipStart = this.startable.skipStart;
+        this.$s = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
         this.realMachine = (0, startable_1.createStartable)(() => this.realMachineRawStart(), () => this.realMachineRawStop());
         this.virtualMachine = (0, startable_1.createStartable)(() => this.virtualMachineRawStart(), () => this.virtualMachineRawStop());
         this.tradeGroupsMap = new Map();
@@ -56,7 +50,7 @@ let Tecretary = class Tecretary {
         }
         this.timeline.merge(shiftable_1.Shifterator.fromIterable([{
                 time: endTime,
-                cb: this.starp,
+                cb: this.$s.starp,
             }]));
         // this.timeline.affiliate(
         //	 Shifterator.fromIterable(
@@ -72,28 +66,28 @@ let Tecretary = class Tecretary {
         this.progressReader.capture(this.timeline.now(), this.texchangeMap);
     }
     async realMachineRawStart() {
-        await this.progressReader.start(this.realMachine.starp);
-        await this.dataReader.start(this.realMachine.starp);
-        await this.timeline.start(this.realMachine.starp);
+        await this.progressReader.$s.start([], this.realMachine.starp);
+        await this.dataReader.$s.start([], this.realMachine.starp);
+        await this.timeline.$s.start([], this.realMachine.starp);
     }
     async realMachineRawStop() {
-        await this.timeline.stop();
+        await this.timeline.$s.stop();
         this.capture();
         for (const tradeGroups of this.tradeGroupsMap.values())
             tradeGroups.return();
         for (const orderbooks of this.orderbooksMap.values())
             orderbooks.return();
-        await this.dataReader.stop();
-        await this.progressReader.stop();
+        await this.dataReader.$s.stop();
+        await this.progressReader.$s.stop();
     }
     async virtualMachineRawStart() {
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
-            await facade.start(this.virtualMachine.starp);
+            await facade.$s.start([], this.virtualMachine.starp);
         }
         this.strategyRunning = new coroutine_locks_1.Rwlock();
         this.strategyRunning.trywrlock();
-        await this.strategy.start(err => {
+        await this.strategy.$s.start([], err => {
             if (err)
                 this.strategyRunning.throw(err);
             else
@@ -104,26 +98,26 @@ let Tecretary = class Tecretary {
     async virtualMachineRawStop() {
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
-            await facade.stop();
+            await facade.$s.stop();
         }
         if (this.strategyRunning) {
             await this.strategyRunning.rdlock().catch(() => { });
-            await this.strategy.stop();
+            await this.strategy.$s.stop();
         }
     }
     async rawStart() {
         this.realMachineRunning = new coroutine_locks_1.Rwlock();
         this.realMachineRunning.trywrlock();
-        await this.realMachine.start(err => {
+        await this.realMachine.start([], err => {
             if (err)
                 this.realMachineRunning.throw(err);
             else
                 this.realMachineRunning.unlock();
-            this.starp(err);
+            this.$s.starp(err);
         });
         await Promise.any([
             this.realMachineRunning.rdlock(),
-            this.virtualMachine.start(this.starp),
+            this.virtualMachine.start([], this.$s.starp),
         ]);
     }
     async rawStop(err) {

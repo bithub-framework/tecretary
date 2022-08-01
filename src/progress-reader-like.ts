@@ -5,7 +5,8 @@ import { HLike } from 'secretary-like';
 
 
 
-export interface ProgressReaderLike<H extends HLike<H>> extends StartableLike {
+export interface ProgressReaderLike<H extends HLike<H>> {
+	$s: StartableLike<[]>;
 	capture(
 		time: number,
 		texchangeMap: Map<string, Texchange<H>>,

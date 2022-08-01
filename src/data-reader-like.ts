@@ -12,7 +12,8 @@ import {
 
 
 
-export interface DataReaderLike<H extends HLike<H>> extends StartableLike {
+export interface DataReaderLike<H extends HLike<H>> {
+	$s: StartableLike<[]>;
 	getDatabaseOrderbooksAfterId(
 		marketName: string,
 		marketSpec: MarketSpec<H>,

@@ -13,16 +13,10 @@ import { ProgressReaderLike } from './progress-reader-like';
 
 export class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H> {
 	private db: Database.Database;
-	private startable = createStartable(
+	public $s = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);
-	public start = this.startable.start;
-	public stop = this.startable.stop;
-	public assart = this.startable.assart;
-	public starp = this.startable.starp;
-	public getReadyState = this.startable.getReadyState;
-	public skipStart = this.startable.skipStart;
 
 	public constructor(
 		@inject(TYPES.config)

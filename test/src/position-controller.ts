@@ -4,35 +4,28 @@ import {
 	Trade,
 	Orderbook,
 	Side, Length, Action,
-	Positions,
-	OpenOrder,
 	LimitOrder,
 } from 'secretary-like';
 import {
-	StartableLike,
 	createStartable,
 	ReadyState,
 } from 'startable';
 import assert = require('assert');
 import { StartableOrder } from './startable-order';
-import { throttle } from 'lodash';
+import { once } from 'events';
 
 
 
-export class PositionController<H extends HLike<H>> implements StartableLike {
+export class PositionController<H extends HLike<H>>  {
 	private nextGoal?: H;
 	private order?: StartableOrder<H>;
+	private orderbook?: Orderbook<H>;
+	private lastRequestTime = Number.NEGATIVE_INFINITY;
 
-	private startable = createStartable(
+	public $s = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);
-	public start = this.startable.start;
-	public stop = this.startable.stop;
-	public assart = this.startable.assart;
-	public starp = this.startable.starp;
-	public getReadyState = this.startable.getReadyState;
-	public skipStart = this.startable.skipStart;
 
 	public constructor(
 		private ctx: ContextLike<H>,
@@ -41,51 +34,65 @@ export class PositionController<H extends HLike<H>> implements StartableLike {
 
 	private onOrderbook = async (orderbook: Orderbook<H>) => {
 		try {
-			if (
-				this.order!.getReadyState() === ReadyState.STARTING ||
-				this.order!.getReadyState() === ReadyState.STOPPING
-			) return;
-
-			if (this.nextGoal!.neq(this.order!.getGoal())) {
-				await this.throttledTrySwitch(orderbook);
-				return;
-			}
-
-			const order = this.order!.getLimitOrder();
-			if (
-				this.order!.getReadyState() === ReadyState.STARTED &&
-				order.price.eq(
-					orderbook[Side.invert(order.side)][0].price.minus(
-						this.ctx[0].TICK_SIZE.times(
-							order.side === Side.BID ? 1 : -1,
-						),
-					),
-				)
-			) return;
-
-			if (
-				this.order!.getReadyState() === ReadyState.STOPPED &&
-				this.order!.getLatest() === this.order!.getGoal()
-			) return;
-
-			await this.throttledTrySwitch(orderbook);
+			this.orderbook = orderbook;
+			if (this.shouldRemake())
+				await this.tryRemake();
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	private async switchOn(orderbook: Orderbook<H>) {
-		assert(this.order!.getReadyState() === ReadyState.STOPPED);
+	private shouldRemake(): boolean {
+		if (
+			this.$s.getReadyState() === ReadyState.STARTING ||
+			this.$s.getReadyState() === ReadyState.STOPPING
+		) return false;
 
+		if (this.nextGoal!.neq(this.order!.getGoal())) return true;
+
+		if (this.order!.$s.getReadyState() === ReadyState.STARTED) {
+			const limitOrder = this.order!.getLimitOrder();
+			if (
+				limitOrder.price.eq(
+					this.orderbook![Side.invert(limitOrder.side)][0].price.minus(
+						this.ctx[0].TICK_SIZE.times(
+							limitOrder.side === Side.BID ? 1 : -1,
+						),
+					),
+				)
+			) return false;
+		}
+
+		if (
+			this.order!.$s.getReadyState() === ReadyState.STOPPED &&
+			this.order!.getLatest() === this.order!.getGoal()
+		) return false;
+
+		return true;
+	}
+
+	private async tryRemake() {
+		const now = Date.now();
+		if (now < this.lastRequestTime + this.interval) return;
+		if (this.order!.$s.getReadyState() === ReadyState.STARTED) {
+			this.lastRequestTime = now;
+			await this.order!.$s.stop();
+		} else if (this.order!.$s.getReadyState() === ReadyState.STOPPED) {
+			this.lastRequestTime = now;
+			await this.remake();
+		}
+	}
+
+	private async remake() {
 		const side = this.order!.getLatest().lt(this.nextGoal!) ? Side.BID : Side.ASK;
 		const length = Length.from(side, Action.CLOSE);
-		const price = orderbook[Side.invert(side)][0].price.minus(
+		const price = this.orderbook![Side.invert(side)][0].price.minus(
 			this.ctx[0].TICK_SIZE.times(
 				side === Side.BID ? 1 : -1,
 			),
 		);
 		const quantity = this.nextGoal!.minus(this.order!.getLatest()).abs();
-		const order: LimitOrder.Source<H> = {
+		const source: LimitOrder.Source<H> = {
 			side,
 			action: Action.CLOSE,
 			length,
@@ -93,28 +100,12 @@ export class PositionController<H extends HLike<H>> implements StartableLike {
 			quantity,
 		}
 
-		this.order = new StartableOrder(
-			order,
+		await this.order!.$s.start([
+			source,
 			this.order!.getLatest(),
 			this.nextGoal!,
-			this.ctx,
-		);
-		await this.order.start();
+		]);
 	}
-
-	private async switchOff(orderbook: Orderbook<H>) {
-		assert(this.order!.getReadyState() !== ReadyState.STOPPED);
-		await this.order!.stop();
-	}
-
-	private trySwitch = async (orderbook: Orderbook<H>) => {
-		try {
-			await this.switchOn(orderbook);
-		} catch (err) {
-			await this.switchOff(orderbook);
-		}
-	}
-	private throttledTrySwitch = throttle(this.trySwitch, this.interval);
 
 	private async rawStart() {
 		const positions = await this.ctx[0][0].getPositions();
@@ -123,18 +114,12 @@ export class PositionController<H extends HLike<H>> implements StartableLike {
 		const goal = latest;
 		this.nextGoal = latest;
 		this.order = new StartableOrder(
-			{
-				price: 0,
-				quantity: 0,
-				side: Side.BID,
-				action: Action.CLOSE,
-				length: Length.LONG,
-			},
 			latest,
 			goal,
 			this.ctx,
 		);
 		this.ctx[0].on('orderbook', this.onOrderbook);
+		await once(this.ctx[0], 'orderbook');
 	}
 
 	private async rawStop() {

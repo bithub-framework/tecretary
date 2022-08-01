@@ -8,13 +8,14 @@
         "node": ">=16"
     },
     "scripts": {
-        "test": "npm run build-test && node ./test/build/main.js",
         "build": "tsc -b ./src/tsconfig.json",
         "clean": "rm -rf ./build",
         "rebuild": "npm run clean && npm run build",
         "build-test": "tsc -b ./test/src/tsconfig.json",
         "clean-test": "rm -rf ./test/build",
-        "retest": "npm run clean && npm run clean-test && npm run test"
+        "rebuild-test": "npm run clean-test && npm run build-test",
+        "rebuild-all": "npm run rebuild && npm run rebuild-test",
+        "test": "npm run build-test && ava"
     },
     "author": "Zim",
     "dependencies": {

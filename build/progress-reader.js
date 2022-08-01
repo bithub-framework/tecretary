@@ -19,13 +19,7 @@ let ProgressReader = class ProgressReader {
     constructor(config, filePath, startTime) {
         this.config = config;
         this.startTime = startTime;
-        this.startable = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
-        this.start = this.startable.start;
-        this.stop = this.startable.stop;
-        this.assart = this.startable.assart;
-        this.starp = this.startable.starp;
-        this.getReadyState = this.startable.getReadyState;
-        this.skipStart = this.startable.skipStart;
+        this.$s = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
         (0, lock_pid_file_1.lockPidFile)(config.projectName);
         this.db = new Database(filePath, {
             fileMustExist: true,

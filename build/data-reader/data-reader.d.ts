@@ -5,13 +5,7 @@ export declare class DataReader<H extends HLike<H>> implements DataReaderLike<H>
     private db;
     private orderbookReader;
     private tradeGroupReader;
-    private startable;
-    start: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
-    stop: (err?: Error | undefined) => Promise<void>;
-    assart: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
-    starp: (err?: Error | undefined) => Promise<void>;
-    getReadyState: () => import("startable").ReadyState;
-    skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
+    $s: import("startable").Startable<[]>;
     constructor(filePath: string, DataTypes: TexchangeDataTypesNamespace<H>);
     getDatabaseOrderbooksAfterId(marketName: string, marketSpec: MarketSpec<H>, id: DatabaseOrderbookId, endTime: number): Generator<DatabaseOrderbook<H>, void>;
     getDatabaseOrderbooksAfterTime(marketName: string, marketSpec: MarketSpec<H>, afterTime: number, endTime: number): Generator<DatabaseOrderbook<H>, void>;

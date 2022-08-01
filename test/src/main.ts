@@ -62,7 +62,7 @@ const tecretaryContainer = new TecretaryContainer();
 const tecretary = tecretaryContainer[TECRETARY_TYPES.tecretary]();
 
 adapt(
-	tecretary,
+	tecretary.$s,
 	3000,
 	3000,
 	3000,

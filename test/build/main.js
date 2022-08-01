@@ -36,5 +36,5 @@ class TecretaryContainer extends __1.BaseContainer {
 _a = TECRETARY_TYPES.config, _b = TECRETARY_TYPES.texchangeMap, _c = TECRETARY_TYPES.hFactory, _d = TECRETARY_TYPES.hStatic, _e = TECRETARY_TYPES.progressFilePath, _f = TECRETARY_TYPES.dataFilePath, _g = TECRETARY_TYPES.startTime, _h = TECRETARY_TYPES.endTime, _j = TECRETARY_TYPES.Strategy;
 const tecretaryContainer = new TecretaryContainer();
 const tecretary = tecretaryContainer[TECRETARY_TYPES.tecretary]();
-(0, startable_adaptor_1.adapt)(tecretary, 3000, 3000, 3000);
+(0, startable_adaptor_1.adapt)(tecretary.$s, 3000, 3000, 3000);
 //# sourceMappingURL=main.js.map

@@ -7,13 +7,7 @@ export declare class ProgressReader<H extends HLike<H>> implements ProgressReade
     private config;
     private startTime;
     private db;
-    private startable;
-    start: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
-    stop: (err?: Error | undefined) => Promise<void>;
-    assart: (onStopping?: import("startable").OnStopping | undefined) => Promise<void>;
-    starp: (err?: Error | undefined) => Promise<void>;
-    getReadyState: () => import("startable").ReadyState;
-    skipStart: (onStopping?: import("startable").OnStopping | undefined) => void;
+    $s: import("startable").Startable<[]>;
     constructor(config: Config, filePath: string, startTime: number);
     capture(time: number, texchangeMap: Map<string, Texchange<H>>): void;
     getTime(): number;

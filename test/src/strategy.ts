@@ -12,16 +12,10 @@ import assert = require('assert');
 
 
 export class Strategy<H extends HLike<H>> implements StrategyLike {
-	private startable = createStartable(
+	public $s = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);
-	public start = this.startable.start;
-	public stop = this.startable.stop;
-	public assart = this.startable.assart;
-	public starp = this.startable.starp;
-	public getReadyState = this.startable.getReadyState;
-	public skipStart = this.startable.skipStart;
 
 	private latestPrice: H | null = null;
 
@@ -76,7 +70,7 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 
 	private onError = (err: Error) => {
 		// console.error(err);
-		this.starp();
+		this.$s.starp();
 	}
 
 	private async rawStart(): Promise<void> {
@@ -84,7 +78,6 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		this.ctx[0].on('orderbook', this.onOrderbook);
 		this.ctx[0].once('orderbook', this.onceOrderbook);
 		this.ctx[0].on('error', this.onError);
-		await this.poller.start(this.starp);
 	}
 
 	private async rawStop(): Promise<void> {
@@ -92,6 +85,5 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		this.ctx[0].off('orderbook', this.onOrderbook);
 		this.ctx[0].off('orderbook', this.onceOrderbook);
 		this.ctx[0].off('error', this.onError);
-		await this.poller.stop();
 	}
 }

@@ -25,16 +25,10 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
     private orderbookReader: OrderbookReader<H>;
     private tradeGroupReader: TradeGroupReader<H>;
 
-    private startable = createStartable(
+    public $s = createStartable(
         () => this.rawStart(),
         () => this.rawStop(),
     );
-    public start = this.startable.start;
-    public stop = this.startable.stop;
-    public assart = this.startable.assart;
-    public starp = this.startable.starp;
-    public getReadyState = this.startable.getReadyState;
-    public skipStart = this.startable.skipStart;
 
 
     public constructor(

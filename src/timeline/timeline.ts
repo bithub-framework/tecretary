@@ -7,17 +7,11 @@ import { TimelineLike } from 'secretary-like';
 import { createStartable, StartableLike } from 'startable';
 
 
-export class Timeline extends TimeEngine implements TimelineLike, StartableLike {
-	private startable = createStartable(
+export class Timeline extends TimeEngine implements TimelineLike {
+	public $s = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),
 	);
-	public start = this.startable.start;
-	public stop = this.startable.stop;
-	public assart = this.startable.assart;
-	public starp = this.startable.starp;
-	public getReadyState = this.startable.getReadyState;
-	public skipStart = this.startable.skipStart;
 
 	private lock = new Rwlock();
 	private poller: Pollerloop;
@@ -35,11 +29,11 @@ export class Timeline extends TimeEngine implements TimelineLike, StartableLike 
 	}
 
 	private async rawStart(): Promise<void> {
-		await this.poller.start(this.startable.starp)
+		await this.poller.$s.start([], this.$s.starp)
 	}
 
 	private async rawStop(): Promise<void> {
-		const p = this.poller.stop();
+		const p = this.poller.$s.stop();
 		this.lock.throw(new LoopStopped('Loop stopped.'));
 		await p;
 	}
