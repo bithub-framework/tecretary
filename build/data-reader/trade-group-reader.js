@@ -41,7 +41,7 @@ class TradeGroupReader {
     *databaseTradesFromRawTrades(rawTrades, marketSpec) {
         try {
             for (const rawTrade of rawTrades) {
-                yield this.DataTypes.databaseTradeFactory.new({
+                yield this.DataTypes.databaseTradeFactory.create({
                     price: this.DataTypes.hFactory.from(rawTrade.price).round(marketSpec.PRICE_SCALE),
                     quantity: this.DataTypes.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: rawTrade.side === raw_data_1.RawSide.BID ? secretary_like_1.Side.BID : secretary_like_1.Side.ASK,

@@ -95,19 +95,19 @@ export class OrderbookReader<H extends HLike<H>> {
 			for (const group of groups) {
 				const asks: BookOrder<H>[] = group
 					.filter(order => order.side === RawSide.ASK)
-					.map(order => this.DataTypes.bookOrderFactory.new({
+					.map(order => this.DataTypes.bookOrderFactory.create({
 						price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
 						quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
 						side: Side.ASK,
 					}));
 				const bids: BookOrder<H>[] = group
 					.filter(order => order.side === RawSide.BID)
-					.map(order => this.DataTypes.bookOrderFactory.new({
+					.map(order => this.DataTypes.bookOrderFactory.create({
 						price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
 						quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
 						side: Side.BID,
 					})).reverse();
-				yield this.DataTypes.databaseOrderbookFactory.new({
+				yield this.DataTypes.databaseOrderbookFactory.create({
 					[Side.BID]: bids,
 					[Side.ASK]: asks,
 					time: group[0].time,

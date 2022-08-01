@@ -38,7 +38,9 @@
         "texchange": "file:../texchange"
     },
     "devDependencies": {
+        "@types/lodash": "^4.14.182",
         "high-precision": "file:../high-precision",
+        "lodash": "^4.17.21",
         "startable-adaptor": "github:zimtsui/startable-adaptor"
     }
 }

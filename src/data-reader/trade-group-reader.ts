@@ -95,7 +95,7 @@ export class TradeGroupReader<H extends HLike<H>> {
 	): Generator<DatabaseTrade<H>, void> {
 		try {
 			for (const rawTrade of rawTrades) {
-				yield this.DataTypes.databaseTradeFactory.new({
+				yield this.DataTypes.databaseTradeFactory.create({
 					price: this.DataTypes.hFactory.from(rawTrade.price).round(marketSpec.PRICE_SCALE),
 					quantity: this.DataTypes.hFactory.from(rawTrade.quantity).round(marketSpec.QUANTITY_SCALE),
 					side: rawTrade.side === RawSide.BID ? Side.BID : Side.ASK,

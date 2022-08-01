@@ -42,19 +42,19 @@ class OrderbookReader {
             for (const group of groups) {
                 const asks = group
                     .filter(order => order.side === raw_data_1.RawSide.ASK)
-                    .map(order => this.DataTypes.bookOrderFactory.new({
+                    .map(order => this.DataTypes.bookOrderFactory.create({
                     price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
                     quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: secretary_like_1.Side.ASK,
                 }));
                 const bids = group
                     .filter(order => order.side === raw_data_1.RawSide.BID)
-                    .map(order => this.DataTypes.bookOrderFactory.new({
+                    .map(order => this.DataTypes.bookOrderFactory.create({
                     price: this.DataTypes.hFactory.from(order.price).round(marketSpec.PRICE_SCALE),
                     quantity: this.DataTypes.hFactory.from(order.quantity).round(marketSpec.QUANTITY_SCALE),
                     side: secretary_like_1.Side.BID,
                 })).reverse();
-                yield this.DataTypes.databaseOrderbookFactory.new({
+                yield this.DataTypes.databaseOrderbookFactory.create({
                     [secretary_like_1.Side.BID]: bids,
                     [secretary_like_1.Side.ASK]: asks,
                     time: group[0].time,
