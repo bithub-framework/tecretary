@@ -18,7 +18,7 @@ import {
 } from 'pollerloop';
 import { NodeTimeEngine } from 'node-time-engine';
 import { once } from 'events';
-import assert = require('assert');
+// import assert = require('assert');
 import { Throttle } from './throttle';
 
 
@@ -49,16 +49,10 @@ export class GoalFollower<H extends HLike<H>> {
 			const [orderbook] = <[Orderbook<H>]>await once(this.ctx[0], 'orderbook');
 			await sleep(0);
 
-			const price = this.latest.lt(this.goal)
-				? orderbook[Side.ASK][0].price.minus(this.ctx[0].TICK_SIZE)
-				: orderbook[Side.BID][0].price.plus(this.ctx[0].TICK_SIZE);
-			const quantity = this.goal.minus(this.latest).abs();
-			const side = this.latest.lt(this.goal) ? Side.BID : Side.ASK;
-			const action = Action.CLOSE;
-			const length = Length.from(side, action);
 			this.autoOrder = new AutoOrder(
-				{ price, quantity, side, action, length },
+				orderbook,
 				this.latest,
+				this.goal,
 				this.ctx,
 				this.throttle,
 			);

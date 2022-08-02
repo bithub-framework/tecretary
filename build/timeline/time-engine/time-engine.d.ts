@@ -7,7 +7,7 @@ export declare class Timeout implements TimeoutLike {
     constructor(node: Node<CheckPoint>);
     clear(): void;
 }
-export declare class TimeEngine implements TimeEngineLike, Iterable<() => void> {
+export declare class TimeEngine extends TimeEngineLike implements Iterable<() => void> {
     private time;
     private heap;
     private checkPoints;

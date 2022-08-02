@@ -1,6 +1,6 @@
 import { BaseContainer } from '@zimtsui/injektor';
 import { TYPES } from './types';
-import { NodeTimeEngine } from 'node-time-engine';
+import { nodeTimeEngine } from 'node-time-engine';
 import {
 	HLike, HFactory, HStatic,
 	StrategyLike, StrategyStaticLike,
@@ -40,7 +40,7 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 		const progressReader = this[TYPES.progressReader]();
 		return new Timeline(
 			progressReader.getTime(),
-			new NodeTimeEngine(),
+			nodeTimeEngine,
 		);
 	});
 	public [TYPES.vMCTX] = this.rfs<VirtualMachineContextLike<H>>(() => {

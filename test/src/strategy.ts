@@ -9,6 +9,8 @@ import {
 import { createStartable } from 'startable';
 import { Pollerloop, Loop, LoopStopped } from 'pollerloop';
 import assert = require('assert');
+import { PositionController } from './position-controller';
+import { Throttle } from './throttle';
 
 
 export class Strategy<H extends HLike<H>> implements StrategyLike {
@@ -20,6 +22,13 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	private latestPrice: H | null = null;
 
 	private poller: Pollerloop;
+	private pc = new PositionController<H>(
+		this.ctx,
+		new Throttle(
+			1000,
+			this.ctx.timeline,
+		),
+	);
 
 	public constructor(
 		private ctx: ContextLike<H>,
@@ -29,15 +38,11 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 
 	private loop: Loop = async sleep => {
 		try {
-			for (; ; await sleep(2 * 1000)) {
-				const balances = await this.ctx[0][0].getBalances();
-				console.log(balances.toJSON());
-				const positions = await this.ctx[0][0].getPositions();
-				console.log(positions.toJSON());
-				const openOrders = await this.ctx[0][0].getOpenOrders();
-				openOrders.forEach(order => {
-					console.log(order.toJSON());
-				});
+			for (; ;) {
+				let goal = '.01';
+				this.pc.setGoal(goal);
+				await sleep(60 * 1000);
+				if (goal === '.01') goal = '-0.01'; else goal = '.01';
 			}
 		} catch (err) {
 			assert(err instanceof LoopStopped, <Error>err);
@@ -55,17 +60,17 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 
 	private onceOrderbook = async (orderbook: Orderbook<H>): Promise<void> => {
 		// console.log(`orderbook - ${orderbook.time}`);
-		const results = await this.ctx[0][0].makeOrders([{
-			price: orderbook[Side.ASK][0].price.minus(1),
-			quantity: orderbook[Side.ASK][0].quantity,
-			length: Length.LONG,
-			action: Action.OPEN,
-			side: Side.BID,
-		}]);
-		if (results[0] instanceof Error)
-			console.log(results[0]);
-		else
-			console.log(results[0].toJSON());
+		// const results = await this.ctx[0][0].makeOrders([{
+		// 	price: orderbook[Side.ASK][0].price.minus(1),
+		// 	quantity: orderbook[Side.ASK][0].quantity,
+		// 	length: Length.LONG,
+		// 	action: Action.OPEN,
+		// 	side: Side.BID,
+		// }]);
+		// if (results[0] instanceof Error)
+		// 	console.log(results[0]);
+		// else
+		// 	console.log(results[0].toJSON());
 	}
 
 	private onError = (err: Error) => {
@@ -78,9 +83,11 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		this.ctx[0].on('orderbook', this.onOrderbook);
 		this.ctx[0].once('orderbook', this.onceOrderbook);
 		this.ctx[0].on('error', this.onError);
+		await this.poller.$s.start([], this.$s.starp);
 	}
 
 	private async rawStop(): Promise<void> {
+		await this.poller.$s.stop();
 		this.ctx[0].off('trades', this.onTrades);
 		this.ctx[0].off('orderbook', this.onOrderbook);
 		this.ctx[0].off('orderbook', this.onceOrderbook);

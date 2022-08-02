@@ -24,15 +24,24 @@ export class AutoOrder<H extends HLike<H>> {
 
 	private openOrder?: OpenOrder<H>;
 	private limitOrder: LimitOrder<H>;
-	private goal: H;
 
 	public constructor(
-		source: LimitOrder.Source<H>,
+		orderbook: Orderbook<H>,
 		private latest: H,
+		private goal: H,
 		private ctx: ContextLike<H>,
 		private throttle: Throttle,
 	) {
-		this.limitOrder = this.ctx.DataTypes.limitOrderFactory.create(source);
+		const price = this.latest.lt(this.goal)
+			? orderbook[Side.ASK][0].price.minus(this.ctx[0].TICK_SIZE)
+			: orderbook[Side.BID][0].price.plus(this.ctx[0].TICK_SIZE);
+		const quantity = this.goal.minus(this.latest).abs();
+		const side = this.latest.lt(this.goal) ? Side.BID : Side.ASK;
+		const action = Action.CLOSE;
+		const length = Length.from(side, action);
+		this.limitOrder = this.ctx.DataTypes.limitOrderFactory.create({
+			price, quantity, side, action, length,
+		});
 		if (this.limitOrder.side === Side.BID)
 			this.goal = latest.plus(this.limitOrder.quantity);
 		else

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TimeEngine = exports.Timeout = void 0;
+const time_engine_like_1 = require("time-engine-like");
 const binary_heap_1 = require("@zimtsui/binary-heap");
 const shiftable_1 = require("shiftable");
 const assert = require("assert");
@@ -14,8 +15,9 @@ class Timeout {
     }
 }
 exports.Timeout = Timeout;
-class TimeEngine {
+class TimeEngine extends time_engine_like_1.TimeEngineLike {
     constructor(time) {
+        super();
         this.time = time;
         this.heap = new binary_heap_1.Heap(cmp_1.cmp);
         this.checkPoints = this.heap;

@@ -1,13 +1,13 @@
 import {
 	ContextLike,
-	HLike,
+	HLike, H,
 	Side, Length, Action,
 } from 'secretary-like';
 import {
 	createStartable,
 	ReadyState,
 } from 'startable';
-import assert = require('assert');
+// import assert = require('assert');
 import { GoalFollower } from './goal-follower';
 import { Throttle } from './throttle';
 
@@ -42,8 +42,8 @@ export class PositionController<H extends HLike<H>>  {
 
 	private async rawStop() { }
 
-	public async setGoal(goal: H) {
-		this.goal = goal;
+	public async setGoal(goal: H.Source<H>) {
+		this.goal = this.ctx.DataTypes.hFactory.from(goal);
 		await this.follower!.$s.starp();
 		await this.follower!.$s.start([this.goal], err => {
 			if (err) this.$s.starp(err);

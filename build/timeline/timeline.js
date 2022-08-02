@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Timeline = void 0;
 const coroutine_locks_1 = require("@zimtsui/coroutine-locks");
 const time_engine_1 = require("./time-engine");
-const cancellable_1 = require("cancellable");
 const pollerloop_1 = require("pollerloop");
 const startable_1 = require("startable");
 class Timeline extends time_engine_1.TimeEngine {
@@ -30,9 +29,6 @@ class Timeline extends time_engine_1.TimeEngine {
             await this.lock.wrlock();
             await sleep(0);
         }
-    }
-    sleep(ms) {
-        return new cancellable_1.Cancellable(ms, this);
     }
     async escape(p) {
         await this.lock.rdlock();
