@@ -27,14 +27,16 @@ export class Timeout implements TimeoutLike {
 }
 
 
-export class TimeEngine implements TimeEngineLike, Iterable<() => void> {
+export class TimeEngine extends TimeEngineLike implements Iterable<() => void> {
 	private heap = <ShiftableHeap<CheckPoint>>new Heap(cmp);
 	private checkPoints: Shiftable<CheckPoint> = this.heap;
 	private sorted = true;
 
 	public constructor(
 		private time: number,
-	) { }
+	) {
+		super();
+	}
 
 	public merge(sorted: Shiftable<CheckPoint>): void {
 		assert(this.sorted);

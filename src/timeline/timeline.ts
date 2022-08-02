@@ -1,6 +1,5 @@
 import { Rwlock } from '@zimtsui/coroutine-locks';
 import { TimeEngine } from './time-engine';
-import { Cancellable } from 'cancellable';
 import { TimeEngineLike } from 'time-engine-like';
 import { Pollerloop, Sleep, LoopStopped } from 'pollerloop';
 import { TimelineLike } from 'secretary-like';
@@ -47,13 +46,6 @@ export class Timeline extends TimeEngine implements TimelineLike {
 			await this.lock.wrlock();
 			await sleep(0);
 		}
-	}
-
-	public sleep(ms: number): Cancellable {
-		return new Cancellable(
-			ms,
-			this,
-		);
 	}
 
 	public async escape<T>(p: PromiseLike<T>): Promise<T> {
