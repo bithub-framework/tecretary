@@ -1,17 +1,14 @@
-import { ContextLike, HLike } from 'secretary-like';
+import { ContextLike, HLike, H } from 'secretary-like';
+import { Throttle } from './throttle';
 export declare class PositionController<H extends HLike<H>> {
     private ctx;
-    private interval;
-    private nextGoal?;
-    private order?;
-    private orderbook?;
+    private throttle;
+    private latest?;
+    private goal?;
+    private follower?;
     $s: import("startable").Startable<[]>;
-    constructor(ctx: ContextLike<H>, interval: number);
-    private onOrderbook;
-    private shouldRemake;
-    private tryRemake;
-    private remake;
+    constructor(ctx: ContextLike<H>, throttle: Throttle);
     private rawStart;
     private rawStop;
-    setGoal(nextGoal: H): Promise<void>;
+    setGoal(goal: H.Source<H>): Promise<void>;
 }

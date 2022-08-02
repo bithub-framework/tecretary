@@ -1,26 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Strategy = void 0;
-const secretary_like_1 = require("secretary-like");
 const startable_1 = require("startable");
 const pollerloop_1 = require("pollerloop");
 const assert = require("assert");
+const position_controller_1 = require("./position-controller");
+const throttle_1 = require("./throttle");
 class Strategy {
     constructor(ctx) {
         this.ctx = ctx;
         this.$s = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
         this.latestPrice = null;
+        this.pc = new position_controller_1.PositionController(this.ctx, new throttle_1.Throttle(1000, this.ctx.timeline));
         this.loop = async (sleep) => {
             try {
-                for (;; await sleep(2 * 1000)) {
-                    const balances = await this.ctx[0][0].getBalances();
-                    console.log(balances.toJSON());
-                    const positions = await this.ctx[0][0].getPositions();
-                    console.log(positions.toJSON());
-                    const openOrders = await this.ctx[0][0].getOpenOrders();
-                    openOrders.forEach(order => {
-                        console.log(order.toJSON());
-                    });
+                for (;;) {
+                    let goal = '.01';
+                    this.pc.setGoal(goal);
+                    await sleep(60 * 1000);
+                    if (goal === '.01')
+                        goal = '-0.01';
+                    else
+                        goal = '.01';
                 }
             }
             catch (err) {
@@ -36,17 +37,17 @@ class Strategy {
         };
         this.onceOrderbook = async (orderbook) => {
             // console.log(`orderbook - ${orderbook.time}`);
-            const results = await this.ctx[0][0].makeOrders([{
-                    price: orderbook[secretary_like_1.Side.ASK][0].price.minus(1),
-                    quantity: orderbook[secretary_like_1.Side.ASK][0].quantity,
-                    length: secretary_like_1.Length.LONG,
-                    action: secretary_like_1.Action.OPEN,
-                    side: secretary_like_1.Side.BID,
-                }]);
-            if (results[0] instanceof Error)
-                console.log(results[0]);
-            else
-                console.log(results[0].toJSON());
+            // const results = await this.ctx[0][0].makeOrders([{
+            // 	price: orderbook[Side.ASK][0].price.minus(1),
+            // 	quantity: orderbook[Side.ASK][0].quantity,
+            // 	length: Length.LONG,
+            // 	action: Action.OPEN,
+            // 	side: Side.BID,
+            // }]);
+            // if (results[0] instanceof Error)
+            // 	console.log(results[0]);
+            // else
+            // 	console.log(results[0].toJSON());
         };
         this.onError = (err) => {
             // console.error(err);
@@ -59,8 +60,10 @@ class Strategy {
         this.ctx[0].on('orderbook', this.onOrderbook);
         this.ctx[0].once('orderbook', this.onceOrderbook);
         this.ctx[0].on('error', this.onError);
+        await this.poller.$s.start([], this.$s.starp);
     }
     async rawStop() {
+        await this.poller.$s.stop();
         this.ctx[0].off('trades', this.onTrades);
         this.ctx[0].off('orderbook', this.onOrderbook);
         this.ctx[0].off('orderbook', this.onceOrderbook);

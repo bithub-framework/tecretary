@@ -4,6 +4,7 @@ export declare class Strategy<H extends HLike<H>> implements StrategyLike {
     $s: import("startable").Startable<[]>;
     private latestPrice;
     private poller;
+    private pc;
     constructor(ctx: ContextLike<H>);
     private loop;
     private onTrades;
