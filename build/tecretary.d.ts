@@ -12,7 +12,7 @@ export declare class Tecretary<H extends HLike<H>> {
     private strategy;
     private hFactory;
     private dataReader;
-    $s: import("startable").Startable<[]>;
+    $s: import("startable").Startable;
     private realMachine;
     private virtualMachine;
     private realMachineRunning?;

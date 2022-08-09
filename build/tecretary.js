@@ -66,9 +66,9 @@ let Tecretary = class Tecretary {
         this.progressReader.capture(this.timeline.now(), this.texchangeMap);
     }
     async realMachineRawStart() {
-        await this.progressReader.$s.start([], this.realMachine.starp);
-        await this.dataReader.$s.start([], this.realMachine.starp);
-        await this.timeline.$s.start([], this.realMachine.starp);
+        await this.progressReader.$s.start(this.realMachine.starp);
+        await this.dataReader.$s.start(this.realMachine.starp);
+        await this.timeline.$s.start(this.realMachine.starp);
     }
     async realMachineRawStop() {
         await this.timeline.$s.stop();
@@ -83,11 +83,11 @@ let Tecretary = class Tecretary {
     async virtualMachineRawStart() {
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
-            await facade.$s.start([], this.virtualMachine.starp);
+            await facade.$s.start(this.virtualMachine.starp);
         }
         this.strategyRunning = new coroutine_locks_1.Rwlock();
         this.strategyRunning.trywrlock();
-        await this.strategy.$s.start([], err => {
+        await this.strategy.$s.start(err => {
             if (err)
                 this.strategyRunning.throw(err);
             else
@@ -108,7 +108,7 @@ let Tecretary = class Tecretary {
     async rawStart() {
         this.realMachineRunning = new coroutine_locks_1.Rwlock();
         this.realMachineRunning.trywrlock();
-        await this.realMachine.start([], err => {
+        await this.realMachine.start(err => {
             if (err)
                 this.realMachineRunning.throw(err);
             else
@@ -117,7 +117,7 @@ let Tecretary = class Tecretary {
         });
         await Promise.any([
             this.realMachineRunning.rdlock(),
-            this.virtualMachine.start([], this.$s.starp),
+            this.virtualMachine.start(this.$s.starp),
         ]);
     }
     async rawStop(err) {

@@ -5,7 +5,7 @@ export declare class DataReader<H extends HLike<H>> implements DataReaderLike<H>
     private db;
     private orderbookReader;
     private tradeGroupReader;
-    $s: import("startable").Startable<[]>;
+    $s: import("startable").Startable;
     constructor(filePath: string, DataTypes: TexchangeDataTypesNamespace<H>);
     getDatabaseOrderbooksAfterId(marketName: string, marketSpec: MarketSpec<H>, id: DatabaseOrderbookId, endTime: number): Generator<DatabaseOrderbook<H>, void>;
     getDatabaseOrderbooksAfterTime(marketName: string, marketSpec: MarketSpec<H>, afterTime: number, endTime: number): Generator<DatabaseOrderbook<H>, void>;

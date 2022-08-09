@@ -13,7 +13,7 @@ class Timeline extends time_engine_1.TimeEngine {
         this.poller = new pollerloop_1.Pollerloop(sleep => this.loop(sleep), pollerEngine);
     }
     async rawStart() {
-        await this.poller.$s.start([], this.$s.starp);
+        await this.poller.$s.start(this.$s.starp);
     }
     async rawStop() {
         const p = this.poller.$s.stop();

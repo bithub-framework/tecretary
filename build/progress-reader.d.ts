@@ -7,7 +7,7 @@ export declare class ProgressReader<H extends HLike<H>> implements ProgressReade
     private config;
     private startTime;
     private db;
-    $s: import("startable").Startable<[]>;
+    $s: import("startable").Startable;
     constructor(config: Config, filePath: string, startTime: number);
     capture(time: number, texchangeMap: Map<string, Texchange<H>>): void;
     getTime(): number;

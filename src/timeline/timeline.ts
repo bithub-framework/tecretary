@@ -3,7 +3,7 @@ import { TimeEngine } from './time-engine';
 import { TimeEngineLike } from 'time-engine-like';
 import { Pollerloop, Sleep, LoopStopped } from 'pollerloop';
 import { TimelineLike } from 'secretary-like';
-import { createStartable, StartableLike } from 'startable';
+import { createStartable } from 'startable';
 
 
 export class Timeline extends TimeEngine implements TimelineLike {
@@ -28,7 +28,7 @@ export class Timeline extends TimeEngine implements TimelineLike {
 	}
 
 	private async rawStart(): Promise<void> {
-		await this.poller.$s.start([], this.$s.starp)
+		await this.poller.$s.start(this.$s.starp)
 	}
 
 	private async rawStop(): Promise<void> {

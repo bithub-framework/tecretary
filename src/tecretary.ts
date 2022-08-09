@@ -1,6 +1,5 @@
 import {
 	createStartable,
-	StartableLike,
 } from 'startable';
 import { DataReaderLike } from './data-reader-like';
 import { ProgressReaderLike } from './progress-reader-like';
@@ -135,9 +134,9 @@ export class Tecretary<H extends HLike<H>> {
 	}
 
 	private async realMachineRawStart() {
-		await this.progressReader.$s.start([], this.realMachine.starp);
-		await this.dataReader.$s.start([], this.realMachine.starp);
-		await this.timeline.$s.start([], this.realMachine.starp);
+		await this.progressReader.$s.start(this.realMachine.starp);
+		await this.dataReader.$s.start(this.realMachine.starp);
+		await this.timeline.$s.start(this.realMachine.starp);
 	}
 
 	private async realMachineRawStop() {
@@ -154,11 +153,11 @@ export class Tecretary<H extends HLike<H>> {
 	private async virtualMachineRawStart() {
 		for (const [name, texchange] of this.texchangeMap) {
 			const facade = texchange.getAdminFacade();
-			await facade.$s.start([], this.virtualMachine.starp);
+			await facade.$s.start(this.virtualMachine.starp);
 		}
 		this.strategyRunning = new Rwlock();
 		this.strategyRunning.trywrlock();
-		await this.strategy.$s.start([], err => {
+		await this.strategy.$s.start(err => {
 			if (err) this.strategyRunning!.throw(err);
 			else this.strategyRunning!.unlock();
 			this.virtualMachine.starp(err);
@@ -179,14 +178,14 @@ export class Tecretary<H extends HLike<H>> {
 	private async rawStart() {
 		this.realMachineRunning = new Rwlock();
 		this.realMachineRunning.trywrlock();
-		await this.realMachine.start([], err => {
+		await this.realMachine.start(err => {
 			if (err) this.realMachineRunning!.throw(err);
 			else this.realMachineRunning!.unlock();
 			this.$s.starp(err);
 		});
 		await Promise.any([
 			this.realMachineRunning.rdlock(),
-			this.virtualMachine.start([], this.$s.starp),
+			this.virtualMachine.start(this.$s.starp),
 		]);
 	}
 

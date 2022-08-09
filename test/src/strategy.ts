@@ -24,10 +24,10 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	private poller: Pollerloop;
 	private pc = new PositionController<H>(
 		this.ctx,
-		new Throttle(
-			1000,
-			this.ctx.timeline,
-		),
+		// new Throttle(
+		// 	1000,
+		// 	this.ctx.timeline,
+		// ),
 	);
 
 	public constructor(
@@ -83,7 +83,7 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		this.ctx[0].on('orderbook', this.onOrderbook);
 		this.ctx[0].once('orderbook', this.onceOrderbook);
 		this.ctx[0].on('error', this.onError);
-		await this.poller.$s.start([], this.$s.starp);
+		await this.poller.$s.start(this.$s.starp);
 	}
 
 	private async rawStop(): Promise<void> {

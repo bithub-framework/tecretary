@@ -12,7 +12,7 @@ import {
 	Orderbook,
 } from 'secretary-like';
 import assert = require('assert');
-import { Throttle } from './throttle';
+// import { Throttle } from './throttle';
 
 
 // disposable
@@ -30,8 +30,9 @@ export class AutoOrder<H extends HLike<H>> {
 		private latest: H,
 		private goal: H,
 		private ctx: ContextLike<H>,
-		private throttle: Throttle,
+		// private throttle: Throttle,
 	) {
+		assert(latest.neq(goal));
 		const price = this.latest.lt(this.goal)
 			? orderbook[Side.ASK][0].price.minus(this.ctx[0].TICK_SIZE)
 			: orderbook[Side.BID][0].price.plus(this.ctx[0].TICK_SIZE);
@@ -42,10 +43,6 @@ export class AutoOrder<H extends HLike<H>> {
 		this.limitOrder = this.ctx.DataTypes.limitOrderFactory.create({
 			price, quantity, side, action, length,
 		});
-		if (this.limitOrder.side === Side.BID)
-			this.goal = latest.plus(this.limitOrder.quantity);
-		else
-			this.goal = latest.minus(this.limitOrder.quantity);
 	}
 
 	private onPositions = (positions: Positions<H>) => {
@@ -64,10 +61,8 @@ export class AutoOrder<H extends HLike<H>> {
 		) this.$s.starp(new OrderbookMoving());
 	}
 
-	private async rawStart(
-	) {
-		const [openOrder] = await this.throttle.invoke
-			(this.ctx[0][0].makeOrders)([this.limitOrder]);
+	private async rawStart() {
+		const [openOrder] = await this.ctx[0][0].makeOrders([this.limitOrder]);
 		assert(!(openOrder instanceof Error), <Error>openOrder);
 		this.openOrder = openOrder;
 		this.ctx[0][0].on('positions', this.onPositions);
@@ -78,10 +73,9 @@ export class AutoOrder<H extends HLike<H>> {
 		this.ctx[0].off('orderbook', this.onOrderbook);
 		this.ctx[0][0].off('positions', this.onPositions);
 		if (err instanceof OrderbookMoving) {
-			[this.openOrder] = await this.throttle.invoke
-				(this.ctx[0][0].cancelOrders)([
-					this.openOrder!,
-				]);
+			[this.openOrder] = await this.ctx[0][0].cancelOrders([
+				this.openOrder!,
+			]);
 			this.latest = this.openOrder.side === Side.BID
 				? this.goal.minus(this.openOrder.unfilled)
 				: this.goal.plus(this.openOrder.unfilled);
