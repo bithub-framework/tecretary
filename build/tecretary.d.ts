@@ -15,7 +15,6 @@ export declare class Tecretary<H extends HLike<H>> {
     $s: import("startable").Startable;
     private realMachine;
     private virtualMachine;
-    private realMachineRunning?;
     private strategyRunning?;
     private tradeGroupsMap;
     private orderbooksMap;
@@ -27,4 +26,6 @@ export declare class Tecretary<H extends HLike<H>> {
     private virtualMachineRawStop;
     private rawStart;
     private rawStop;
+}
+export declare class RMStoppingBeforeVMStarted extends Error {
 }

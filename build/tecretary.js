@@ -9,14 +9,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tecretary = void 0;
+exports.RMStoppingBeforeVMStarted = exports.Tecretary = void 0;
 const startable_1 = require("startable");
 const orderbook_1 = require("./check-points/orderbook");
 const trade_group_1 = require("./check-points/trade-group");
 const injektor_1 = require("@zimtsui/injektor");
 const types_1 = require("./injection/types");
 const shiftable_1 = require("shiftable");
-const coroutine_locks_1 = require("@zimtsui/coroutine-locks");
 let Tecretary = class Tecretary {
     constructor(config, progressReader, timeline, texchangeMap, strategy, hFactory, dataReader, endTime) {
         this.config = config;
@@ -85,51 +84,38 @@ let Tecretary = class Tecretary {
             const facade = texchange.getAdminFacade();
             await facade.$s.start(this.virtualMachine.starp);
         }
-        this.strategyRunning = new coroutine_locks_1.Rwlock();
-        this.strategyRunning.trywrlock();
-        await this.strategy.$s.start(err => {
-            if (err)
-                this.strategyRunning.throw(err);
-            else
-                this.strategyRunning.unlock();
-            this.virtualMachine.starp(err);
-        });
+        await this.strategy.$s.start(this.virtualMachine.starp);
     }
     async virtualMachineRawStop() {
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
-            await facade.$s.stop();
+            await facade.$s.starp();
         }
-        if (this.strategyRunning) {
-            await this.strategyRunning.rdlock().catch(() => { });
+        if (this.strategy.$s.getReadyState() !== "READY" /* READY */) {
+            await this.strategy.$s.getRunningPromise().then(() => { }, () => { });
             await this.strategy.$s.stop();
         }
     }
     async rawStart() {
-        this.realMachineRunning = new coroutine_locks_1.Rwlock();
-        this.realMachineRunning.trywrlock();
-        await this.realMachine.start(err => {
-            if (err)
-                this.realMachineRunning.throw(err);
-            else
-                this.realMachineRunning.unlock();
-            this.$s.starp(err);
-        });
+        await this.realMachine.start(this.$s.starp);
+        const realMachineFailure = this.realMachine.getRunningPromise()
+            .then(() => new RMStoppingBeforeVMStarted(), () => new RMStoppingBeforeVMStarted());
+        const virtualMachineFailure = this.virtualMachine.start(this.$s.starp).then(() => { throw new Error(); }, (err) => err);
         await Promise.any([
-            this.realMachineRunning.rdlock(),
-            this.virtualMachine.start(this.$s.starp),
-        ]);
+            realMachineFailure,
+            virtualMachineFailure,
+        ]).then(err => {
+            throw err;
+        }, () => { });
     }
     async rawStop(err) {
-        try {
-            if (this.realMachineRunning)
-                await Promise.any([
-                    this.realMachineRunning.rdlock(),
-                    this.virtualMachine.stop(err),
-                ]);
-        }
-        finally {
-            await this.virtualMachine.stop();
+        if (this.realMachine.getReadyState() !== "READY" /* READY */) {
+            await this.realMachine.start().catch(() => { });
+            this.virtualMachine.starp(err).finally(() => {
+                return this.realMachine.starp();
+            });
+            await this.realMachine.getRunningPromise();
+            await this.realMachine.stop();
         }
     }
 };
@@ -144,4 +130,7 @@ Tecretary = __decorate([
     __param(7, (0, injektor_1.inject)(types_1.TYPES.endTime))
 ], Tecretary);
 exports.Tecretary = Tecretary;
+class RMStoppingBeforeVMStarted extends Error {
+}
+exports.RMStoppingBeforeVMStarted = RMStoppingBeforeVMStarted;
 //# sourceMappingURL=tecretary.js.map

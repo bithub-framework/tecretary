@@ -32,7 +32,7 @@ export class AutoOrder<H extends HLike<H>> {
 		private ctx: ContextLike<H>,
 		// private throttle: Throttle,
 	) {
-		assert(latest.neq(goal));
+		assert(latest.neq(goal), new LatestSameAsGoal());
 		const price = this.latest.lt(this.goal)
 			? orderbook[Side.ASK][0].price.minus(this.ctx[0].TICK_SIZE)
 			: orderbook[Side.BID][0].price.plus(this.ctx[0].TICK_SIZE);
@@ -89,3 +89,4 @@ export class AutoOrder<H extends HLike<H>> {
 }
 
 export class OrderbookMoving extends Error { }
+export class LatestSameAsGoal extends Error { }

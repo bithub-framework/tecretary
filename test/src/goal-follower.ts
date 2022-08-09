@@ -12,6 +12,7 @@ import {
 import {
 	AutoOrder,
 	OrderbookMoving,
+	LatestSameAsGoal,
 } from './auto-order';
 import { NodeTimeEngine } from 'node-time-engine';
 import { Pollerloop, Loop } from 'pollerloop';
@@ -39,7 +40,7 @@ export class GoalFollower<H extends HLike<H>> {
 		private ctx: ContextLike<H>,
 		// private throttle: Throttle,
 	) {
-		assert(latest.neq(goal));
+		assert(latest.neq(goal), new LatestSameAsGoal());
 		this.autoOrder = new AutoOrder(
 			orderbook,
 			latest,
