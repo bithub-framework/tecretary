@@ -141,14 +141,14 @@ export class Tecretary<H extends HLike<H>> {
 	}
 
 	private async realMachineRawStop() {
-		await this.timeline.$s.stop();
+		await this.timeline.$s.starp();
 		this.capture();
 		for (const tradeGroups of this.tradeGroupsMap.values())
 			tradeGroups.return();
 		for (const orderbooks of this.orderbooksMap.values())
 			orderbooks.return();
-		await this.dataReader.$s.stop();
-		await this.progressReader.$s.stop();
+		await this.dataReader.$s.starp();
+		await this.progressReader.$s.starp();
 	}
 
 	private async virtualMachineRawStart() {
@@ -160,45 +160,45 @@ export class Tecretary<H extends HLike<H>> {
 	}
 
 	private async virtualMachineRawStop() {
+		const strategyState = this.strategy.$s.getReadyState();
 		for (const [name, texchange] of this.texchangeMap) {
 			const facade = texchange.getAdminFacade();
 			await facade.$s.starp();
 		}
-		if (this.strategy.$s.getReadyState() !== ReadyState.READY) {
-			await this.strategy.$s.getRunningPromise().then(() => { }, () => { });
+		if (strategyState === ReadyState.READY) {
+			await this.strategy.$s.starp();
+		} else if (strategyState === ReadyState.STARTED) {
+			try {
+				await this.strategy.$s.getRunningPromise();
+			} finally {
+				await this.strategy.$s.stop();
+			}
+		} else {
+			try {
+				await this.strategy.$s.getRunningPromise();
+			} catch { }
 			await this.strategy.$s.stop();
 		}
 	}
 
 	private async rawStart() {
 		await this.realMachine.start(this.$s.starp);
-		const realMachineFailure = this.realMachine.getRunningPromise()
-			.then(
-				() => new RMStoppingBeforeVMStarted(),
-				() => new RMStoppingBeforeVMStarted(),
-			);
-		const virtualMachineFailure = this.virtualMachine.start(this.$s.starp).then(
-			() => { throw new Error(); },
-			(err: Error) => err,
-		);
-		await Promise.any([
-			realMachineFailure,
-			virtualMachineFailure,
-		]).then(err => {
-			throw err;
-		}, () => { });
+		await new Promise<void>((resolve, reject) => {
+			this.realMachine.getRunningPromise().then(() => { }, reject);
+			this.virtualMachine.start(this.$s.starp).then(resolve, reject);
+		});
 	}
 
 	private async rawStop(err?: Error) {
 		if (this.realMachine.getReadyState() !== ReadyState.READY) {
-			await this.realMachine.start().catch(() => { });
-			this.virtualMachine.starp(err).finally(() => {
-				return this.realMachine.starp();
-			});
-			await this.realMachine.getRunningPromise();
-			await this.realMachine.stop();
+			try {
+				await this.realMachine.start();
+				this.virtualMachine.starp(err)
+					.finally(this.realMachine.starp);
+				await this.realMachine.getRunningPromise();
+			} finally {
+				await this.realMachine.starp();
+			}
 		}
 	}
 }
-
-export class RMStoppingBeforeVMStarted extends Error { }
