@@ -10,29 +10,36 @@ import {
 	Positions,
 	LimitOrder,
 	Orderbook,
+	MarketEvents,
+	AccountEvents,
 } from 'secretary-like';
 import assert = require('assert');
-// import { Throttle } from './throttle';
+import { Pollerloop, Loop } from 'pollerloop';
+import { EventEmitter, once } from 'events';
+import { nodeTimeEngine } from 'node-time-engine';
 
 
-// disposable
 export class AutoOrder<H extends HLike<H>> {
 	public $s = createStartable(
 		this.rawStart.bind(this),
 		this.rawStop.bind(this),
 	);
 
-	private openOrder?: OpenOrder<H>;
-	private limitOrder: LimitOrder<H>;
+	private poller: Pollerloop;
+	private broadcast: BroadcastLike<H>;
 
 	public constructor(
-		orderbook: Orderbook<H>,
 		private latest: H,
 		private goal: H,
 		private ctx: ContextLike<H>,
-		// private throttle: Throttle,
 	) {
 		assert(latest.neq(goal), new LatestSameAsGoal());
+		this.broadcast = <BroadcastLike<H>>new EventEmitter();
+		this.broadcast.on('error', () => { });
+		this.poller = new Pollerloop(this.loop, nodeTimeEngine);
+	}
+
+	private makeLimitOrder(orderbook: Orderbook<H>): LimitOrder<H> {
 		const price = this.latest.lt(this.goal)
 			? orderbook[Side.ASK][0].price.minus(this.ctx[0].TICK_SIZE)
 			: orderbook[Side.BID][0].price.plus(this.ctx[0].TICK_SIZE);
@@ -40,53 +47,86 @@ export class AutoOrder<H extends HLike<H>> {
 		const side = this.latest.lt(this.goal) ? Side.BID : Side.ASK;
 		const action = Action.CLOSE;
 		const length = Length.from(side, action);
-		this.limitOrder = this.ctx.DataTypes.limitOrderFactory.create({
+		return this.ctx.DataTypes.limitOrderFactory.create({
 			price, quantity, side, action, length,
 		});
 	}
 
-	private onPositions = (positions: Positions<H>) => {
-		this.latest = positions.position[Length.LONG]
-			.minus(positions.position[Length.SHORT]);
-		if (this.latest.eq(this.goal)) this.$s.starp();
-	}
-
-	private onOrderbook = (orderbook: Orderbook<H>) => {
-		if (
-			this.limitOrder!.side === Side.BID &&
-			orderbook[Side.BID][0].price.gt(this.limitOrder!.price)
-			||
-			this.limitOrder!.side === Side.ASK &&
-			orderbook[Side.ASK][0].price.lt(this.limitOrder!.price)
-		) this.$s.starp(new OrderbookMoving());
+	private loop: Loop = async sleep => {
+		const [orderbook] = <[Orderbook<H>]>await once(this.broadcast, 'orderbook');
+		const limitOrder = this.makeLimitOrder(orderbook);
+		let [openOrder] = await this.ctx[0][0].makeOrders([limitOrder]);
+		assert(!(openOrder instanceof Error), <Error>openOrder);
+		try {
+			const positions = await new Promise<Positions<H>>((resolve, reject) => {
+				this.broadcast.on('error', reject);
+				this.broadcast.on('positions', resolve);
+				this.broadcast.on('orderbook', orderbook => {
+					if (
+						limitOrder.side === Side.BID &&
+						orderbook[Side.BID][0].price.gt(limitOrder.price)
+						||
+						limitOrder.side === Side.ASK &&
+						orderbook[Side.ASK][0].price.lt(limitOrder.price)
+					) reject(new OrderbookMoving());
+				});
+			});
+			this.latest = positions.position[Length.LONG]
+				.minus(positions.position[Length.SHORT]);
+		} catch (err) {
+			assert(
+				err instanceof OrderbookMoving ||
+				err instanceof Stopping,
+				<Error>err,
+			);
+			[openOrder] = await this.ctx[0][0].cancelOrders([openOrder]);
+			this.latest = openOrder.side === Side.BID
+				? this.goal.minus(openOrder.unfilled)
+				: this.goal.plus(openOrder.unfilled);
+			if (err instanceof OrderbookMoving) throw err;
+		} finally {
+			this.broadcast.removeAllListeners('positions');
+			this.broadcast.removeAllListeners('orderbook');
+		}
 	}
 
 	private async rawStart() {
-		const [openOrder] = await this.ctx[0][0].makeOrders([this.limitOrder]);
-		assert(!(openOrder instanceof Error), <Error>openOrder);
-		this.openOrder = openOrder;
-		this.ctx[0][0].on('positions', this.onPositions);
-		this.ctx[0].on('orderbook', this.onOrderbook);
+		this.ctx[0].on('orderbook', this.onCtxOrderbook);
+		this.ctx[0][0].on('positions', this.onCtxPositions);
+		await this.poller.$s.start(this.$s.starp);
 	}
 
-	private async rawStop(err?: Error) {
-		this.ctx[0].off('orderbook', this.onOrderbook);
-		this.ctx[0][0].off('positions', this.onPositions);
-		if (err instanceof OrderbookMoving) {
-			[this.openOrder] = await this.ctx[0][0].cancelOrders([
-				this.openOrder!,
-			]);
-			this.latest = this.openOrder.side === Side.BID
-				? this.goal.minus(this.openOrder.unfilled)
-				: this.goal.plus(this.openOrder.unfilled);
-		}
+	private async rawStop() {
+		this.ctx[0].off('orderbook', this.onCtxOrderbook);
+		this.ctx[0][0].off('positions', this.onCtxPositions);
+		this.broadcast.emit('error', new Stopping());
 	}
 
 	public getLatest(): H {
 		assert(this.$s.getReadyState() === ReadyState.STOPPED);
 		return this.latest;
 	}
+
+	private onCtxOrderbook = (orderbook: Orderbook<H>) => {
+		this.broadcast.emit('orderbook', orderbook);
+	}
+
+	private onCtxPositions = (positions: Positions<H>) => {
+		this.broadcast.emit('positions', positions);
+	}
 }
 
 export class OrderbookMoving extends Error { }
 export class LatestSameAsGoal extends Error { }
+export class Stopping extends Error { }
+
+interface Events<H extends HLike<H>>
+	extends MarketEvents<H>, AccountEvents<H> { }
+
+interface BroadcastLike<H extends HLike<H>> extends EventEmitter {
+	on<Event extends keyof Events<H>>(event: Event, listener: (...args: Events<H>[Event]) => void): this;
+	once<Event extends keyof Events<H>>(event: Event, listener: (...args: Events<H>[Event]) => void): this;
+	off<Event extends keyof Events<H>>(event: Event, listener: (...args: Events<H>[Event]) => void): this;
+	emit<Event extends keyof Events<H>>(event: Event, ...args: Events<H>[Event]): boolean;
+	removeAllListeners<Event extends keyof Events<H>>(event?: Event): this;
+}

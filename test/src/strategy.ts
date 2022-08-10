@@ -24,10 +24,6 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	private poller: Pollerloop;
 	private pc = new PositionController<H>(
 		this.ctx,
-		// new Throttle(
-		// 	1000,
-		// 	this.ctx.timeline,
-		// ),
 	);
 
 	public constructor(
@@ -37,15 +33,11 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	}
 
 	private loop: Loop = async sleep => {
-		try {
-			for (; ;) {
-				let goal = '.01';
-				this.pc.setGoal(goal);
-				await sleep(60 * 1000);
-				if (goal === '.01') goal = '-0.01'; else goal = '.01';
-			}
-		} catch (err) {
-			assert(err instanceof LoopStopped, <Error>err);
+		for (let goal = '.01'; ;) {
+			this.pc.setGoal(goal);
+
+			await sleep(60 * 1000);
+			if (goal === '.01') goal = '-0.01'; else goal = '.01';
 		}
 	}
 

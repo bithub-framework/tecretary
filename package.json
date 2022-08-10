@@ -9,13 +9,9 @@
     },
     "scripts": {
         "build": "tsc -b ./src/tsconfig.json",
-        "clean": "rm -rf ./build",
+        "clean": "rm -rf ./build && rm -rf ./test/build",
         "rebuild": "npm run clean && npm run build",
-        "build-test": "tsc -b ./test/src/tsconfig.json",
-        "clean-test": "rm -rf ./test/build",
-        "rebuild-test": "npm run clean-test && npm run build-test",
-        "rebuild-all": "npm run rebuild && npm run rebuild-test",
-        "test": "npm run build-test && ava"
+        "test": "tsc -b ./test/src/tsconfig.json && node --enable-source-maps ./test/build/main.js"
     },
     "author": "Zim",
     "dependencies": {

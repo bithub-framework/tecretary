@@ -5,20 +5,12 @@ import {
 import {
 	HLike,
 	ContextLike,
-	Orderbook,
 	Length, Side, Action,
-	MarketEventEmitterLike,
 } from 'secretary-like';
-import {
-	AutoOrder,
-	OrderbookMoving,
-	LatestSameAsGoal,
-} from './auto-order';
+import { AutoOrder } from './auto-order';
 import { NodeTimeEngine } from 'node-time-engine';
 import { Pollerloop, Loop } from 'pollerloop';
 import assert = require('assert');
-import { once, EventEmitter } from 'events';
-// import { Throttle } from './throttle';
 
 
 const nodeTimeEngine = new NodeTimeEngine();
@@ -29,24 +21,14 @@ export class GoalFollower<H extends HLike<H>> {
 		this.rawStart.bind(this),
 		this.rawStop.bind(this),
 	);
-	private autoOrder: AutoOrder<H>;
+	private autoOrder?: AutoOrder<H>;
 	private poller: Pollerloop;
-	private broadcast = <MarketEventEmitterLike<H>>new EventEmitter();
 
 	public constructor(
-		orderbook: Orderbook<H>,
-		latest: H,
+		private latest: H,
 		private goal: H,
 		private ctx: ContextLike<H>,
-		// private throttle: Throttle,
 	) {
-		assert(latest.neq(goal), new LatestSameAsGoal());
-		this.autoOrder = new AutoOrder(
-			orderbook,
-			latest,
-			goal,
-			ctx,
-		);
 		this.poller = new Pollerloop(
 			this.loop,
 			nodeTimeEngine,
@@ -54,52 +36,43 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	private loop: Loop = async sleep => {
-		try {
-			for (; ;) {
+		for (
+			await sleep(0);
+			this.latest.neq(this.goal);
+			await sleep(0)
+		) {
+			this.autoOrder = new AutoOrder(
+				this.latest,
+				this.goal,
+				this.ctx,
+			);
+			try {
 				await this.autoOrder.$s.start();
-				try {
-					await this.autoOrder.$s.getRunningPromise();
-					await this.autoOrder.$s.stop();
-					break;
-				} catch (err) {
-					assert(err instanceof OrderbookMoving, <Error>err);
-					await this.autoOrder.$s.stop();
-					const [orderbook] = await once(
-						this.broadcast,
-						'orderbook',
-					);
-					this.autoOrder = new AutoOrder(
-						orderbook,
-						this.autoOrder.getLatest(),
-						this.goal,
-						this.ctx,
-					);
-				}
+				await this.autoOrder.$s.getRunningPromise().then(() => { }, () => { });
+			} finally {
+				await this.autoOrder.$s.stop();
+				this.latest = this.autoOrder.getLatest();
 			}
-		} catch (err) {
-			assert(err instanceof Stopping, <Error>err);
 		}
 	}
 
-	private onOrderbook = (orderbook: Orderbook<H>) => {
-		this.broadcast.emit('orderbook', orderbook);
-	}
-
 	private async rawStart() {
-		this.ctx[0].on('orderbook', this.onOrderbook);
 		await this.poller.$s.start(this.$s.starp);
 	}
 
 	private async rawStop() {
-		this.broadcast.emit('error', new Stopping());
-		await this.autoOrder.$s.starp();
-		await this.poller.$s.stop();
-		this.ctx[0].off('orderbook', this.onOrderbook);
+		if (this.autoOrder)
+			await this.autoOrder.$s.starp();
+		await this.poller.$s.starp();
 	}
 
 	public getLatest(): H {
-		return this.autoOrder.getLatest();
+		assert(this.$s.getReadyState() === ReadyState.STOPPED);
+		return this.latest;
+	}
+
+	public setGoal(goal: H) {
+		assert(this.$s.getReadyState() === ReadyState.STARTED);
+		this.goal = goal;
 	}
 }
-
-class Stopping extends Error { }
