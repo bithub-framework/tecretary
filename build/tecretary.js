@@ -87,28 +87,10 @@ let Tecretary = class Tecretary {
         await this.strategy.$s.start(this.virtualMachine.starp);
     }
     async virtualMachineRawStop() {
-        const strategyState = this.strategy.$s.getReadyState();
+        await this.strategy.$s.starp();
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
             await facade.$s.starp();
-        }
-        if (strategyState === "READY" /* READY */) {
-            await this.strategy.$s.starp();
-        }
-        else if (strategyState === "STARTED" /* STARTED */) {
-            try {
-                await this.strategy.$s.getRunningPromise();
-            }
-            finally {
-                await this.strategy.$s.stop();
-            }
-        }
-        else {
-            try {
-                await this.strategy.$s.getRunningPromise();
-            }
-            catch { }
-            await this.strategy.$s.stop();
         }
     }
     async rawStart() {

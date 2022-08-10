@@ -7,6 +7,7 @@ class ContextMarket extends events_1.EventEmitter {
     constructor(texchange) {
         super();
         this.facade = texchange.getUserMarketFacade();
+        this.$s = texchange.getAdminFacade().$s;
         this.PRICE_SCALE = this.facade.PRICE_SCALE;
         this.QUANTITY_SCALE = this.facade.QUANTITY_SCALE;
         this.CURRENCY_SCALE = this.facade.CURRENCY_SCALE;

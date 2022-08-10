@@ -13,6 +13,7 @@ import {
 	Texchange,
 } from 'texchange';
 import { EventEmitter } from 'events';
+import { Startable } from 'startable';
 
 
 export class ContextAccout<H extends HLike<H>>
@@ -28,6 +29,8 @@ export class ContextAccout<H extends HLike<H>>
 	public TAKER_FEE_RATE: number;
 	public MAKER_FEE_RATE: number;
 
+	public $s: Startable;
+
 	private facade: UserAccountFacade<H>;
 
 	constructor(
@@ -36,6 +39,7 @@ export class ContextAccout<H extends HLike<H>>
 		super();
 
 		this.facade = texchange.getUserAccountFacade();
+		this.$s = texchange.getAdminFacade().$s;
 
 		this.LEVERAGE = this.facade.LEVERAGE;
 		this.TAKER_FEE_RATE = this.facade.TAKER_FEE_RATE;

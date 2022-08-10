@@ -1,6 +1,6 @@
 import {
 	StrategyLike,
-	ContextLike,
+	StartableContextLike,
 	HLike,
 	Trade,
 	Orderbook,
@@ -24,7 +24,7 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	private follower = new GoalFollower<H>(this.ctx);
 
 	public constructor(
-		private ctx: ContextLike<H>,
+		private ctx: StartableContextLike<H>,
 	) {
 		this.poller = new Pollerloop(this.loop, ctx.timeline);
 	}
@@ -62,16 +62,11 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		// 	console.log(results[0].toJSON());
 	}
 
-	private onError = (err: Error) => {
-		// console.error(err);
-		this.$s.starp();
-	}
-
 	private async rawStart(): Promise<void> {
 		this.ctx[0].on('trades', this.onTrades);
 		this.ctx[0].on('orderbook', this.onOrderbook);
 		this.ctx[0].once('orderbook', this.onceOrderbook);
-		this.ctx[0].on('error', this.onError);
+		await this.ctx.$s.assart(this.$s.starp);
 		await this.poller.$s.start(this.$s.starp);
 	}
 
@@ -80,6 +75,5 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		this.ctx[0].off('trades', this.onTrades);
 		this.ctx[0].off('orderbook', this.onOrderbook);
 		this.ctx[0].off('orderbook', this.onceOrderbook);
-		this.ctx[0].off('error', this.onError);
 	}
 }

@@ -6,6 +6,7 @@ class ContextAccout extends events_1.EventEmitter {
     constructor(texchange) {
         super();
         this.facade = texchange.getUserAccountFacade();
+        this.$s = texchange.getAdminFacade().$s;
         this.LEVERAGE = this.facade.LEVERAGE;
         this.TAKER_FEE_RATE = this.facade.TAKER_FEE_RATE;
         this.MAKER_FEE_RATE = this.facade.MAKER_FEE_RATE;

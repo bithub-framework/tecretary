@@ -2,6 +2,7 @@
 import { AccountLike, HLike, LimitOrder, Balances, Positions, OpenOrder, Amendment, AccountEvents } from 'secretary-like';
 import { Texchange } from 'texchange';
 import { EventEmitter } from 'events';
+import { Startable } from 'startable';
 export declare class ContextAccout<H extends HLike<H>> extends EventEmitter implements AccountLike<H> {
     on: <Event extends keyof AccountEvents<H>>(event: Event, listener: (...args: AccountEvents<H>[Event]) => void) => this;
     once: <Event extends keyof AccountEvents<H>>(event: Event, listener: (...args: AccountEvents<H>[Event]) => void) => this;
@@ -10,6 +11,7 @@ export declare class ContextAccout<H extends HLike<H>> extends EventEmitter impl
     LEVERAGE: number;
     TAKER_FEE_RATE: number;
     MAKER_FEE_RATE: number;
+    $s: Startable;
     private facade;
     constructor(texchange: Texchange<H>);
     makeOrders($orders: LimitOrder<H>[]): Promise<(OpenOrder<H> | Error)[]>;

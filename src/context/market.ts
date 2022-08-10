@@ -10,6 +10,7 @@ import {
 } from 'texchange';
 import { EventEmitter } from 'events';
 import { ContextAccout } from './account';
+import { Startable } from 'startable';
 
 
 
@@ -30,6 +31,8 @@ export class ContextMarket<H extends HLike<H>>
 	public off!: <Event extends keyof MarketEvents<H>>(event: Event, listener: (...args: MarketEvents<H>[Event]) => void) => this;
 	public emit!: <Event extends keyof MarketEvents<H>>(event: Event, ...args: MarketEvents<H>[Event]) => boolean;
 
+	public $s: Startable;
+
 	private facade: UserMarketFacade<H>;
 
 	constructor(
@@ -38,6 +41,7 @@ export class ContextMarket<H extends HLike<H>>
 		super();
 
 		this.facade = texchange.getUserMarketFacade();
+		this.$s = texchange.getAdminFacade().$s;
 
 		this.PRICE_SCALE = this.facade.PRICE_SCALE;
 		this.QUANTITY_SCALE = this.facade.QUANTITY_SCALE;

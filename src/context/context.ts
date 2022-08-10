@@ -1,6 +1,6 @@
 import {
     MarketLike,
-    ContextLike,
+    StartableContextLike,
     HLike,
     TimelineLike,
     DataTypesNamespace as SecretaryDataTypesNamespace,
@@ -9,6 +9,7 @@ import { Texchange } from 'texchange';
 import { ProgressReader } from '../progress-reader';
 import { Config } from '../config';
 import assert = require('assert');
+import { Startable, createStartable } from 'startable';
 
 import { ContextMarket } from './market';
 
@@ -17,8 +18,15 @@ import { TYPES } from '../injection/types';
 
 
 
-export class Context<H extends HLike<H>> implements ContextLike<H> {
+export class Context<H extends HLike<H>> implements StartableContextLike<H> {
     [marketId: number]: MarketLike<H>;
+
+    public $s = createStartable(
+        this.rawStart.bind(this),
+        this.rawStop.bind(this),
+    );
+
+    private texchanges: Texchange<H>[];
 
     constructor(
         @inject(TYPES.config)
@@ -32,14 +40,14 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
         @inject(TYPES.progressReader)
         private progressReader: ProgressReader<H>,
     ) {
-        const texchanges: Texchange<H>[] = config.marketNames.map(name => {
+        this.texchanges = config.marketNames.map(name => {
             const texchange = texchangeMap.get(name);
             assert(typeof texchange !== 'undefined');
             return texchange;
         });
 
-        for (let i = 0; i < texchanges.length; i++) {
-            this[i] = new ContextMarket(texchanges[i]);
+        for (let i = 0; i < this.texchanges.length; i++) {
+            this[i] = new ContextMarket(this.texchanges[i]);
         }
     }
 
@@ -49,4 +57,13 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
             this.timeline.now(),
         );
     }
+
+    private async rawStart() {
+        for (const texchange of this.texchanges) {
+            const facade = texchange.getAdminFacade();
+            await facade.$s.assart(this.$s.starp);
+        }
+    }
+
+    private async rawStop() { }
 }

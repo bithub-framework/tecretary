@@ -93,6 +93,8 @@ export class AutoOrder<H extends HLike<H>> {
 	private async rawStart() {
 		this.ctx[0].on('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].on('positions', this.onCtxPositions);
+		this.ctx[0].on('error', this.onCtxError);
+		this.ctx[0][0].on('error', this.onCtxError);
 		await this.poller.$s.start(err => {
 			if (err instanceof Stopping) this.$s.starp();
 			else this.$s.starp(err);
@@ -102,6 +104,8 @@ export class AutoOrder<H extends HLike<H>> {
 	private async rawStop() {
 		this.ctx[0].off('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].off('positions', this.onCtxPositions);
+		this.ctx[0].off('error', this.onCtxError);
+		this.ctx[0][0].off('error', this.onCtxError);
 		this.broadcast.emit('error', new Stopping());
 		await this.poller.$s.starp();
 	}
@@ -116,6 +120,10 @@ export class AutoOrder<H extends HLike<H>> {
 
 	private onCtxPositions = (positions: Positions<H>) => {
 		this.broadcast.emit('positions', positions);
+	}
+
+	private onCtxError = (err: Error) => {
+		this.broadcast.emit('error', err);
 	}
 }
 

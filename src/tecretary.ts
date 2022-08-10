@@ -160,24 +160,10 @@ export class Tecretary<H extends HLike<H>> {
 	}
 
 	private async virtualMachineRawStop() {
-		const strategyState = this.strategy.$s.getReadyState();
+		await this.strategy.$s.starp();
 		for (const [name, texchange] of this.texchangeMap) {
 			const facade = texchange.getAdminFacade();
 			await facade.$s.starp();
-		}
-		if (strategyState === ReadyState.READY) {
-			await this.strategy.$s.starp();
-		} else if (strategyState === ReadyState.STARTED) {
-			try {
-				await this.strategy.$s.getRunningPromise();
-			} finally {
-				await this.strategy.$s.stop();
-			}
-		} else {
-			try {
-				await this.strategy.$s.getRunningPromise();
-			} catch { }
-			await this.strategy.$s.stop();
 		}
 	}
 
