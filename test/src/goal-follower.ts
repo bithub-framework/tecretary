@@ -3,19 +3,18 @@ import {
 	ReadyState,
 } from 'startable';
 import {
-	HLike,
+	HLike, H,
 	ContextLike,
 	Length, Side, Action,
 } from 'secretary-like';
 import { AutoOrder } from './auto-order';
-import { NodeTimeEngine } from 'node-time-engine';
+import { nodeTimeEngine } from 'node-time-engine';
 import { Pollerloop, Loop } from 'pollerloop';
+import { UnaryBuffer } from './unary-buffer';
 import assert = require('assert');
 
 
-const nodeTimeEngine = new NodeTimeEngine();
 
-// disposable
 export class GoalFollower<H extends HLike<H>> {
 	public $s = createStartable(
 		this.rawStart.bind(this),
@@ -23,10 +22,10 @@ export class GoalFollower<H extends HLike<H>> {
 	);
 	private autoOrder?: AutoOrder<H>;
 	private poller: Pollerloop;
+	private latest?: H;
+	private goalBuffer = new UnaryBuffer<H>();
 
 	public constructor(
-		private latest: H,
-		private goal: H,
 		private ctx: ContextLike<H>,
 	) {
 		this.poller = new Pollerloop(
@@ -36,14 +35,11 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	private loop: Loop = async sleep => {
-		for (
-			await sleep(0);
-			this.latest.neq(this.goal);
-			await sleep(0)
-		) {
+		for await (const goal of this.goalBuffer) {
+			if (goal.eq(this.latest!)) continue;
 			this.autoOrder = new AutoOrder(
-				this.latest,
-				this.goal,
+				this.latest!,
+				goal,
 				this.ctx,
 			);
 			try {
@@ -57,22 +53,39 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	private async rawStart() {
-		await this.poller.$s.start(this.$s.starp);
+		const positions = await this.ctx[0][0].getPositions();
+		this.latest = positions.position[Length.LONG]
+			.minus(positions.position[Length.SHORT]);
+		await this.poller.$s.start(err => {
+			if (err instanceof Stopping) this.$s.starp();
+			else this.$s.starp(err);
+		});
 	}
 
 	private async rawStop() {
 		if (this.autoOrder)
 			await this.autoOrder.$s.starp();
+		this.goalBuffer.terminate(new Stopping());
 		await this.poller.$s.starp();
 	}
 
 	public getLatest(): H {
-		assert(this.$s.getReadyState() === ReadyState.STOPPED);
-		return this.latest;
+		assert(
+			this.$s.getReadyState() === ReadyState.STARTED ||
+			this.$s.getReadyState() === ReadyState.STOPPING ||
+			this.$s.getReadyState() === ReadyState.STOPPED
+		);
+		if (this.autoOrder)
+			this.latest = this.autoOrder.getLatest();
+		return this.latest!;
 	}
 
-	public setGoal(goal: H) {
+	public setGoal(goal: H.Source<H>) {
 		assert(this.$s.getReadyState() === ReadyState.STARTED);
-		this.goal = goal;
+		this.goalBuffer.push(
+			this.ctx.DataTypes.hFactory.from(goal),
+		);
 	}
 }
+
+class Stopping extends Error { }

@@ -9,8 +9,7 @@ import {
 import { createStartable } from 'startable';
 import { Pollerloop, Loop, LoopStopped } from 'pollerloop';
 import assert = require('assert');
-import { PositionController } from './position-controller';
-import { Throttle } from './throttle';
+import { GoalFollower } from './goal-follower';
 
 
 export class Strategy<H extends HLike<H>> implements StrategyLike {
@@ -22,9 +21,7 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	private latestPrice: H | null = null;
 
 	private poller: Pollerloop;
-	private pc = new PositionController<H>(
-		this.ctx,
-	);
+	private follower = new GoalFollower<H>(this.ctx);
 
 	public constructor(
 		private ctx: ContextLike<H>,
@@ -34,7 +31,7 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 
 	private loop: Loop = async sleep => {
 		for (let goal = '.01'; ;) {
-			this.pc.setGoal(goal);
+			this.follower.setGoal(goal);
 
 			await sleep(60 * 1000);
 			if (goal === '.01') goal = '-0.01'; else goal = '.01';

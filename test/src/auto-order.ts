@@ -83,7 +83,7 @@ export class AutoOrder<H extends HLike<H>> {
 			this.latest = openOrder.side === Side.BID
 				? this.goal.minus(openOrder.unfilled)
 				: this.goal.plus(openOrder.unfilled);
-			if (err instanceof OrderbookMoving) throw err;
+			throw err;
 		} finally {
 			this.broadcast.removeAllListeners('positions');
 			this.broadcast.removeAllListeners('orderbook');
@@ -93,17 +93,20 @@ export class AutoOrder<H extends HLike<H>> {
 	private async rawStart() {
 		this.ctx[0].on('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].on('positions', this.onCtxPositions);
-		await this.poller.$s.start(this.$s.starp);
+		await this.poller.$s.start(err => {
+			if (err instanceof Stopping) this.$s.starp();
+			else this.$s.starp(err);
+		});
 	}
 
 	private async rawStop() {
 		this.ctx[0].off('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].off('positions', this.onCtxPositions);
 		this.broadcast.emit('error', new Stopping());
+		await this.poller.$s.starp();
 	}
 
 	public getLatest(): H {
-		assert(this.$s.getReadyState() === ReadyState.STOPPED);
 		return this.latest;
 	}
 
@@ -116,9 +119,9 @@ export class AutoOrder<H extends HLike<H>> {
 	}
 }
 
-export class OrderbookMoving extends Error { }
 export class LatestSameAsGoal extends Error { }
-export class Stopping extends Error { }
+class OrderbookMoving extends Error { }
+class Stopping extends Error { }
 
 interface Events<H extends HLike<H>>
 	extends MarketEvents<H>, AccountEvents<H> { }
