@@ -27,5 +27,3 @@ export declare class Tecretary<H extends HLike<H>> {
     private rawStart;
     private rawStop;
 }
-export declare class RMStoppingBeforeVMStarted extends Error {
-}

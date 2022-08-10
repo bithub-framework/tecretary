@@ -43,7 +43,7 @@ export abstract class Container<H extends HLike<H>> extends BaseContainer {
 			nodeTimeEngine,
 		);
 	});
-	public [TYPES.vMCTX] = this.rfs<VirtualMachineContextLike<H>>(() => {
+	public [TYPES.vmctx] = this.rfs<VirtualMachineContextLike<H>>(() => {
 		return {
 			timeline: this[TYPES.timeline](),
 			DataTypes: this[TYPES.TexchangeDataTypes](),

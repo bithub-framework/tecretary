@@ -39,5 +39,5 @@ class Container extends injektor_1.BaseContainer {
     }
 }
 exports.Container = Container;
-_a = types_1.TYPES.TexchangeDataTypes, _b = types_1.TYPES.progressReader, _c = types_1.TYPES.dataReader, _d = types_1.TYPES.timeline, _e = types_1.TYPES.vMCTX, _f = types_1.TYPES.context, _g = types_1.TYPES.strategy, _h = types_1.TYPES.tecretary;
+_a = types_1.TYPES.TexchangeDataTypes, _b = types_1.TYPES.progressReader, _c = types_1.TYPES.dataReader, _d = types_1.TYPES.timeline, _e = types_1.TYPES.vmctx, _f = types_1.TYPES.context, _g = types_1.TYPES.strategy, _h = types_1.TYPES.tecretary;
 //# sourceMappingURL=container.js.map

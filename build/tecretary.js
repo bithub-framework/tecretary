@@ -9,7 +9,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RMStoppingBeforeVMStarted = exports.Tecretary = void 0;
+exports.Tecretary = void 0;
 const startable_1 = require("startable");
 const orderbook_1 = require("./check-points/orderbook");
 const trade_group_1 = require("./check-points/trade-group");
@@ -70,14 +70,14 @@ let Tecretary = class Tecretary {
         await this.timeline.$s.start(this.realMachine.starp);
     }
     async realMachineRawStop() {
-        await this.timeline.$s.stop();
+        await this.timeline.$s.starp();
         this.capture();
         for (const tradeGroups of this.tradeGroupsMap.values())
             tradeGroups.return();
         for (const orderbooks of this.orderbooksMap.values())
             orderbooks.return();
-        await this.dataReader.$s.stop();
-        await this.progressReader.$s.stop();
+        await this.dataReader.$s.starp();
+        await this.progressReader.$s.starp();
     }
     async virtualMachineRawStart() {
         for (const [name, texchange] of this.texchangeMap) {
@@ -87,35 +87,48 @@ let Tecretary = class Tecretary {
         await this.strategy.$s.start(this.virtualMachine.starp);
     }
     async virtualMachineRawStop() {
+        const strategyState = this.strategy.$s.getReadyState();
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
             await facade.$s.starp();
         }
-        if (this.strategy.$s.getReadyState() !== "READY" /* READY */) {
-            await this.strategy.$s.getRunningPromise().then(() => { }, () => { });
+        if (strategyState === "READY" /* READY */) {
+            await this.strategy.$s.starp();
+        }
+        else if (strategyState === "STARTED" /* STARTED */) {
+            try {
+                await this.strategy.$s.getRunningPromise();
+            }
+            finally {
+                await this.strategy.$s.stop();
+            }
+        }
+        else {
+            try {
+                await this.strategy.$s.getRunningPromise();
+            }
+            catch { }
             await this.strategy.$s.stop();
         }
     }
     async rawStart() {
         await this.realMachine.start(this.$s.starp);
-        const realMachineFailure = this.realMachine.getRunningPromise()
-            .then(() => new RMStoppingBeforeVMStarted(), () => new RMStoppingBeforeVMStarted());
-        const virtualMachineFailure = this.virtualMachine.start(this.$s.starp).then(() => { throw new Error(); }, (err) => err);
-        await Promise.any([
-            realMachineFailure,
-            virtualMachineFailure,
-        ]).then(err => {
-            throw err;
-        }, () => { });
+        await new Promise((resolve, reject) => {
+            this.realMachine.getRunningPromise().then(() => { }, reject);
+            this.virtualMachine.start(this.$s.starp).then(resolve, reject);
+        });
     }
     async rawStop(err) {
         if (this.realMachine.getReadyState() !== "READY" /* READY */) {
-            await this.realMachine.start().catch(() => { });
-            this.virtualMachine.starp(err).finally(() => {
-                return this.realMachine.starp();
-            });
-            await this.realMachine.getRunningPromise();
-            await this.realMachine.stop();
+            try {
+                await this.realMachine.start();
+                this.virtualMachine.starp(err)
+                    .finally(this.realMachine.starp);
+                await this.realMachine.getRunningPromise();
+            }
+            finally {
+                await this.realMachine.starp();
+            }
         }
     }
 };
@@ -130,7 +143,4 @@ Tecretary = __decorate([
     __param(7, (0, injektor_1.inject)(types_1.TYPES.endTime))
 ], Tecretary);
 exports.Tecretary = Tecretary;
-class RMStoppingBeforeVMStarted extends Error {
-}
-exports.RMStoppingBeforeVMStarted = RMStoppingBeforeVMStarted;
 //# sourceMappingURL=tecretary.js.map
