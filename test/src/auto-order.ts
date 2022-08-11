@@ -15,8 +15,9 @@ import {
 } from 'secretary-like';
 import assert = require('assert');
 import { Pollerloop, Loop } from 'pollerloop';
-import { EventEmitter, once } from 'events';
+import { once } from 'events';
 import { nodeTimeEngine } from 'node-time-engine';
+import { StartableEventEmitter } from './startable-event-emitter';
 
 
 export class AutoOrder<H extends HLike<H>> {
@@ -26,7 +27,7 @@ export class AutoOrder<H extends HLike<H>> {
 	);
 
 	private poller: Pollerloop;
-	private broadcast: BroadcastLike<H>;
+	private broadcast = new Broadcast<H>;
 
 	public constructor(
 		private latest: H,
@@ -34,8 +35,6 @@ export class AutoOrder<H extends HLike<H>> {
 		private ctx: ContextLike<H>,
 	) {
 		assert(latest.neq(goal), new LatestSameAsGoal());
-		this.broadcast = <BroadcastLike<H>>new EventEmitter();
-		this.broadcast.on('error', () => { });
 		this.poller = new Pollerloop(this.loop, nodeTimeEngine);
 	}
 
@@ -85,6 +84,7 @@ export class AutoOrder<H extends HLike<H>> {
 				: this.goal.plus(openOrder.unfilled);
 			throw err;
 		} finally {
+			this.broadcast.removeAllListeners('error');
 			this.broadcast.removeAllListeners('positions');
 			this.broadcast.removeAllListeners('orderbook');
 		}
@@ -93,8 +93,8 @@ export class AutoOrder<H extends HLike<H>> {
 	private async rawStart() {
 		this.ctx[0].on('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].on('positions', this.onCtxPositions);
-		this.ctx[0].on('error', this.onCtxError);
-		this.ctx[0][0].on('error', this.onCtxError);
+		await this.ctx.$s.assart(this.$s.starp);
+		this.broadcast.$s.start(this.$s.starp);
 		await this.poller.$s.start(err => {
 			if (err instanceof Stopping) this.$s.starp();
 			else this.$s.starp(err);
@@ -104,9 +104,7 @@ export class AutoOrder<H extends HLike<H>> {
 	private async rawStop() {
 		this.ctx[0].off('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].off('positions', this.onCtxPositions);
-		this.ctx[0].off('error', this.onCtxError);
-		this.ctx[0][0].off('error', this.onCtxError);
-		this.broadcast.emit('error', new Stopping());
+		this.broadcast.$s.starp(new Stopping());
 		await this.poller.$s.starp();
 	}
 
@@ -121,20 +119,24 @@ export class AutoOrder<H extends HLike<H>> {
 	private onCtxPositions = (positions: Positions<H>) => {
 		this.broadcast.emit('positions', positions);
 	}
-
-	private onCtxError = (err: Error) => {
-		this.broadcast.emit('error', err);
-	}
 }
 
 export class LatestSameAsGoal extends Error { }
 class OrderbookMoving extends Error { }
 class Stopping extends Error { }
 
-interface Events<H extends HLike<H>>
-	extends MarketEvents<H>, AccountEvents<H> { }
 
-interface BroadcastLike<H extends HLike<H>> extends EventEmitter {
+
+
+
+interface Events<H extends HLike<H>>
+	extends MarketEvents<H>, AccountEvents<H> {
+	error: [Error];
+}
+
+class Broadcast<H extends HLike<H>> extends StartableEventEmitter { }
+
+interface Broadcast<H extends HLike<H>> extends StartableEventEmitter {
 	on<Event extends keyof Events<H>>(event: Event, listener: (...args: Events<H>[Event]) => void): this;
 	once<Event extends keyof Events<H>>(event: Event, listener: (...args: Events<H>[Event]) => void): this;
 	off<Event extends keyof Events<H>>(event: Event, listener: (...args: Events<H>[Event]) => void): this;

@@ -1,6 +1,6 @@
 import {
     MarketLike,
-    StartableContextLike,
+    ContextLike,
     HLike,
     TimelineLike,
     DataTypesNamespace as SecretaryDataTypesNamespace,
@@ -9,7 +9,7 @@ import { Texchange } from 'texchange';
 import { ProgressReader } from '../progress-reader';
 import { Config } from '../config';
 import assert = require('assert');
-import { Startable, createStartable } from 'startable';
+import { createStartable } from 'startable';
 
 import { ContextMarket } from './market';
 
@@ -18,7 +18,7 @@ import { TYPES } from '../injection/types';
 
 
 
-export class Context<H extends HLike<H>> implements StartableContextLike<H> {
+export class Context<H extends HLike<H>> implements ContextLike<H> {
     [marketId: number]: MarketLike<H>;
 
     public $s = createStartable(

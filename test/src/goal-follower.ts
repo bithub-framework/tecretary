@@ -35,6 +35,11 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	private loop: Loop = async sleep => {
+		// TODO
+		const positions = await this.ctx[0][0].getPositions();
+		this.latest = positions.position[Length.LONG]
+			.minus(positions.position[Length.SHORT]);
+
 		for await (const goal of this.goalBuffer) {
 			if (goal.eq(this.latest!)) continue;
 			this.autoOrder = new AutoOrder(
@@ -53,9 +58,7 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	private async rawStart() {
-		const positions = await this.ctx[0][0].getPositions();
-		this.latest = positions.position[Length.LONG]
-			.minus(positions.position[Length.SHORT]);
+		await this.ctx.$s.assart(this.$s.starp);
 		await this.poller.$s.start(err => {
 			if (err instanceof Stopping) this.$s.starp();
 			else this.$s.starp(err);
