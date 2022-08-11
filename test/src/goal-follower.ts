@@ -35,12 +35,9 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	private loop: Loop = async sleep => {
-		// TODO
-		const positions = await this.ctx[0][0].getPositions();
-		this.latest = positions.position[Length.LONG]
-			.minus(positions.position[Length.SHORT]);
-
 		for await (const goal of this.goalBuffer) {
+			// TODO
+			// await sleep(0);
 			if (goal.eq(this.latest!)) continue;
 			this.autoOrder = new AutoOrder(
 				this.latest!,
@@ -59,6 +56,11 @@ export class GoalFollower<H extends HLike<H>> {
 
 	private async rawStart() {
 		await this.ctx.$s.assart(this.$s.starp);
+
+		const positions = await this.ctx[0][0].getPositions();
+		this.latest = positions.position[Length.LONG]
+			.minus(positions.position[Length.SHORT]);
+
 		await this.poller.$s.start(err => {
 			if (err instanceof Stopping) this.$s.starp();
 			else this.$s.starp(err);
@@ -73,18 +75,18 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	public getLatest(): H {
-		assert(
-			this.$s.getReadyState() === ReadyState.STARTED ||
-			this.$s.getReadyState() === ReadyState.STOPPING ||
-			this.$s.getReadyState() === ReadyState.STOPPED
-		);
+		this.$s.assertReadyState('getLatest', [
+			ReadyState.STARTED,
+			ReadyState.STOPPING,
+			ReadyState.STOPPED,
+		]);
 		if (this.autoOrder)
 			this.latest = this.autoOrder.getLatest();
 		return this.latest!;
 	}
 
 	public setGoal(goal: H.Source<H>) {
-		assert(this.$s.getReadyState() === ReadyState.STARTED);
+		this.$s.assertReadyState('setGoal');
 		this.goalBuffer.push(
 			this.ctx.DataTypes.hFactory.from(goal),
 		);

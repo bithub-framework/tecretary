@@ -49,6 +49,7 @@ export class Timeline extends TimeEngine implements TimelineLike {
 	}
 
 	public async escape<T>(p: PromiseLike<T>): Promise<T> {
+		this.$s.assertReadyState('escape');
 		await this.lock.rdlock();
 		try {
 			return await p;

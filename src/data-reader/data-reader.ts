@@ -30,7 +30,6 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
         () => this.rawStop(),
     );
 
-
     public constructor(
         @inject(TYPES.dataFilePath)
         filePath: string,
@@ -62,6 +61,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
         id: DatabaseOrderbookId,
         endTime: number,
     ): Generator<DatabaseOrderbook<H>, void> {
+        this.$s.assertReadyState('getDatabaseOrderbooksAfterId');
         return this.orderbookReader.getDatabaseOrderbooksAfterId(
             marketName,
             marketSpec,
@@ -76,6 +76,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
         afterTime: number,
         endTime: number,
     ): Generator<DatabaseOrderbook<H>, void> {
+        this.$s.assertReadyState('getDatabaseOrderbooksAfterTime');
         return this.orderbookReader.getDatabaseOrderbooksAfterTime(
             marketName,
             marketSpec,
@@ -90,6 +91,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
         id: DatabaseTradeId,
         endTime: number,
     ): Generator<DatabaseTrade<H>[], void> {
+        this.$s.assertReadyState('getDatabaseTradeGroupsAfterId');
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(
             marketName,
             marketSpec,
@@ -104,6 +106,7 @@ export class DataReader<H extends HLike<H>> implements DataReaderLike<H> {
         afterTime: number,
         endTime: number,
     ): Generator<DatabaseTrade<H>[], void> {
+        this.$s.assertReadyState('getDatabaseTradeGroupsAfterTime');
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(
             marketName,
             marketSpec,

@@ -1,6 +1,6 @@
 import {
 	StrategyLike,
-	StartableContextLike,
+	ContextLike,
 	HLike,
 	Trade,
 	Orderbook,
@@ -24,7 +24,7 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 	private follower = new GoalFollower<H>(this.ctx);
 
 	public constructor(
-		private ctx: StartableContextLike<H>,
+		private ctx: ContextLike<H>,
 	) {
 		this.poller = new Pollerloop(this.loop, ctx.timeline);
 	}

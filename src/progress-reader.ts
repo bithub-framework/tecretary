@@ -1,13 +1,15 @@
 import Database = require('better-sqlite3');
 import { Config } from './config';
-import { Snapshot } from 'texchange';
-import { createStartable } from 'startable';
-import { Texchange } from 'texchange';
+import {
+	createStartable,
+} from 'startable';
+import { Texchange, Snapshot } from 'texchange';
 import { inject } from '@zimtsui/injektor';
 import { TYPES } from './injection/types';
 import { HLike } from 'secretary-like';
 import { lockPidFile } from '@zimtsui/lock-pid-file';
 import { ProgressReaderLike } from './progress-reader-like';
+import assert = require('assert');
 
 
 
@@ -40,6 +42,7 @@ export class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H>
 		time: number,
 		texchangeMap: Map<string, Texchange<H>>,
 	): void {
+		this.$s.assertReadyState('capture');
 		this.db.transaction(() => {
 			this.setTime(time);
 			for (const [name, texchange] of texchangeMap) {
@@ -51,6 +54,7 @@ export class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H>
 	}
 
 	public getTime(): number {
+		this.$s.assertReadyState('getTime');
 		const result = this.db.prepare(`
             SELECT
 				time
@@ -77,6 +81,7 @@ export class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H>
 	public getSnapshot(
 		marketName: string,
 	): Snapshot | null {
+		this.$s.assertReadyState('getSnapshot');
 		const result = this.db.prepare(`
             SELECT snapshot
             FROM snapshots
@@ -112,6 +117,7 @@ export class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H>
 		content: string,
 		time: number,
 	): void {
+		this.$s.assertReadyState('log');
 		this.db.prepare(`
 			INSERT INTO logs
 			(project_name, time, content)
