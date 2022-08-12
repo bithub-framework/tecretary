@@ -59,10 +59,10 @@ export class Context<H extends HLike<H>> implements ContextLike<H> {
     }
 
     private async rawStart() {
-        await this.progressReader.$s.assart(this.$s.starp);
+        await this.progressReader.$s.start(this.$s.stop);
         for (const texchange of this.texchanges) {
             const facade = texchange.getAdminFacade();
-            await facade.$s.assart(this.$s.starp);
+            await facade.$s.start(this.$s.stop);
         }
     }
 

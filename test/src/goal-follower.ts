@@ -36,8 +36,8 @@ export class GoalFollower<H extends HLike<H>> {
 
 	private loop: Loop = async sleep => {
 		for await (const goal of this.goalBuffer) {
-			// TODO
-			// await sleep(0);
+			await sleep(0);
+
 			if (goal.eq(this.latest!)) continue;
 			this.autoOrder = new AutoOrder(
 				this.latest!,
@@ -55,23 +55,19 @@ export class GoalFollower<H extends HLike<H>> {
 	}
 
 	private async rawStart() {
-		await this.ctx.$s.assart(this.$s.starp);
-
+		await this.ctx.$s.start(this.$s.stop); // aggregation
 		const positions = await this.ctx[0][0].getPositions();
 		this.latest = positions.position[Length.LONG]
 			.minus(positions.position[Length.SHORT]);
 
-		await this.poller.$s.start(err => {
-			if (err instanceof Stopping) this.$s.starp();
-			else this.$s.starp(err);
-		});
+		await this.poller.$s.start(this.$s.stop);
 	}
 
 	private async rawStop() {
 		if (this.autoOrder)
-			await this.autoOrder.$s.starp();
-		this.goalBuffer.terminate(new Stopping());
-		await this.poller.$s.starp();
+			await this.autoOrder.$s.stop();
+		this.goalBuffer.terminate();
+		await this.poller.$s.stop();
 	}
 
 	public getLatest(): H {
@@ -92,5 +88,3 @@ export class GoalFollower<H extends HLike<H>> {
 		);
 	}
 }
-
-class Stopping extends Error { }

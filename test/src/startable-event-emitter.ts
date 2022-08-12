@@ -8,10 +8,9 @@ export class StartableEventEmitter extends EventEmitter {
 		this.rawStart.bind(this),
 		this.rawStop.bind(this),
 	);
-	private async rawStart() { }
-	private async rawStop(err?: Error) {
-		assert(err);
-		this.emit('error', err);
+	protected async rawStart() { }
+	protected async rawStop() {
+		this.emit('error', new Stopping);
 	}
 
 	public constructor() {
@@ -34,3 +33,5 @@ export class StartableEventEmitter extends EventEmitter {
 		return super.emit(event, ...args);
 	}
 }
+
+export class Stopping extends Error { }

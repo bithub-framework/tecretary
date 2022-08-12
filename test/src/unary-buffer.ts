@@ -16,15 +16,15 @@ export class UnaryBuffer<T> implements AsyncIterableIterator<T> {
 		this.lock.v();
 	}
 
-	public tryShift(): T {
+	private tryShift(): T {
 		assert(!this.terminated, new Terminated());
 		this.lock.tryp();
 		return this.x!;
 	}
 
-	public terminate(err: Error): void {
+	public terminate(): void {
 		this.terminated = true;
-		this.lock.throw(err);
+		this.lock.throw(new Terminated());
 	}
 
 	private async shift(): Promise<T> {
@@ -34,9 +34,17 @@ export class UnaryBuffer<T> implements AsyncIterableIterator<T> {
 	}
 
 	public async next(): Promise<IteratorResult<T, void>> {
-		return {
-			done: false,
-			value: await this.shift(),
+		try {
+			return {
+				done: false,
+				value: await this.shift(),
+			}
+		} catch (err) {
+			assert(err instanceof Terminated, <Error>err);
+			return {
+				done: true,
+				value: void null,
+			}
 		}
 	}
 
@@ -45,4 +53,4 @@ export class UnaryBuffer<T> implements AsyncIterableIterator<T> {
 	}
 }
 
-export class Terminated extends Error { }
+class Terminated extends Error { }

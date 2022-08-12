@@ -27,15 +27,19 @@ let DataReader = class DataReader {
         this.tradeGroupReader = new trade_group_reader_1.TradeGroupReader(this.db, DataTypes);
     }
     getDatabaseOrderbooksAfterId(marketName, marketSpec, id, endTime) {
+        this.$s.assertReadyState('getDatabaseOrderbooksAfterId');
         return this.orderbookReader.getDatabaseOrderbooksAfterId(marketName, marketSpec, Number.parseInt(id), endTime);
     }
     getDatabaseOrderbooksAfterTime(marketName, marketSpec, afterTime, endTime) {
+        this.$s.assertReadyState('getDatabaseOrderbooksAfterTime');
         return this.orderbookReader.getDatabaseOrderbooksAfterTime(marketName, marketSpec, afterTime, endTime);
     }
     getDatabaseTradeGroupsAfterId(marketName, marketSpec, id, endTime) {
+        this.$s.assertReadyState('getDatabaseTradeGroupsAfterId');
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterId(marketName, marketSpec, Number.parseInt(id), endTime);
     }
     getDatabaseTradeGroupsAfterTime(marketName, marketSpec, afterTime, endTime) {
+        this.$s.assertReadyState('getDatabaseTradeGroupsAfterTime');
         return this.tradeGroupReader.getDatabaseTradeGroupsAfterTime(marketName, marketSpec, afterTime, endTime);
     }
     async rawStart() { }

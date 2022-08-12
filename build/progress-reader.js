@@ -28,6 +28,7 @@ let ProgressReader = class ProgressReader {
             this.clear();
     }
     capture(time, texchangeMap) {
+        this.$s.assertReadyState('capture');
         this.db.transaction(() => {
             this.setTime(time);
             for (const [name, texchange] of texchangeMap) {
@@ -38,6 +39,7 @@ let ProgressReader = class ProgressReader {
         })();
     }
     getTime() {
+        this.$s.assertReadyState('getTime');
         const result = this.db.prepare(`
             SELECT
 				time
@@ -56,6 +58,7 @@ let ProgressReader = class ProgressReader {
 		;`).run(this.config.projectName, time);
     }
     getSnapshot(marketName) {
+        this.$s.assertReadyState('getSnapshot');
         const result = this.db.prepare(`
             SELECT snapshot
             FROM snapshots
@@ -76,6 +79,7 @@ let ProgressReader = class ProgressReader {
         ;`).run(this.config.projectName, marketName, json);
     }
     log(content, time) {
+        this.$s.assertReadyState('log');
         this.db.prepare(`
 			INSERT INTO logs
 			(project_name, time, content)

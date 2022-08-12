@@ -1,6 +1,5 @@
 import { Config } from './config';
-import { Snapshot } from 'texchange';
-import { Texchange } from 'texchange';
+import { Texchange, Snapshot } from 'texchange';
 import { HLike } from 'secretary-like';
 import { ProgressReaderLike } from './progress-reader-like';
 export declare class ProgressReader<H extends HLike<H>> implements ProgressReaderLike<H> {

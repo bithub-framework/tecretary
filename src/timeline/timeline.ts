@@ -28,7 +28,7 @@ export class Timeline extends TimeEngine implements TimelineLike {
 	}
 
 	private async rawStart(): Promise<void> {
-		await this.poller.$s.start(this.$s.starp)
+		await this.poller.$s.start(this.$s.stop)
 	}
 
 	private async rawStop(): Promise<void> {

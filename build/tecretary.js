@@ -49,7 +49,7 @@ let Tecretary = class Tecretary {
         }
         this.timeline.merge(shiftable_1.Shifterator.fromIterable([{
                 time: endTime,
-                cb: this.$s.starp,
+                cb: this.$s.stop,
             }]));
         // this.timeline.affiliate(
         //	 Shifterator.fromIterable(
@@ -65,52 +65,52 @@ let Tecretary = class Tecretary {
         this.progressReader.capture(this.timeline.now(), this.texchangeMap);
     }
     async realMachineRawStart() {
-        await this.progressReader.$s.start(this.realMachine.starp);
-        await this.dataReader.$s.start(this.realMachine.starp);
-        await this.timeline.$s.start(this.realMachine.starp);
+        await this.progressReader.$s.start(this.realMachine.stop);
+        await this.dataReader.$s.start(this.realMachine.stop);
+        await this.timeline.$s.start(this.realMachine.stop);
     }
     async realMachineRawStop() {
-        await this.timeline.$s.starp();
+        await this.timeline.$s.stop();
         this.capture();
         for (const tradeGroups of this.tradeGroupsMap.values())
             tradeGroups.return();
         for (const orderbooks of this.orderbooksMap.values())
             orderbooks.return();
-        await this.dataReader.$s.starp();
-        await this.progressReader.$s.starp();
+        await this.dataReader.$s.stop();
+        await this.progressReader.$s.stop();
     }
     async virtualMachineRawStart() {
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
-            await facade.$s.start(this.virtualMachine.starp);
+            await facade.$s.start(this.virtualMachine.stop);
         }
-        await this.strategy.$s.start(this.virtualMachine.starp);
+        await this.strategy.$s.start(this.virtualMachine.stop);
     }
     async virtualMachineRawStop() {
-        await this.strategy.$s.starp();
+        await this.strategy.$s.stop();
         for (const [name, texchange] of this.texchangeMap) {
             const facade = texchange.getAdminFacade();
-            await facade.$s.starp();
+            await facade.$s.stop();
         }
     }
     async rawStart() {
-        await this.realMachine.start(this.$s.starp);
+        await this.realMachine.start(this.$s.stop);
         await new Promise((resolve, reject) => {
             this.realMachine.getRunningPromise().then(() => { }, reject);
-            this.virtualMachine.start(this.$s.starp).then(resolve, reject);
+            this.virtualMachine.start(this.$s.stop).then(resolve, reject);
         });
     }
     async rawStop(err) {
-        if (this.realMachine.getReadyState() !== "READY" /* READY */) {
-            try {
+        try {
+            if (this.realMachine.getReadyState() !== "READY" /* READY */) {
                 await this.realMachine.start();
-                this.virtualMachine.starp(err)
-                    .finally(this.realMachine.starp);
+                this.virtualMachine.stop(err)
+                    .finally(this.realMachine.stop);
                 await this.realMachine.getRunningPromise();
             }
-            finally {
-                await this.realMachine.starp();
-            }
+        }
+        finally {
+            await this.realMachine.stop();
         }
     }
 };

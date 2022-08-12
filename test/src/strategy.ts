@@ -66,8 +66,8 @@ export class Strategy<H extends HLike<H>> implements StrategyLike {
 		this.ctx[0].on('trades', this.onTrades);
 		this.ctx[0].on('orderbook', this.onOrderbook);
 		this.ctx[0].once('orderbook', this.onceOrderbook);
-		await this.ctx.$s.assart(this.$s.starp);
-		await this.poller.$s.start(this.$s.starp);
+		await this.ctx.$s.start(this.$s.stop); // aggregation
+		await this.poller.$s.start(this.$s.stop);
 	}
 
 	private async rawStop(): Promise<void> {

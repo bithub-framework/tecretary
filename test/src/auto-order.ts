@@ -17,7 +17,10 @@ import assert = require('assert');
 import { Pollerloop, Loop } from 'pollerloop';
 import { once } from 'events';
 import { nodeTimeEngine } from 'node-time-engine';
-import { StartableEventEmitter } from './startable-event-emitter';
+import {
+	StartableEventEmitter,
+	Stopping,
+} from './startable-event-emitter';
 
 
 export class AutoOrder<H extends HLike<H>> {
@@ -82,7 +85,7 @@ export class AutoOrder<H extends HLike<H>> {
 			this.latest = openOrder.side === Side.BID
 				? this.goal.minus(openOrder.unfilled)
 				: this.goal.plus(openOrder.unfilled);
-			throw err;
+			assert(err instanceof Stopping, <Error>err);
 		} finally {
 			this.broadcast.removeAllListeners('error');
 			this.broadcast.removeAllListeners('positions');
@@ -93,19 +96,16 @@ export class AutoOrder<H extends HLike<H>> {
 	private async rawStart() {
 		this.ctx[0].on('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].on('positions', this.onCtxPositions);
-		await this.ctx.$s.assart(this.$s.starp);
-		this.broadcast.$s.start(this.$s.starp);
-		await this.poller.$s.start(err => {
-			if (err instanceof Stopping) this.$s.starp();
-			else this.$s.starp(err);
-		});
+		await this.ctx.$s.start(this.$s.stop); // aggregation
+		this.broadcast.$s.start(this.$s.stop);
+		await this.poller.$s.start(this.$s.stop);
 	}
 
 	private async rawStop() {
 		this.ctx[0].off('orderbook', this.onCtxOrderbook);
 		this.ctx[0][0].off('positions', this.onCtxPositions);
-		this.broadcast.$s.starp(new Stopping());
-		await this.poller.$s.starp();
+		this.broadcast.$s.stop();
+		await this.poller.$s.stop();
 	}
 
 	public getLatest(): H {
@@ -123,7 +123,6 @@ export class AutoOrder<H extends HLike<H>> {
 
 export class LatestSameAsGoal extends Error { }
 class OrderbookMoving extends Error { }
-class Stopping extends Error { }
 
 
 
@@ -131,7 +130,7 @@ class Stopping extends Error { }
 
 interface Events<H extends HLike<H>>
 	extends MarketEvents<H>, AccountEvents<H> {
-	error: [Error];
+	error: [Stopping];
 }
 
 class Broadcast<H extends HLike<H>> extends StartableEventEmitter { }
