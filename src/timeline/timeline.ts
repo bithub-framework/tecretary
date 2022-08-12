@@ -1,9 +1,13 @@
 import { Rwlock } from '@zimtsui/coroutine-locks';
 import { TimeEngine } from './time-engine';
 import { TimeEngineLike } from 'time-engine-like';
-import { Pollerloop, Sleep, LoopStopped } from 'pollerloop';
+import { Pollerloop, Loop } from 'pollerloop';
 import { TimelineLike } from 'secretary-like';
-import { createStartable } from 'startable';
+import {
+	createStartable,
+	StateError,
+	ReadyState,
+} from 'startable';
 
 
 export class Timeline extends TimeEngine implements TimelineLike {
@@ -33,11 +37,14 @@ export class Timeline extends TimeEngine implements TimelineLike {
 
 	private async rawStop(): Promise<void> {
 		const p = this.poller.$s.stop();
-		this.lock.throw(new LoopStopped('Loop stopped.'));
+		this.lock.throw(new StateError(
+			'escape',
+			ReadyState.STOPPING,
+		));
 		await p;
 	}
 
-	private async loop(sleep: Sleep) {
+	private loop: Loop = async sleep => {
 		await this.lock.wrlock();
 		await sleep(0);
 		for (const cb of this) {

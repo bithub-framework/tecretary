@@ -10,6 +10,16 @@ class Timeline extends time_engine_1.TimeEngine {
         super(startTime);
         this.$s = (0, startable_1.createStartable)(() => this.rawStart(), () => this.rawStop());
         this.lock = new coroutine_locks_1.Rwlock();
+        this.loop = async (sleep) => {
+            await this.lock.wrlock();
+            await sleep(0);
+            for (const cb of this) {
+                cb();
+                this.lock.unlock();
+                await this.lock.wrlock();
+                await sleep(0);
+            }
+        };
         this.poller = new pollerloop_1.Pollerloop(sleep => this.loop(sleep), pollerEngine);
     }
     async rawStart() {
@@ -17,18 +27,8 @@ class Timeline extends time_engine_1.TimeEngine {
     }
     async rawStop() {
         const p = this.poller.$s.stop();
-        this.lock.throw(new pollerloop_1.LoopStopped('Loop stopped.'));
+        this.lock.throw(new startable_1.StateError('escape', "STOPPING" /* STOPPING */));
         await p;
-    }
-    async loop(sleep) {
-        await this.lock.wrlock();
-        await sleep(0);
-        for (const cb of this) {
-            cb();
-            this.lock.unlock();
-            await this.lock.wrlock();
-            await sleep(0);
-        }
     }
     async escape(p) {
         this.$s.assertReadyState('escape');
