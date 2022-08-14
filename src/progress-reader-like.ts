@@ -1,12 +1,11 @@
 import { Snapshot } from 'texchange';
-import { Startable } from 'startable';
+import { Startable, DaemonLike } from 'startable';
 import { Texchange } from 'texchange';
 import { HLike } from 'secretary-like';
 
 
 
-export interface ProgressReaderLike<H extends HLike<H>> {
-	$s: Startable;
+export interface ProgressReaderLike<H extends HLike<H>> extends DaemonLike {
 	capture(
 		time: number,
 		texchangeMap: Map<string, Texchange<H>>,

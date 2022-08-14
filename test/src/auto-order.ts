@@ -1,6 +1,6 @@
 import {
 	createStartable,
-	ReadyState,
+	DaemonLike,
 } from 'startable';
 import {
 	OpenOrder,
@@ -23,7 +23,7 @@ import {
 } from './startable-event-emitter';
 
 
-export class AutoOrder<H extends HLike<H>> {
+export class AutoOrder<H extends HLike<H>> implements DaemonLike {
 	public $s = createStartable(
 		this.rawStart.bind(this),
 		this.rawStop.bind(this),

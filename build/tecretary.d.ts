@@ -1,10 +1,11 @@
+import { DaemonLike } from 'startable';
 import { DataReaderLike } from './data-reader-like';
 import { ProgressReaderLike } from './progress-reader-like';
 import { Texchange } from 'texchange';
 import { Config } from './config';
 import { HLike, HFactory, StrategyLike } from 'secretary-like';
 import { Timeline } from './timeline/timeline';
-export declare class Tecretary<H extends HLike<H>> {
+export declare class Tecretary<H extends HLike<H>> implements DaemonLike {
     private config;
     private progressReader;
     private timeline;

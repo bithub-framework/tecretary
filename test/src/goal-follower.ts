@@ -1,6 +1,7 @@
 import {
 	createStartable,
 	ReadyState,
+	DaemonLike,
 } from 'startable';
 import {
 	HLike, H,
@@ -11,11 +12,10 @@ import { AutoOrder } from './auto-order';
 import { nodeTimeEngine } from 'node-time-engine';
 import { Pollerloop, Loop } from 'pollerloop';
 import { UnaryBuffer } from './unary-buffer';
-import assert = require('assert');
 
 
 
-export class GoalFollower<H extends HLike<H>> {
+export class GoalFollower<H extends HLike<H>> implements DaemonLike {
 	public $s = createStartable(
 		this.rawStart.bind(this),
 		this.rawStop.bind(this),

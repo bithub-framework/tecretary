@@ -7,7 +7,7 @@ import {
 	Side, Length, Action,
 } from 'secretary-like';
 import { createStartable } from 'startable';
-import { Pollerloop, Loop, LoopStopped } from 'pollerloop';
+import { Pollerloop, Loop } from 'pollerloop';
 import assert = require('assert');
 import { GoalFollower } from './goal-follower';
 

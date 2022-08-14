@@ -1,6 +1,7 @@
 import {
 	createStartable,
 	ReadyState,
+	DaemonLike,
 } from 'startable';
 import { DataReaderLike } from './data-reader-like';
 import { ProgressReaderLike } from './progress-reader-like';
@@ -25,7 +26,7 @@ import assert = require('assert');
 
 
 
-export class Tecretary<H extends HLike<H>> {
+export class Tecretary<H extends HLike<H>> implements DaemonLike {
 	public $s = createStartable(
 		() => this.rawStart(),
 		() => this.rawStop(),

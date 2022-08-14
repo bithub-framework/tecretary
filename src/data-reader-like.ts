@@ -2,7 +2,7 @@ import {
 	HLike,
 	MarketSpec,
 } from 'secretary-like';
-import { Startable } from 'startable';
+import { Startable, DaemonLike } from 'startable';
 import {
 	DatabaseOrderbook,
 	DatabaseOrderbookId,
@@ -12,8 +12,7 @@ import {
 
 
 
-export interface DataReaderLike<H extends HLike<H>> {
-	$s: Startable;
+export interface DataReaderLike<H extends HLike<H>> extends DaemonLike {
 	getDatabaseOrderbooksAfterId(
 		marketName: string,
 		marketSpec: MarketSpec<H>,

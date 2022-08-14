@@ -1,9 +1,13 @@
-import { createStartable, ReadyState } from 'startable';
+import {
+	createStartable,
+	ReadyState,
+	DaemonLike,
+} from 'startable';
 import { EventEmitter } from 'events';
 import assert = require('assert');
 
 
-export class StartableEventEmitter extends EventEmitter {
+export class StartableEventEmitter extends EventEmitter implements DaemonLike {
 	public $s = createStartable(
 		this.rawStart.bind(this),
 		this.rawStop.bind(this),
